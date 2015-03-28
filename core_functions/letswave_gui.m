@@ -562,7 +562,7 @@ set(handles.file_listbox,'String',filelist);
 idx=[];
 if isempty(old_filelist);
 else
-    for i=length(old_filelist);
+    for i=1:length(old_filelist);
         a=find(strcmpi(old_filelist{i},filelist));
         if isempty(a);
         else
