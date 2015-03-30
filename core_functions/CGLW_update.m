@@ -85,7 +85,7 @@ function process_btn_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 set(handles.current_text,'String','Downloading from server...');
 drawnow;
-fullURL=['https://dl.dropboxusercontent.com/u/114310/letswave6.zip'];
+fullURL=['https://github.com/NOCIONS/letswave6/archive/master.zip'];
 st=which('LW_version.mat');
 [p n e]=fileparts(st);
 filename=[p filesep 'letswave6.zip'];
@@ -221,7 +221,7 @@ set(handles.current_text,'Userdata',LW_version);
 set(handles.current_text,'String',LW_version.date);
 set(handles.server_text,'String','Connecting to server ...');
 %server version
-fullURL=['https://dl.dropboxusercontent.com/u/114310/LW_version.mat'];
+fullURL=['https://github.com/NOCIONS/letswave6/blob/master/LW_version.mat'];
 st=which('LW_version.mat');
 [p n e]=fileparts(st);
 filename=[p filesep 'LW_server_version.mat'];
