@@ -1323,3 +1323,36 @@ function csd_menu_Callback(hObject, eventdata, handles)
 % hObject    handle to csd_menu (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+
+% --------------------------------------------------------------------
+function help_menu_Callback(hObject, eventdata, handles)
+% hObject    handle to help_menu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% --------------------------------------------------------------------
+function what_is_new_menu_Callback(hObject, eventdata, handles)
+% hObject    handle to what_is_new_menu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+web https://github.com/NOCIONS/letswave6/commits/master -browser
+
+
+% --------------------------------------------------------------------
+function report_bug_menu_Callback(hObject, eventdata, handles)
+% hObject    handle to report_bug_menu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+web https://github.com/NOCIONS/letswave6/issues/new -browser
+
+
+% --------------------------------------------------------------------
+function reference_manual_menu_Callback(hObject, eventdata, handles)
+% hObject    handle to reference_manual_menu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+a=which('letswave6.m')
+[p,n,e]=fileparts(a);
+filename=[p filesep 'reference_manual' filesep 'LW6_user_manual.pdf'];
+open(filename);
