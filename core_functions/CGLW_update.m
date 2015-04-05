@@ -86,15 +86,14 @@ function process_btn_Callback(hObject, eventdata, handles)
 set(handles.current_text,'String','Downloading from server...');
 drawnow;
 fullURL=['https://github.com/NOCIONS/letswave6/archive/master.zip'];
-st=which('LW_version.mat');
+st=which('letswave6.m');
 [p n e]=fileparts(st);
 filename=[p filesep 'letswave6.zip'];
 urlwrite(fullURL,filename);
 set(handles.current_text,'String','File downloaded. Updating Letswave...');
 unzip(filename,p);
-load('LW_version.mat');
 set(handles.current_text,'Userdata',LW_version);
-set(handles.current_text,'String',['Finished installing : ' LW_version.date]);
+set(handles.current_text,'String','Finished installing.');
 
 
 
@@ -215,18 +214,4 @@ function check_update_btn_Callback(hObject, eventdata, handles)
 % hObject    handle to check_update_btn (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-%current version
-load('LW_version.mat');
-set(handles.current_text,'Userdata',LW_version);
-set(handles.current_text,'String',LW_version.date);
-set(handles.server_text,'String','Connecting to server ...');
-%server version
-fullURL=['https://github.com/NOCIONS/letswave6/blob/master/LW_version.mat'];
-st=which('LW_version.mat');
-[p n e]=fileparts(st);
-filename=[p filesep 'LW_server_version.mat'];
-urlwrite(fullURL,filename);
-set(handles.server_text,'String','Checking version ...');
-load('LW_server_version.mat');
-set(handles.server_text,'Userdata',LW_version);
-set(handles.server_text,'String',LW_version.date);
+web https://github.com/NOCIONS/letswave6/commits/master -browser
