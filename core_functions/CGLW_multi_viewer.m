@@ -54,6 +54,7 @@ for i=1:length(inputfiles);
 end;
 %figure handles
 [userdata.wave_figure userdata.wave_figure_handles]=CGLW_multi_viewer_figure;
+figure(handles.figure1);
 userdata.mother_handles=handles;
 set(handles.graph_wave_popup,'UserData',userdata);
 %datasets_header, datasets_data
@@ -128,7 +129,6 @@ figure(handles.figure1);
 function update_graph(handles);
 %figure_handles
 userdata=get(handles.graph_wave_popup,'UserData');
-figure(userdata.wave_figure);
 %fetch legend options
 display_legend_dataset=strcmpi(get(handles.menu_legend_dataset,'Checked'),'on');
 display_legend_epoch=strcmpi(get(handles.menu_legend_epoch,'Checked'),'on');
@@ -199,28 +199,52 @@ num_waves=size(tpdata_y,3);
 num_graphs=num_rows*num_cols;
 %linecolors
 linecolors=distinguishable_colors(num_waves);
-%loop through graph columns
-k=1;
+%check number of rows and columns
+axis_ok=0;
+if isfield(userdata,'currentaxis');
+    a=size(userdata.currentaxis);
+    if a(1)==num_rows;
+        if a(2)==num_cols;
+            axis_ok=1;
+        end;
+    end;
+end;
+%create axes if needed
+if axis_ok==0;
+    figure(userdata.wave_figure);
+    %loop through graph columns
+    k=1;
+    for col_pos=1:num_cols;
+        %loop through graph rows
+        for row_pos=1:num_rows;
+            graph_pos=col_pos+((row_pos-1)*num_cols);
+            currentaxis(row_pos,col_pos)=subaxis(num_rows,num_cols,graph_pos,'MarginLeft',0.06,'MarginRight',0.02,'MarginTop',0.04,'MarginBottom',0.08,'SpacingHoriz',0.06,'SpacingVert',0.06);
+            allaxis(k)=currentaxis(row_pos,col_pos);
+            k=k+1;
+        end;
+    end;
+    figure(handles.figure1);
+else
+    currentaxis=userdata.currentaxis;
+    allaxis=userdata.allaxis;
+end;
+
 for col_pos=1:num_cols;
     %loop through graph rows
     for row_pos=1:num_rows;
-        graph_pos=col_pos+((row_pos-1)*num_cols);
-        currentaxis(row_pos,col_pos)=subaxis(num_rows,num_cols,graph_pos,'MarginLeft',0.06,'MarginRight',0.02,'MarginTop',0.04,'MarginBottom',0.08,'SpacingHoriz',0.06,'SpacingVert',0.06);
-        allaxis(k)=currentaxis(row_pos,col_pos);
-        k=k+1;
-        cla('reset');
-        hold on;
+        %cla('reset');
         for wave_pos=1:num_waves;
             switch display_waves
                 case 1
-                    plot(squeeze(tpdata_x(row_pos,col_pos,wave_pos,:)),squeeze(tpdata_y(row_pos,col_pos,wave_pos,:)),'Color',linecolors(wave_pos,:));
+                    plot(currentaxis(row_pos,col_pos),squeeze(tpdata_x(row_pos,col_pos,wave_pos,:)),squeeze(tpdata_y(row_pos,col_pos,wave_pos,:)),'Color',linecolors(wave_pos,:));
                 case 2
-                    stem(squeeze(tpdata_x(row_pos,col_pos,wave_pos,:)),squeeze(tpdata_y(row_pos,col_pos,wave_pos,:)),'Color',linecolors(wave_pos,:));
+                    stem(currentaxis(row_pos,col_pos),squeeze(tpdata_x(row_pos,col_pos,wave_pos,:)),squeeze(tpdata_y(row_pos,col_pos,wave_pos,:)),'Color',linecolors(wave_pos,:));
                 case 3
-                    stairs(squeeze(tpdata_x(row_pos,col_pos,wave_pos,:)),squeeze(tpdata_y(row_pos,col_pos,wave_pos,:)),'Color',linecolors(wave_pos,:));
+                    stairs(currentaxis(row_pos,col_pos),squeeze(tpdata_x(row_pos,col_pos,wave_pos,:)),squeeze(tpdata_y(row_pos,col_pos,wave_pos,:)),'Color',linecolors(wave_pos,:));
             end;
+            hold(currentaxis(row_pos,col_pos),'on');
         end;
-        hold off;
+        hold(currentaxis(row_pos,col_pos),'off');
         %legend
         if display_legend==1;
             for wave_pos=1:num_waves;
@@ -235,7 +259,7 @@ for col_pos=1:num_cols;
                     legend_string{wave_pos}=[legend_string{wave_pos} '[' tpdata_labels(row_pos,col_pos,wave_pos).channel_label '] '];
                 end;
             end;
-            legend(legend_string,'Location','NorthEast');
+            legend(currentaxis(row_pos,col_pos),legend_string,'Location','NorthEast');
         end;
     end;
 end;
@@ -247,16 +271,21 @@ if get(handles.xaxis_auto_chk,'Value')==1;
     xmax=max(tpdata_x(:));
     set(handles.xaxis_min_edit,'String',num2str(xmin));
     set(handles.xaxis_max_edit,'String',num2str(xmax));
+else
+    xmin=str2num(get(handles.xaxis_min_edit,'String'));
+    xmax=str2num(get(handles.xaxis_max_edit,'String'));
 end;
-xlim(allaxis(1),[str2num(get(handles.xaxis_min_edit,'String')) str2num(get(handles.xaxis_max_edit,'String'))]);
 %ylim
 if get(handles.yaxis_auto_chk,'Value')==1;
     ymin=min(tpdata_y(:));
     ymax=max(tpdata_y(:));
     set(handles.yaxis_min_edit,'String',num2str(ymin));
     set(handles.yaxis_max_edit,'String',num2str(ymax));
+else
+    ymin=str2num(get(handles.yaxis_min_edit,'String'));
+    ymax=str2num(get(handles.yaxis_max_edit,'String'));
 end;
-ylim(allaxis(1),[str2num(get(handles.yaxis_min_edit,'String')) str2num(get(handles.yaxis_max_edit,'String'))]);
+axis(allaxis(1),[xmin xmax ymin ymax]);
 %decoration
 for i=1:length(allaxis);
     set(allaxis(i),'FontName','Arial');
