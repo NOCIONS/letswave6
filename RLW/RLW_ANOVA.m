@@ -213,8 +213,8 @@ if permutation==1;
                         blob_size(chanpos,dz,indexpos).size(iter)=0;
                         blob_size_max(chanpos,dz,indexpos).size(iter)=0;
                     else
-                        blob_size(chanpos,dz,indexpos).size(iter)=mean(tpsize);
-                        blob_size_max(chanpos,dz,indexpos).size(iter)=max(tpsize);
+                        blob_size(chanpos,dz,indexpos).size(iter)=mean(abs(tpsize));
+                        blob_size_max(chanpos,dz,indexpos).size(iter)=max(abs(tpsize));
                     end;
                     
                     %criticals(chanpos,dz,indexpos)=(criticalz*std(blob_size(chanpos,dz,indexpos).size))+mean(blob_size(chanpos,dz,indexpos).size);
@@ -283,7 +283,7 @@ if permutation==1;
                     blob_size=sum(sum(tp_Fvalues(idx)));
                     message_string{end+1}=['B' num2str(i) ': ' num2str(blob_size)];
                     if sum(sum(tps(find(tp2==i))))>0;
-                        if blob_size>criticals(chanpos,dz,indexpos);
+                        if abs(blob_size)>criticals(chanpos,dz,indexpos);
                             message_string{end+1}='FOUND a significant cluster!';
                             toutput_Fvalues(idx)=tp_Fvalues(idx);
                             toutput_pvalues(idx)=tp_pvalues(idx);
