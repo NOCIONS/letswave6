@@ -79,8 +79,8 @@ for eventpos=1:length(events);
         %dx1,dx2
         dx1=fix((((latency+xstart)-header.xstart)/header.xstep)+1);
         dx2=fix((((latency+xend)-header.xstart)/header.xstep)+1);
-        message_string{end+1}=['Epoch = ' num2str(epochpos)];
-        message_string{end+1}=['DX1 = ' num2str(dx1) ' DX2 = ' num2str(dx2)];
+        %message_string{end+1}=['Epoch = ' num2str(epochpos)];
+        %message_string{end+1}=['DX1 = ' num2str(dx1) ' DX2 = ' num2str(dx2)];
         %xv
         xv=[dx1 dx2];
         %xi

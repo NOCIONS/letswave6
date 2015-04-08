@@ -106,7 +106,7 @@ else
     a=find(strcmpi(configuration.parameters.event_code,st));
     if isempty(a);
     else
-        set(handles.event_code_popup,a);
+        set(handles.event_code_popup,'Value',a);
     end;
 end;
 %xstart,xend

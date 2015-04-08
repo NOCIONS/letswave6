@@ -850,6 +850,9 @@ function tag_btn_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 filenames=get(handles.file_listbox,'String');
+if isempty(filenames);
+    return;
+end;
 filenames=filenames(get(handles.file_listbox,'Value'));
 filenames_idx=get(handles.file_listbox,'Value');
 if isempty(filenames);

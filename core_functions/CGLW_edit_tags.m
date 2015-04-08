@@ -118,7 +118,8 @@ datasets=get(handles.tag_listbox,'Userdata');
 inputfiles=get(handles.process_btn,'Userdata');
 %
 for i=1:length(datasets);
-    CLW_save_header(inputfiles{i},[],datasets(i).header);
+    [p,n,e]=fileparts(inputfiles{i});
+    CLW_save_header(p,datasets(i).header);
 end;
 
     
