@@ -76,7 +76,7 @@ switch operation
         %datasets
         for setpos=1:length(datasets);
             %process
-            [out_datasets(setpos).header,out_datasets(setpos).data,message_string]=RLW_rereference(datasets(setpos).header,datasets(setpos).data,configuration.parameters.apply_list,configuration.parameters.reference_list);
+            [out_datasets(setpos).header,out_datasets(setpos).data,message_string]=RLW_rereference(datasets(setpos).header,datasets(setpos).data,'apply_list',configuration.parameters.apply_list,'reference_list',configuration.parameters.reference_list);
             %message_string
             if isempty(update_pointers);
             else

@@ -905,7 +905,7 @@ end;
 header=CLW_load_header(inputfiles{1});
 if header.datasize(5)==1;
     if header.datasize(1)==1;
-        if header.datasize(6)>10000
+        if header.datasize(6)>100000
             CGLW_multi_viewer_continuous(cb,inputfiles,send_update_status(handles));
         else
             CGLW_multi_viewer(cb,inputfiles,send_update_status(handles));

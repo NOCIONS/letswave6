@@ -1,9 +1,11 @@
-function [out_header,out_data,message_string]=RLW_rereference(header,data,apply_list,reference_list);
+function [out_header,out_data,message_string]=RLW_rereference(header,data,varargin);
 %RLW_rereference
 %
 %
 %Rereference
-%
+%varargin
+%'apply_list'
+%'reference_list'
 %
 % Author : 
 % Andre Mouraux
@@ -16,6 +18,30 @@ function [out_header,out_data,message_string]=RLW_rereference(header,data,apply_
 % See http://nocions.webnode.com/letswave for additional information
 %
 
+%apply_list
+for i=1:length(header.chanlocs);
+    apply_list{i}=header.chanlocs(i).labels;
+end;
+
+%reference_list
+reference_list=apply_list;
+
+%parse varagin
+if isempty(varargin);
+else
+    %apply_list
+    a=find(strcmpi(varargin,'apply_list'));
+    if isempty(a);
+    else
+        apply_list=varargin{a+1};
+    end;
+    %reference_list
+    a=find(strcmpi(varargin,'reference_list'));
+    if isempty(a);
+    else
+        reference_list=varargin{a+1};
+    end;
+end;
 
 
 %init message_string

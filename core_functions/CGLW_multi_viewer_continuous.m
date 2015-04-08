@@ -134,6 +134,15 @@ selected_event=get(handles.event_listbox,'Value');
 %header
 header=get(handles.event_listbox,'Userdata');
 %event
+if isfield(header,'events');
+else
+    disp('No events. Exit.');
+    return;
+end;
+if isempty(header.events);
+    disp('No events. Exit.');
+    return;
+end;
 event=header.events(selected_event);
 %set epochpos
 set(handles.epoch_listbox,'Value',event.epoch);

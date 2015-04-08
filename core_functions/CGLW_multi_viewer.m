@@ -958,14 +958,14 @@ for datasetpos=1:length(output.selected_datasets);
         switch peakdir
             case 1
                 %mean of selected_channels
-                tpdata=output.tpdata_y(datasetpos,epochpos,output.selected_channels,dx1:dx2);
+                tpdata=output.tpdata_y(datasetpos,epochpos,:,dx1:dx2);
                 tpdata=squeeze(mean(tpdata,3));
                 [y,dx]=max(tpdata);
                 x=output.tpdata_x(datasetpos,epochpos,1,(dx-1)+dx1);
                 vector=squeeze(datasets_data(output.selected_datasets(datasetpos)).data(output.selected_epochs(epochpos),:,indexpos,dz,dy,(dx-1)+dx1));
             case 2
                 %mean of selected_channels
-                tpdata=output.tpdata_y(datasetpos,epochpos,output.selected_channels,dx1:dx2);
+                tpdata=output.tpdata_y(datasetpos,epochpos,:,dx1:dx2);
                 tpdata=squeeze(mean(tpdata,3));
                 [y,dx]=min(tpdata);
                 x=output.tpdata_x(datasetpos,epochpos,1,(dx-1)+dx1);
@@ -1091,14 +1091,14 @@ for datasetpos=1:length(output.selected_datasets);
         switch peakdir
             case 1
                 %mean of selected_channels
-                tpdata=output.tpdata_y(datasetpos,epochpos,output.selected_channels,dx1:dx2);
+                tpdata=output.tpdata_y(datasetpos,epochpos,:,dx1:dx2);
                 tpdata=squeeze(mean(tpdata,3));
                 [y,dx]=max(tpdata);
                 x=output.tpdata_x(datasetpos,epochpos,1,(dx-1)+dx1);
                 vector=squeeze(datasets_data(output.selected_datasets(datasetpos)).data(output.selected_epochs(epochpos),:,indexpos,dz,dy,(dx-1)+dx1));
             case 2
                 %mean of selected_channels
-                tpdata=output.tpdata_y(datasetpos,epochpos,output.selected_channels,dx1:dx2);
+                tpdata=output.tpdata_y(datasetpos,epochpos,:,dx1:dx2);
                 tpdata=squeeze(mean(tpdata,3));
                 [y,dx]=min(tpdata);
                 x=output.tpdata_x(datasetpos,epochpos,1,(dx-1)+dx1);

@@ -92,7 +92,6 @@ filename=[p filesep 'letswave6.zip'];
 urlwrite(fullURL,filename);
 set(handles.current_text,'String','File downloaded. Updating Letswave...');
 unzip(filename,p);
-set(handles.current_text,'Userdata',LW_version);
 set(handles.current_text,'String','Finished installing.');
 
 
