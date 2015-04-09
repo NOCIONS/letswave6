@@ -8,6 +8,7 @@ function [out_header,message_string]=RLW_events_delete_duplicate(header,varargin
 %varargin
 %'exact_latencies' (1)
 %'tolerance' (0.1)
+%'verbose' (0)
 %
 % Author : 
 % Andre Mouraux
@@ -22,6 +23,7 @@ function [out_header,message_string]=RLW_events_delete_duplicate(header,varargin
 
 exact_latencies=1;
 tolerance=0.1;
+verbose=0;
 
 %parse varagin
 if isempty(varargin);
@@ -37,6 +39,12 @@ else
     if isempty(a);
     else
         tolerance=varargin{a+1};
+    end;
+    %verbose
+    a=find(strcmpi(varargin,'verbose'));
+    if isempty(a);
+    else
+        verbose=varargin{a+1};
     end;
 end;
 
@@ -74,15 +82,19 @@ if length(events)>1;
                     if exact_latencies==1;
                         %exact latencies
                         if current_latency==events(event_list(eventpos2)).latency;
-                            event_index(eventpos)=0;
-                            disp(['E ' num2str(eventpos) ' = E ' num2str(event_list(eventpos2))]);
+                            event_index(event_list(eventpos2))=0;
+                            if verbose==1;
+                                disp(['E ' num2str(eventpos) ' = E ' num2str(event_list(eventpos2))]);
+                            end;
                         end;
                     else
                         %inexact latencies
                         if (abs(current_latency-events(event_list(eventpos2)).latency))<tolerance;
                             if current_latency>events(event_list(eventpos2)).latency
                                 event_index(eventpos)=0;
-                                disp(['E ' num2str(eventpos) ' = E ' num2str(event_list(eventpos2))]);
+                                if verbose==1;
+                                    disp(['E ' num2str(eventpos) ' = E ' num2str(event_list(eventpos2))]);
+                                end;
                             end;
                         end;
                     end;
