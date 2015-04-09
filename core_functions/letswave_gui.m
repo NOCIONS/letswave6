@@ -904,15 +904,7 @@ if isempty(inputfiles);
 end;
 header=CLW_load_header(inputfiles{1});
 if header.datasize(5)==1;
-    if header.datasize(1)==1;
-        if header.datasize(6)>100000
-            CGLW_multi_viewer_continuous(cb,inputfiles,send_update_status(handles));
-        else
-            CGLW_multi_viewer(cb,inputfiles,send_update_status(handles));
-        end;
-    else
-        CGLW_multi_viewer(cb,inputfiles,send_update_status(handles));
-    end;
+    CGLW_multi_viewer(cb,inputfiles,send_update_status(handles));
 else
     CGLW_multi_viewer_maps(cb,inputfiles,send_update_status(handles));
 end;
