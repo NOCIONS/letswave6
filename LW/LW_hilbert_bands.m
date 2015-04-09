@@ -66,7 +66,7 @@ switch operation
         out_configuration.parameters.freq_start=50;
         out_configuration.parameters.freq_end=250;
         out_configuration.parameters.freq_lines=100;
-        out_configuration.parameters.filter_order=4;
+        out_configuration.parameters.freq_transition_width=1;
         %datasets
         out_datasets=datasets;
         
@@ -79,7 +79,7 @@ switch operation
         %datasets
         for setpos=1:length(datasets);
             %process
-            [out_datasets(setpos).header,out_datasets(setpos).data,message_string]=RLW_hilbert_bands(datasets(setpos).header,datasets(setpos).data,'freq_width',configuration.parameters.freq_width,'freq_start',configuration.parameters.freq_start,'freq_end',configuration.parameters.freq_end,'freq_lines',configuration.parameters.freq_lines,'filter_order',configuration.parameters.filter_order);
+            [out_datasets(setpos).header,out_datasets(setpos).data,message_string]=RLW_hilbert_bands(datasets(setpos).header,datasets(setpos).data,'freq_width',configuration.parameters.freq_width,'freq_start',configuration.parameters.freq_start,'freq_end',configuration.parameters.freq_end,'freq_lines',configuration.parameters.freq_lines,'freq_transition_width',configuration.parameters.freq_transition_width);
             %message_string
             if isempty(update_pointers);
             else
