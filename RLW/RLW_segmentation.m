@@ -104,31 +104,43 @@ else
     k=1;
     out_events=out_header.events(1);
     %loop through events_idx
+    i2=1;
     for i=1:length(event_idx);
         %dx1
         dx1=fix((((header.events(event_idx(i)).latency+x_start)-header.xstart)/header.xstep))+1;
         %dx2
         dx2=(dx1+dxsize)-1;
-        %out_data > epoch(i)
-        out_data(i,:,:,:,:,:)=data(header.events(event_idx(i)).epoch,:,:,:,:,dx1:dx2);
-        %scan for events within epoch
-        for j=1:length(header.events);
-            %check epoch
-            if header.events(j).epoch==header.events(event_idx(i)).epoch;
-                %new latency
-                new_latency=header.events(j).latency-header.events(event_idx(i)).latency;
-                %check if inside epoch limits
-                if new_latency>=x_start;
-                    if new_latency<=(x_start+x_duration);
-                        %add event
-                        out_events(k)=header.events(j);
-                        out_events(k).latency=new_latency;
-                        out_events(k).epoch=i;
-                        k=k+1;
+        %check limits
+        ok=1;
+        if dx1<1;
+            ok=0;
+        end;
+        if dx2>header.datasize(6);
+            ok=0;
+        end;
+        if ok==1;
+            %out_data > epoch(i)
+            out_data(i2,:,:,:,:,:)=data(header.events(event_idx(i)).epoch,:,:,:,:,dx1:dx2);
+            %scan for events within epoch
+            for j=1:length(header.events);
+                %check epoch
+                if header.events(j).epoch==header.events(event_idx(i)).epoch;
+                    %new latency
+                    new_latency=header.events(j).latency-header.events(event_idx(i)).latency;
+                    %check if inside epoch limits
+                    if new_latency>=x_start;
+                        if new_latency<=(x_start+x_duration);
+                            %add event
+                            out_events(k)=header.events(j);
+                            out_events(k).latency=new_latency;
+                            out_events(k).epoch=i2;
+                            k=k+1;
+                        end;
                     end;
                 end;
             end;
-        end;
+            i2=i2+1;
+        end;           
     end;
     
     %header.events

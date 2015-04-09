@@ -285,6 +285,14 @@ else
     ymin=str2num(get(handles.yaxis_min_edit,'String'));
     ymax=str2num(get(handles.yaxis_max_edit,'String'));
 end;
+if ymin==ymax;
+    ymin=-1;
+    ymax=1;
+end;
+if xmin==xmax;
+    xmin=0;
+    xmax=1;
+end;
 axis(allaxis(1),[xmin xmax ymin ymax]);
 %decoration
 for i=1:length(allaxis);
