@@ -41,7 +41,7 @@ z_end=header.zstart+((header.datasize(4)-1)*header.zstep);
 criterion=100;
 select_channels=0;
 for i=1:length(header.chanlocs);
-    selected_channel_labels=header.chanlocs(i).labels;
+    selected_channel_labels{i}=header.chanlocs(i).labels;
 end;
 
 %parse varagin
