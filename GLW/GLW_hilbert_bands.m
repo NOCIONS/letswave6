@@ -94,8 +94,8 @@ set(handles.freq_end_edit,'String',num2str(configuration.parameters.freq_end));
 set(handles.freq_lines_edit,'String',num2str(configuration.parameters.freq_lines));
 %freq_width_edit
 set(handles.freq_width_edit,'String',num2str(configuration.parameters.freq_width));
-%filter_order_edit
-set(handles.filter_order_edit,'String',num2str(configuration.parameters.filter_order));
+%freq_transition_width_edit
+set(handles.freq_transition_width_edit,'String',num2str(configuration.parameters.freq_transition_width));
 %!!!
 %END
 %!!!
@@ -185,7 +185,7 @@ configuration.parameters.freq_lines=str2num(get(handles.freq_lines_edit,'String'
 %freq_width
 configuration.parameters.freq_width=str2num(get(handles.freq_width_edit,'String'));
 %filter_order
-configuration.parameters.filter_order=str2num(get(handles.filter_order_edit,'String'));
+configuration.parameters.freq_transition_width=str2num(get(handles.freq_transition_width_edit,'String'));
 %!!!
 %END
 %!!!
@@ -310,16 +310,16 @@ end
 
 
 
-function filter_order_edit_Callback(hObject, eventdata, handles)
-% hObject    handle to filter_order_edit (see GCBO)
+function freq_transition_width_edit_Callback(hObject, eventdata, handles)
+% hObject    handle to freq_transition_width_edit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
 
 
 % --- Executes during object creation, after setting all properties.
-function filter_order_edit_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to filter_order_edit (see GCBO)
+function freq_transition_width_edit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to freq_transition_width_edit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))

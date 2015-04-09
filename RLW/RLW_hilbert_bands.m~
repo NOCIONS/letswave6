@@ -91,7 +91,7 @@ out_data=zeros(out_header.datasize);
 low_width=freq_transition_width;
 high_width=freq_transition_width;
 for freq_pos=1:length(freq_vector);
-    %bandpass
+    %bandpass 
     low_cutoff=freq_vector(freq_pos)-(freq_width/2);
     high_cutoff=freq_vector(freq_pos)+(freq_width/2);
     vector=ILW_buildFFTbandpass(FFT_header,low_cutoff,high_cutoff,low_width,high_width);
@@ -100,6 +100,7 @@ for freq_pos=1:length(freq_vector);
             for indexpos=1:size(FFT_data,3);
                 for dz=1:size(FFT_data,4);
                     out_data(epochpos,channelpos,indexpos,dz,freq_pos,:)=squeeze(FFT_data(epochpos,channelpos,indexpos,dz,1,:)).*vector;
+                    end;
                 end;
             end;
         end;
@@ -120,7 +121,7 @@ for epochpos=1:size(data,1);
         for dz=1:size(data,4);
             for dy=1:size(data,5);
                 %hilbert
-                out_data(epochpos,:,indexpos,dz,dy,:)=abs(hilbert(squeeze(out_data(epochpos,:,indexpos,dz,dy,:))'))';
+                out_data(epochpos,:,indexpos,dz,dy,:)=abs(hilbert(squeeze(oudata(epochpos,:,indexpos,dz,dy,:))'))';
             end;
         end;
     end;

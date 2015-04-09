@@ -110,6 +110,6 @@ else
         end;
     end;
 end;
-message_string{end+1}='Finished computing iFFT.';
+
 
 
