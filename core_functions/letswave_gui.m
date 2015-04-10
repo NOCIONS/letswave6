@@ -1347,7 +1347,4 @@ function reference_manual_menu_Callback(hObject, eventdata, handles)
 % hObject    handle to reference_manual_menu (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-a=which('letswave6.m')
-[p,n,e]=fileparts(a);
-filename=[p filesep 'reference_manual' filesep 'LW6_user_manual.pdf'];
-open(filename);
+web https://github.com/NOCIONS/letswave6/wiki -browser
