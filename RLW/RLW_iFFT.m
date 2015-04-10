@@ -68,9 +68,6 @@ if isempty(time_header);
     return;
 end;
 
-%out_header
-out_header=header;
-
 %update header with time information (from time_header)
 out_header.xstart=time_header.xstart;
 out_header.xstep=time_header.xstep;

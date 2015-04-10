@@ -114,11 +114,11 @@ message_string=[message_string message_string2];
 
 %loop through all the data (Hilbert)
 disp('Hilbert transform.');
-for epochpos=1:size(data,1);
+for epochpos=1:size(out_data,1);
     disp(['E : ' num2str(epochpos)])
-    for indexpos=1:size(data,3);
-        for dz=1:size(data,4);
-            for dy=1:size(data,5);
+    for indexpos=1:size(out_data,3);
+        for dz=1:size(out_data,4);
+            for dy=1:size(out_data,5);
                 %hilbert
                 out_data(epochpos,:,indexpos,dz,dy,:)=abs(hilbert(squeeze(out_data(epochpos,:,indexpos,dz,dy,:))'))';
             end;

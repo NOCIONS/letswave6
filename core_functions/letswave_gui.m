@@ -904,15 +904,7 @@ if isempty(inputfiles);
 end;
 header=CLW_load_header(inputfiles{1});
 if header.datasize(5)==1;
-    if header.datasize(1)==1;
-        if header.datasize(6)>100000
-            CGLW_multi_viewer_continuous(cb,inputfiles,send_update_status(handles));
-        else
-            CGLW_multi_viewer(cb,inputfiles,send_update_status(handles));
-        end;
-    else
-        CGLW_multi_viewer(cb,inputfiles,send_update_status(handles));
-    end;
+    CGLW_multi_viewer(cb,inputfiles,send_update_status(handles));
 else
     CGLW_multi_viewer_maps(cb,inputfiles,send_update_status(handles));
 end;
@@ -1355,7 +1347,4 @@ function reference_manual_menu_Callback(hObject, eventdata, handles)
 % hObject    handle to reference_manual_menu (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-a=which('letswave6.m')
-[p,n,e]=fileparts(a);
-filename=[p filesep 'reference_manual' filesep 'LW6_user_manual.pdf'];
-open(filename);
+web https://github.com/NOCIONS/letswave6/wiki -browser
