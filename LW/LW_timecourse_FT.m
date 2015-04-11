@@ -1,6 +1,6 @@
 function [out_configuration,out_datasets] = LW_timecourse_FT(operation,configuration,datasets,update_pointers)
 % LW_timecourse_FT
-% get the time course response for certain frequency points
+% get the time course Fourier transformed response for certain frequency points
 %
 % operations : 
 % 'gui_info'

@@ -1,6 +1,6 @@
 function [out_header,out_data,message_string]=RLW_timecourse_FT(header,data,varargin)
 % LW_timecourse_FT
-% get the time course response for certain frequency points
+% get the time course Fourier transformed response for certain frequency points
 %
 %varargin
 %'fre'
