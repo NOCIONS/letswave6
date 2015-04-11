@@ -182,15 +182,13 @@ st=get(handles.operation_popup,'Userdata');
 configuration.parameters.operation=st{get(handles.operation_popup,'Value')};
 %xstart,xend
 configuration.parameters.xstart=str2num(get(handles.xstart_edit,'String'));
-configuraiton.parameters.xend=str2num(get(handles.xend_edit,'String'));
+configuration.parameters.xend=str2num(get(handles.xend_edit,'String'));
 %!!!
 %END
 %!!!
 %put back configuration
 set(handles.process_btn,'Userdata',configuration);
 close(handles.figure1);
-
-
 
 
 
