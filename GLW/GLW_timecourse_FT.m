@@ -1,17 +1,13 @@
-function varargout = GLW_baseline(varargin)
-% GLW_BASELINE MATLAB code for GLW_baseline.fig
-
-
-
-
+function varargout = GLW_timecourse_FT(varargin)
+% GLW_TIMECOURSE_FT MATLAB code for GLW_timecourse_FT.fig
 
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @GLW_baseline_OpeningFcn, ...
-                   'gui_OutputFcn',  @GLW_baseline_OutputFcn, ...
+                   'gui_OpeningFcn', @GLW_timecourse_FT_OpeningFcn, ...
+                   'gui_OutputFcn',  @GLW_timecourse_FT_OutputFcn, ...
                    'gui_LayoutFcn',  [] , ...
                    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
@@ -26,22 +22,17 @@ end
 % End initialization code - DO NOT EDIT
 
 
-
-
-
-
-
-
-
-% --- Executes just before GLW_baseline is made visible.
-function GLW_baseline_OpeningFcn(hObject, eventdata, handles, varargin)
+% --- Executes just before GLW_timecourse_FT is made visible.
+function GLW_timecourse_FT_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
-% hObject    handle to figure1
+% hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to GLW_baseline (see VARARGIN)
-% Choose default command line output for GLW_baseline
+% varargin   command line arguments to GLW_timecourse_FT (see VARARGIN)
+
+% Choose default command line output for GLW_timecourse_FT
 handles.output = hObject;
+
 % Update handles structure
 guidata(hObject, handles);
 %function('dummy',configuration,datasets);
@@ -83,43 +74,40 @@ if strcmpi(configuration.gui_info.process_overwrite,'yes');
 else
     set(handles.overwrite_chk,'Value',0);
 end;
+
 %!!!!!!!!!!!!!!!!!!!!!!!!
 %update GUI configuration
 %!!!!!!!!!!!!!!!!!!!!!!!!
 %operation
-st={'subtract' 'erpercent' 'divide' 'zscore'};
-set(handles.operation_popup,'Userdata',st);
-a=find(strcmpi(configuration.parameters.operation,st)==1);
+st={'1' '2' '3' '4'};
+set(handles.harmoic_popup,'Userdata',st);
+set(handles.harmoic_popup,'String',st);
+a=find(strcmpi(num2str(configuration.parameters.harmonic),st)==1);
 if isempty(a);
 else
-    set(handles.operation_popup,'Value',a);
+    set(handles.harmoic_popup,'Value',a);
 end;
 %xstart, xend
-set(handles.xstart_edit,'String',num2str(configuration.parameters.xstart));
-set(handles.xend_edit,'String',num2str(configuration.parameters.xend));
-%!!!
-%END
-%!!!
-% UIWAIT makes the GUI wait for user response (see UIRESUME)
+set(handles.fre_edit,'String',num2str(configuration.parameters.fre));
+set(handles.windowsize_edit,'String',num2str(configuration.parameters.windowsize));
+set(handles.windowstep_edit,'String',num2str(configuration.parameters.windowstep));
+% UIWAIT makes GLW_timecourse_FT wait for user response (see UIRESUME)
 uiwait(handles.figure1);
 
 
-
-
-
-
 % --- Outputs from this function are returned to the command line.
-function varargout = GLW_baseline_OutputFcn(hObject, eventdata, handles) 
+function varargout = GLW_timecourse_FT_OutputFcn(hObject, eventdata, handles) 
 % varargout  cell array for returning output args (see VARARGOUT);
-% hObject    handle to figure1
+% hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
 % Get default command line output from handles structure
-varargout{1}=handles.output;
+varargout{1} = handles.output;
 %configuration
 configuration=get(handles.process_btn,'UserData');
 if isempty(get(handles.overwrite_chk,'Userdata'))
-    varargout{2}=[];
+   varargout{2}=[];
 else
    varargout{2}=configuration;
 end;
@@ -127,41 +115,79 @@ delete(hObject);
 
 
 
-
-% --- Executes during object creation, after setting all properties.
-function figure1_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to figure1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-
-
-
-% --- Executes on selection change in filebox.
-function filebox_Callback(hObject, eventdata, handles)
-% hObject    handle to filebox (see GCBO)
+function fre_edit_Callback(hObject, eventdata, handles)
+% hObject    handle to fre_edit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-
+% Hints: get(hObject,'String') returns contents of fre_edit as text
+%        str2double(get(hObject,'String')) returns contents of fre_edit as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function filebox_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to filebox (see GCBO)
+function fre_edit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to fre_edit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
 
 
 
+function windowsize_edit_Callback(hObject, eventdata, handles)
+% hObject    handle to windowsize_edit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of windowsize_edit as text
+%        str2double(get(hObject,'String')) returns contents of windowsize_edit as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function windowsize_edit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to windowsize_edit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function windowstep_edit_Callback(hObject, eventdata, handles)
+% hObject    handle to windowstep_edit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of windowstep_edit as text
+%        str2double(get(hObject,'String')) returns contents of windowstep_edit as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function windowstep_edit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to windowstep_edit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
 
 % --- Executes on button press in process_btn.
 function process_btn_Callback(hObject, eventdata, handles)
 % hObject    handle to process_btn (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
 %fetch configuration
 configuration=get(handles.process_btn,'Userdata');
 %notify that process_btn has been pressed
@@ -178,11 +204,12 @@ end;
 %UPDATE CONFIGURATION
 %!!!!!!!!!!!!!!!!!!!!
 %operation_popup
-st=get(handles.operation_popup,'Userdata');
-configuration.parameters.operation=st{get(handles.operation_popup,'Value')};
-%xstart,xend
-configuration.parameters.xstart=str2num(get(handles.xstart_edit,'String'));
-configuration.parameters.xend=str2num(get(handles.xend_edit,'String'));
+st=get(handles.harmoic_popup,'Userdata');
+configuration.parameters.harmonic=str2num(st{get(handles.harmoic_popup,'Value')});
+%fre,windowsize,windowsize
+configuration.parameters.fre=str2num(get(handles.fre_edit,'String'));
+configuration.parameters.windowsize=str2num(get(handles.windowsize_edit,'String'));
+configuration.parameters.windowstep=str2num(get(handles.windowstep_edit,'String'));
 %!!!
 %END
 %!!!
@@ -191,30 +218,26 @@ set(handles.process_btn,'Userdata',configuration);
 close(handles.figure1);
 
 
-
-
-% --- Executes on selection change in operation_popup.
-function operation_popup_Callback(hObject, eventdata, handles)
-% hObject    handle to operation_popup (see GCBO)
+function prefix_edit_Callback(hObject, eventdata, handles)
+% hObject    handle to prefix_edit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-
-
-
+% Hints: get(hObject,'String') returns contents of prefix_edit as text
+%        str2double(get(hObject,'String')) returns contents of prefix_edit as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function operation_popup_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to operation_popup (see GCBO)
+function prefix_edit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to prefix_edit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
-
-
 
 
 % --- Executes on button press in overwrite_chk.
@@ -222,6 +245,8 @@ function overwrite_chk_Callback(hObject, eventdata, handles)
 % hObject    handle to overwrite_chk (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of overwrite_chk
 if get(handles.overwrite_chk,'Value')==1;
     set(handles.prefix_text,'Visible','off');
     set(handles.prefix_edit,'Visible','off');
@@ -229,9 +254,28 @@ else
     set(handles.prefix_text,'Visible','on');
     set(handleS.prefix_edit,'Visible','on');
 end;
-    
+
+% --- Executes on selection change in harmoic_popup.
+function harmoic_popup_Callback(hObject, eventdata, handles)
+% hObject    handle to harmoic_popup (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns harmoic_popup contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from harmoic_popup
 
 
+% --- Executes during object creation, after setting all properties.
+function harmoic_popup_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to harmoic_popup (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
 
 
 % --- Executes when user attempts to close figure1.
@@ -239,48 +283,7 @@ function figure1_CloseRequestFcn(hObject, eventdata, handles)
 % hObject    handle to figure1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+% Hint: delete(hObject) closes the figure
+%delete(hObject);
 uiresume(handles.figure1);
-
-
-
-function xstart_edit_Callback(hObject, eventdata, handles)
-% hObject    handle to xstart_edit (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-
-
-
-
-
-% --- Executes during object creation, after setting all properties.
-function xstart_edit_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to xstart_edit (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-
-
-function xend_edit_Callback(hObject, eventdata, handles)
-% hObject    handle to xend_edit (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-
-
-
-
-
-% --- Executes during object creation, after setting all properties.
-function xend_edit_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to xend_edit (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
