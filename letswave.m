@@ -1,4 +1,4 @@
-function letswave;
+function letswave(varargin);
 %letswave
 
 %platform-specific configuration
@@ -29,11 +29,25 @@ addpath([p filesep 'external' filesep 'pica']);
 addpath([p filesep 'external' filesep 'visualisationmodule']);
 addpath([p filesep 'external' filesep 'csd_maker']);
 addpath([p filesep 'external' filesep 'neurone']);
+addpath([p filesep 'plugins' filesep 'RLW']);
 addpath([p filesep 'plugins' filesep 'LW']);
 addpath([p filesep 'plugins' filesep 'GLW']);
+addpath([p filesep 'other']);
+%experimental
+if isempty(varargin);
+else
+    if strcmpi(varargin{1},'experimental');
+        disp('Loading experimental functions.');
+        addpath([p filesep 'experimental' filesep 'RLW']);
+        addpath([p filesep 'experimental' filesep 'LW']);
+        addpath([p filesep 'experimental' filesep 'GLW']);
+    end;
+end;
+%override
+addpath([p filesep 'override' filesep 'RLW']);
 addpath([p filesep 'override' filesep 'LW']);
 addpath([p filesep 'override' filesep 'GLW']);
 %letswave
-letswave_gui;
-end
+letswave_gui(varargin);
+
 
