@@ -60,6 +60,13 @@ update(handles);
 [p,n,e]=fileparts(which('letswave6.m'));
 %build menu
 build_menu(handles,p);
+%build menu experimental
+if isempty(varargin);
+else
+    if strcmpi(varargin{1},'experimental');
+        build_menu_experimental(handles,p);
+    end;
+end;
 %plugins
 find_plugins(handles,p);
 %GUI_options
@@ -89,6 +96,24 @@ else
     disp('No functions : unable to build menu structure!');
 end;
 
+function build_menu_experimental(handles,p);
+disp(['Searching for functions in : ' p filesep 'experimental' filesep 'LW']);
+tp=dir([p filesep 'experimental' filesep 'LW' filesep 'LW_*.m']);
+if length(tp)>0;
+    st=get(handles.file_menu,'UserData');
+    for i=1:length(tp);
+        [p n e]=fileparts(tp(i).name);
+        %load the functions
+        fh = str2func(n);
+        c=fh('gui_info');
+        a=eval(['handles.' c.gui_info.parent]);
+        fh=uimenu(a,'Label',[c.gui_info.name ' (experimental)'],'Callback',{@menu_callback,i});
+        st{end+1}=c.gui_info.function_name;
+    end;
+    set(handles.file_menu,'UserData',st);
+else
+    disp('No experimental functions found.');
+end;
 
 
 
