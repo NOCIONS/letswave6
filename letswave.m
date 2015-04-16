@@ -32,7 +32,6 @@ addpath([p filesep 'external' filesep 'neurone']);
 addpath([p filesep 'plugins' filesep 'RLW']);
 addpath([p filesep 'plugins' filesep 'LW']);
 addpath([p filesep 'plugins' filesep 'GLW']);
-addpath([p filesep 'other']);
 %experimental
 if isempty(varargin);
 else

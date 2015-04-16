@@ -1,6 +1,6 @@
-function [out_configuration,out_datasets] = LW_timecourse_CCA(operation,configuration,datasets,update_pointers)
-% LW_timecourse_CCA
-% get the time course CCA response for certain frequency points
+function [out_configuration,out_datasets] = LW_timecourse_FT(operation,configuration,datasets,update_pointers)
+% LW_timecourse_FT
+% get the time course Fourier transformed response for certain frequency points
 %
 % operations : 
 % 'gui_info'
@@ -35,8 +35,8 @@ if nargin<4;
 end;
 
 %gui_info
-gui_info.function_name='LW_timecourse_CCA';
-gui_info.name='timecourse_CCA';
+gui_info.function_name='LW_timecourse_FT';
+gui_info.name='Time course of Fourier-transformed response';
 gui_info.description='get the time course response for certain frequency points';
 gui_info.parent='frequency_transforms_menu';
 gui_info.scriptable='yes';                      %function can be used in scripts?
@@ -45,7 +45,7 @@ gui_info.configuration_requires_data='no';      %configuration requires data of 
 gui_info.save_dataset='yes';                    %process requires to save dataset? 'yes', 'no', 'unique'
 gui_info.process_none='no';                     %for functions which have nothing to process (e.g. visualisation functions)
 gui_info.process_requires_data='yes';           %process requires data of the dataset?
-gui_info.process_filename_string='cca';          %default filename suffix (or filename (if 'unique'))
+gui_info.process_filename_string='ft';          %default filename suffix (or filename (if 'unique'))
 gui_info.process_overwrite='no';                %process should overwrite the original dataset?
 
 %operation
@@ -72,12 +72,12 @@ switch operation
     case 'process'
         out_datasets=[];
         %handles feedback
-        if isempty(update_pointers) else update_pointers.function(update_pointers.handles,'*** timecourse_cca.',1,0); end;
+        if isempty(update_pointers) else update_pointers.function(update_pointers.handles,'*** timecourse_FT.',1,0); end;
         %datasets
         for setpos=1:length(datasets);
             %process
             [out_datasets(setpos).header,out_datasets(setpos).data,message_string]=...
-                RLW_timecourse_CCA(datasets(setpos).header,datasets(setpos).data,...
+                RLW_timecourse_FT(datasets(setpos).header,datasets(setpos).data,...
                 'fre',configuration.parameters.fre,'harmonic',configuration.parameters.harmonic,...
                 'windowsize',configuration.parameters.windowsize,'windowstep',configuration.parameters.windowstep);
             %message_string
@@ -108,7 +108,7 @@ switch operation
         
     case 'configure'
         %configuration
-        [a out_configuration]=GLW_timecourse_CCA('dummy',configuration,datasets);
+        [a out_configuration]=GLW_timecourse_FT('dummy',configuration,datasets);
         %datasets
         out_datasets=datasets;
 end;
