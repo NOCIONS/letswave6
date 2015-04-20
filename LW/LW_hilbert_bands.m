@@ -75,7 +75,7 @@ switch operation
         %configuration
         out_configuration=configuration;
         %handles feedback
-        if isempty(update_pointers) else update_pointers.function(update_pointers.handles,'*** Butterworth filter.',1,0); end;
+        if isempty(update_pointers) else update_pointers.function(update_pointers.handles,'*** Hilbert bands.',1,0); end;
         %datasets
         for setpos=1:length(datasets);
             %process
