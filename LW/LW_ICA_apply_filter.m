@@ -92,7 +92,7 @@ switch operation
                             ICA_um=datasets(setpos).header.history(i).configuration.parameters.ICA_um;
                             %ICA_mm
                             ICA_mm=datasets(setpos).header.history(i).configuration.parameters.ICA_mm;
-                        case 'LW_ICA_assign';
+                        case 'LW_ICA_assign_matrix';
                             %ICA_um
                             ICA_um=datasets(setpos).header.history(i).configuration.parameters.ICA_um;
                             %ICA_mm

@@ -48,7 +48,7 @@ if isempty(ICA_um);
                 ICA_um=header.history(i).configuration.parameters.ICA_um;
             case 'LW_ICA_compute_merged';
                 ICA_um=header.history(i).configuration.parameters.ICA_um;
-            case 'LW_ICA_assign';
+            case 'LW_ICA_assign_matrix';
                 ICA_um=header.history(i).configuration.parameters.ICA_um;
         end;
     end;

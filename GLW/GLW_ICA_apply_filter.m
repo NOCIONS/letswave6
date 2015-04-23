@@ -120,7 +120,7 @@ else
                     case 'LW_ICA_compute_merged';
                         tp_um=history(j).configuration.parameters.ICA_um;
                         tp_mm=history(j).configuration.parameters.ICA_mm;
-                    case 'LW_ICA_assign'
+                    case 'LW_ICA_assign_matrix'
                         tp_um=history(j).configuration.parameters.ICA_um;
                         tp_mm=history(j).configuration.parameters.ICA_mm;
                 end;

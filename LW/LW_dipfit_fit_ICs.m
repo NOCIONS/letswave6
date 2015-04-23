@@ -132,7 +132,7 @@ switch operation
                         ICA_mm=history(j).configuration.parameters.ICA_mm;
                     case 'LW_ICA_compute_merged';
                         ICA_mm=history(j).configuration.parameters.ICA_mm;
-                    case 'LW_ICA_assign'
+                    case 'LW_ICA_assign_matrix'
                         ICA_mm=history(j).configuration.parameters.ICA_mm;
                 end;
             end;
