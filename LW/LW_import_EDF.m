@@ -63,6 +63,7 @@ switch operation
         out_configuration=configuration;
         out_configuration.gui_info=gui_info;
         out_configuration.parameters.filenames={};
+        out_configuration.parameters.concatenate=0;
         %datasets
         out_datasets=datasets;
         
@@ -83,7 +84,7 @@ switch operation
             filename=inputfiles{filepos};
             if isempty(update_pointers) else update_pointers.function(update_pointers.handles,['Loading : ' filename],1,0); end;
             %process
-            [out_datasets(filepos).header out_datasets(filepos).data message_string]=RLW_import_EDF(filename);
+            [out_datasets(filepos).header out_datasets(filepos).data message_string]=RLW_import_EDF(filename,'concatenate',configuration.parameters.concatenate);
             %message_string
             if isempty(update_pointers);
             else

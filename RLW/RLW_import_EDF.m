@@ -1,8 +1,11 @@
-function [out_header,out_data,message_string]=RLW_import_EDF(filename);
+function [out_header,out_data,message_string]=RLW_import_EDF(filename,varargin);
 %RLW_import_EDF
 %
 %Import EDF data
 %filename : name of EDF file 
+%
+%varargin
+%'concatenate' 0/1
 %
 % Author : 
 % Andre Mouraux
@@ -14,6 +17,19 @@ function [out_header,out_data,message_string]=RLW_import_EDF(filename);
 % This function is part of Letswave 6
 % See http://nocions.webnode.com/letswave for additional information
 %
+
+concatenate=0;
+%parse varagin
+if isempty(varargin);
+else
+    %concatenate
+    a=find(strcmpi(varargin,'concatenate'));
+    if isempty(a);
+    else
+        concatenate=varargin{a+1};
+    end;
+end;
+
 
 message_string={};
 out_header=[];
@@ -86,3 +102,20 @@ for chanpos=1:out_header.datasize(2);
         out_data(epochpos,chanpos,1,1,1,:)=squeeze(dat(chanpos,:,epochpos));
     end;
 end;
+
+%concatenate?
+if concatenate==1;
+    message_string{end+1}=['Concatenating epochs'];
+    tp=out_data;
+    epoch_size=out_header.datasize(6);
+    num_epochs=out_header.datasize(1);
+    out_header.datasize(6)=out_header.datasize(1)*out_header.datasize(6);
+    out_header.datasize(1)=1;
+    out_data=zeros(out_header.datasize);
+    for epochpos=1:size(tp,1);
+        dx1=1+((epochpos-1)*epoch_size);
+        dx2=epoch_size+((epochpos-1)*epoch_size);
+        out_data(1,:,:,:,:,dx1:dx2)=tp(epochpos,:,:,:,:,:);
+    end;
+end;
+

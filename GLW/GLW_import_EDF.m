@@ -88,6 +88,7 @@ end;
 %!!!!!!!!!!!!!!!!!!!!!!!!
 %configuration.parameters.filenames={};
 set(handles.filenames_listbox,'String',configuration.parameters.filenames);
+set(handles.concatenate_btn,'Value',configuration.parameters.concatenate);
 %!!!
 %END
 %!!!
@@ -172,6 +173,7 @@ end;
 %!!!!!!!!!!!!!!!!!!!!
 %configuration.parameters.filenames={};
 configuration.parameters.filenames=get(handles.filenames_listbox,'Userdata');
+configuration.parameters.concatenate=get(handles.concatenate_btn,'Value');
 %!!!
 %END
 %!!!
@@ -276,3 +278,12 @@ function prefix_edit_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in concatenate_btn.
+function concatenate_btn_Callback(hObject, eventdata, handles)
+% hObject    handle to concatenate_btn (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of concatenate_btn
