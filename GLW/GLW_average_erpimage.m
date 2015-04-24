@@ -212,7 +212,7 @@ if get(handles.overwrite_chk,'Value')==1;
     set(handles.prefix_edit,'Visible','off');
 else
     set(handles.prefix_text,'Visible','on');
-    set(handleS.prefix_edit,'Visible','on');
+    set(handles.prefix_edit,'Visible','on');
 end;
     
 
