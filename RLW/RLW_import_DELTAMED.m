@@ -54,9 +54,12 @@ while ischar(tp);
     tp=fgetl(txtfile);
     if ischar(tp);
         if length(tp)>1;
-            rl=textscan(tp,'%d%s','delimiter',',');
-            event_pos(index)=rl{1};
-            event_code{index}=rl{2};
+            %rl=textscan(tp,'%d%s','delimiter',',');
+            idx=find(tp==',');
+            event_pos(index)=str2num(tp(1:idx-1));
+            %event_pos(index)=rl{1};
+            event_code{index}=tp(idx+1:end);
+            %event_code{index}=rl{2};
             index=index+1;
         end;
     end;
@@ -96,7 +99,8 @@ end;
 
 %header.events
 for i=1:length(event_code);
-    out_header.events(i).code=cell2mat(event_code{i});
+    %out_header.events(i).code=cell2mat(event_code{i});
+    out_header.events(i).code=event_code{i};
     out_header.events(i).latency=event_lat(i);
     out_header.events(i).epoch=1;
 end;
