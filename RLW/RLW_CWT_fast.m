@@ -18,6 +18,7 @@ function [out_header,out_data,message_string]=RLW_CWT_fast(header,data,varargin)
 %'x_end (1)
 %'output ('amplitude') 'amplitude','power','phase','real','imag'
 %'average_epochs (1)
+%'yaxis' 'linear' 'log10'
 %
 % Author : 
 % Andre Mouraux
@@ -43,6 +44,7 @@ x_start=-0.5;
 x_end=1;
 output='amplitude';
 average_epochs=1;
+yaxis='linear';
 
 
 %parse varagin
@@ -126,6 +128,12 @@ else
     else
         average_epochs=varargin{a+1};
     end;
+    %yaxis
+    a=find(strcmpi(varargin,'yaxis'));
+    if isempty(a);
+    else
+        yaxis=varargin{a+1};
+    end;
 end;
 
 %init message_string
@@ -172,9 +180,6 @@ ystep=(high_frequency-low_frequency)/num_frequency_lines;
 ystart=low_frequency;
 ysize=num_frequency_lines;
 
-%initialize hzi
-hzi=ystart;
-
 %initialize data (make sure that it is single)
 data=single(data);
 outarray1=zeros(ysize,xsize,'single');
@@ -211,10 +216,17 @@ y=1;
 TSPEC1=cell(1,ysize);
 TSPEC2=cell(1,ysize);
 
+%hzi
+if strcmpi(yaxis,'linear');
+    hzi=linspace(low_frequency,high_frequency,num_frequency_lines);
+else
+    hzi=logspace(log10(low_frequency),log10(high_frequency),num_frequency_lines);
+end;
+
 %loop through dy
 for dy=1:ysize;
     %compress wavelet
-    specsize=round((srate*mother_frequency)/hzi);
+    specsize=round((srate*mother_frequency)/hzi(dy));
     %specsizediv2=floor(specsize/2);
     specinc=mother_size/specsize;
     tps=floor(0:specinc:(specinc*(specsize-1)))+1;
@@ -223,7 +235,6 @@ for dy=1:ysize;
     wavScale=sqrt(hzi/mother_frequency);
     TSPEC1{dy}=tspec1*wavScale;
     TSPEC2{dy}=tspec2*wavScale;
-    hzi=hzi+ystep;
 end;
 
 %!!! Compute the fast CWT !!!

@@ -140,6 +140,12 @@ end;
 set(handles.x_start_edit,'String',num2str(configuration.parameters.x_start));
 %x_end
 set(handles.x_end_edit,'String',num2str(configuration.parameters.x_end));
+%yaxis
+if strcmpi(configuration.parameters.yaxis,'log10');
+    set(handles.yaxis_chk,'Value',1);
+else
+    set(handles.yaxis_chk,'Value',0);
+end;
 %update_options
 update_options(handles);
 %!!!
@@ -248,6 +254,12 @@ configuration.parameters.event_name=st{get(handles.event_listbox,'Value')};
 configuration.parameters.x_start=str2num(get(handles.x_start_edit,'String'));
 %x_end
 configuration.parameters.x_end=str2num(get(handles.x_end_edit,'String'));
+%yaxis
+if get(handles.yaxis_chk,'Value')==1;
+    configuration.parameters.yaxis='log10';
+else
+    configuration.parameters.yaxis='linear';
+end;
 %!!!
 %END
 %!!!
@@ -506,3 +518,12 @@ function x_end_edit_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in yaxis_chk.
+function yaxis_chk_Callback(hObject, eventdata, handles)
+% hObject    handle to yaxis_chk (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of yaxis_chk
