@@ -89,9 +89,26 @@ fullURL=['https://github.com/NOCIONS/letswave6/archive/master.zip'];
 st=which('letswave6.m');
 [p n e]=fileparts(st);
 filename=[p filesep 'letswave6.zip'];
-urlwrite(fullURL,filename);
+try
+    urlwrite(fullURL,filename);
+catch
+    disp('Failed to download from server.');
+end;
 set(handles.current_text,'String','File downloaded. Updating Letswave...');
-unzip(filename,p);
+filenames=unzip(filename,p);
+filenames2=strrep(filenames,[filesep 'letswave6-master'],'');
+for filepos=1:length(filenames);
+    try
+        [SUCCESS,MESSAGE,MESSAGEID]=copyfile(filenames{filepos},filenames2{filepos});
+        if SUCCESS==0;
+            disp(['Could not update : ' filenames2{filepos}]);
+        end;
+    catch
+        disp(['Could not update : ' filenames2{filepos}]);
+    end;
+end;
+rmdir([p filesep 'letswave6-master'],'s');
+delete([p filesep 'letswave6.zip']);
 set(handles.current_text,'String','Finished installing.');
 
 
