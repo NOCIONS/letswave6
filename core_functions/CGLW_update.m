@@ -96,7 +96,15 @@ catch
 end;
 set(handles.current_text,'String','File downloaded. Updating Letswave...');
 filenames=unzip(filename,p);
-filenames2=strrep(filenames,[filesep 'letswave6-master'],'');
+filenames2=filenames;
+st2=[filesep 'letswave6-master'];
+st2_length=length(st2);
+for filepos=1:length(filenames);
+    st=filenames{filepos};
+    a=strfind(st,st2);
+    st(a(end):a(end)+st2_length-1)=[];
+    filenames2{filepos}=st;
+end;
 for filepos=1:length(filenames);
     try
         [SUCCESS,MESSAGE,MESSAGEID]=copyfile(filenames{filepos},filenames2{filepos});
