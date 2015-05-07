@@ -38,7 +38,7 @@ if length(events)>1;
     idx=find(event_index==0);
     if isempty(idx);
     else
-        message_string{end+1}=['Deleting ' num2str(length(idx)) ' duplicate events.'];
+        disp(['Deleting ' num2str(length(idx)) ' duplicate events.']);
         idx=find(event_index==1);
         events=events(idx);
     end;
@@ -61,7 +61,7 @@ if length(events)>1;
     if isempty(idx);
     else
         idx=unique(idx);
-        message_string{end+1}=['Deleting ' num2str(length(idx)) ' invalid events.'];
+        disp(['Deleting ' num2str(length(idx)) ' invalid events.']);
         events(idx)=[];
     end;
     header.events=events;
