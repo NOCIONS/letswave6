@@ -7,6 +7,7 @@ function [out_header,out_data,message_string]=RLW_suppress_artifact_event(header
 %'xstart' (-0.005)
 %'xend' (+0.005)
 %'event_code'
+%'interp_method' 'spline'
 %
 %
 % Author : 
@@ -23,6 +24,7 @@ function [out_header,out_data,message_string]=RLW_suppress_artifact_event(header
 xstart=-0.005
 xend=+0.005;
 event_code='';
+interp_method='spline';
 
 %parse varagin
 if isempty(varargin);
@@ -45,6 +47,12 @@ else
     else
         event_code=varargin{a+1};
     end;
+    %interp_method
+    a=find(strcmpi(varargin,'interp_method'));
+    if isempty(a);
+    else
+        interp_method=varargin{a+1};
+    end;
 end;
 
 %init message_string
@@ -61,6 +69,12 @@ message_string{end+1}=['X1 = ' num2str(xstart) ' X2 = ' num2str(xend)];
 
 %events
 events=header.events;
+
+%init xv, xi
+for epochpos=1:header.datasize(1);
+    idx(epochpos).xv=1:header.datasize(6);
+    idx(epochpos).xi=[];
+end;
 
 %loop events
 for eventpos=1:length(events);
@@ -79,24 +93,22 @@ for eventpos=1:length(events);
         %dx1,dx2
         dx1=fix((((latency+xstart)-header.xstart)/header.xstep)+1);
         dx2=fix((((latency+xend)-header.xstart)/header.xstep)+1);
-        %message_string{end+1}=['Epoch = ' num2str(epochpos)];
-        %message_string{end+1}=['DX1 = ' num2str(dx1) ' DX2 = ' num2str(dx2)];
-        %xv
-        xv=[dx1 dx2];
-        %xi
-        xi=dx1:dx2;
-        %loop
-        for chanpos=1:header.datasize(2);
-            for indexpos=1:header.datasize(3);
-                for dz=1:header.datasize(4);
-                    for dy=1:header.datasize(5);
-                        yv=squeeze(data(epochpos,chanpos,indexpos,dz,dy,[dx1 dx2]));
-                        yi=interp1(xv,yv,xi);
-                        out_data(epochpos,chanpos,indexpos,dz,dy,dx1:dx2)=yi;
-                    end;
+        idx(epochpos).xi=[idx(epochpos).xi dx1:dx2];
+    end;
+end;
+
+for epochpos=1:header.datasize(1);
+    idx(epochpos).xv(idx(epochpos).xi)=[];
+    for chanpos=1:header.datasize(2);
+        for indexpos=1:header.datasize(3);
+            for dz=1:header.datasize(4);
+                for dy=1:header.datasize(5);                        
+                    out_data(epochpos,chanpos,indexpos,dz,dy,:)=interp1(idx(epochpos).xv,squeeze(out_data(epochpos,chanpos,indexpos,dz,dy,idx(epochpos).xv)),1:header.datasize(6),interp_method);
                 end;
             end;
         end;
     end;
 end;
+
+
 

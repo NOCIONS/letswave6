@@ -112,6 +112,13 @@ end;
 %xstart,xend
 set(handles.xstart_edit,'String',num2str(configuration.parameters.xstart));
 set(handles.xend_edit,'String',num2str(configuration.parameters.xend));
+%interp_method
+st=get(handles.interp_method_popup,'String');
+a=strcmpi(st,configuration.parameters.interp_method);
+if isempty(a);
+else
+    set(handles.interp_method_popup,'Value',a(1));
+end;
 %!!!
 %END
 %!!!
@@ -175,6 +182,8 @@ st=get(handles.event_code_popup,'String');
 configuration.parameters.event_code=st{get(handles.event_code_popup,'Value')};
 configuration.parameters.xstart=str2num(get(handles.xstart_edit,'String'));
 configuration.parameters.xend=str2num(get(handles.xend_edit,'String'));
+st=get(handles.interp_method_popup,'String');
+configuration.parameters.interp_method=st{get(handles.interp_method_popup,'Value')};
 %!!!
 %END
 %!!!
@@ -261,6 +270,29 @@ function event_code_popup_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to event_code_popup (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on selection change in interp_method_popup.
+function interp_method_popup_Callback(hObject, eventdata, handles)
+% hObject    handle to interp_method_popup (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns interp_method_popup contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from interp_method_popup
+
+
+% --- Executes during object creation, after setting all properties.
+function interp_method_popup_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to interp_method_popup (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end

@@ -66,6 +66,7 @@ switch operation
         out_configuration.parameters.xstart=-0.005;
         out_configuration.parameters.xend=+0.005;
         out_configuration.parameters.event_code=[];
+        out_configuration.parameters.interp_method='spline';
         %datasets
         out_datasets=datasets;
         
@@ -78,7 +79,7 @@ switch operation
         %datasets
         for setpos=1:length(datasets);
             %process
-            [out_datasets(setpos).header,out_datasets(setpos).data,message_string]=RLW_suppress_artifact_event(datasets(setpos).header,datasets(setpos).data,'event_code',configuration.parameters.event_code,'xstart',configuration.parameters.xstart,'xend',configuration.parameters.xend);
+            [out_datasets(setpos).header,out_datasets(setpos).data,message_string]=RLW_suppress_artifact_event(datasets(setpos).header,datasets(setpos).data,'event_code',configuration.parameters.event_code,'xstart',configuration.parameters.xstart,'xend',configuration.parameters.xend,'interp_method',configuration.parameters.interp_method);
             %message_string
             if isempty(update_pointers);
             else

@@ -80,9 +80,12 @@ switch operation
             else
                 out_datasets(setpos).header.history(end+1).configuration=configuration;
             end;
+            %update header.name
+            if strcmpi(configuration.gui_info.process_overwrite,'no');
+                out_datasets(setpos).header.name=[configuration.gui_info.process_filename_string ' ' out_datasets(setpos).header.name];
+            end;
         end;
         if isempty(update_pointers) else update_pointers.function(update_pointers.handles,'Finished.',0,1); end;
-
         
     case 'configure'
         %configuration
