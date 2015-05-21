@@ -33,6 +33,22 @@ out_data=data(epoch_idx,:,:,:,:,:);
 %change number of channels
 out_header.datasize=size(out_data);
 
+%fix events
+if isfield(out_header,'events');
+    events_to_delete=[];
+    events=out_header.events;
+    for i=1:length(events);
+        a=find(epoch_idx==events(i).epoch);
+        if isempty(a);
+            events_to_delete(end+1)=i;
+        else
+            events(i).epoch=a(1);
+        end;
+    end;
+    events(events_to_delete)=[];
+    out_header.events=events;
+end;
+
 
 
 
