@@ -795,22 +795,20 @@ end;
 % --- Executes on button press in sendworkspace_btn.
 function sendworkspace_btn_Callback(hObject, eventdata, handles)
 inputfiles=getfiles(handles);
-if length(inputfiles)>1;
-    disp('!!! Cannot send more than one datafile to the workspace');
-else
+for i=1:length(inputfiles);
     %load header
-    disp(['Loading header : ' inputfiles{1}]);
-    load(inputfiles{1},'-mat');
+    disp(['Loading header : ' inputfiles{i}]);
+    load(inputfiles{i},'-mat');
     %load data
-    [p,n,e]=fileparts(inputfiles{1});
+    [p,n,e]=fileparts(inputfiles{i});
     st=[p filesep n '.mat'];
     disp(['Load data : ' st]);
     load(st,'-mat');
-    lwdata.data=data;
-    lwdata.header=header;
-    disp('Sending to workspace : lwdata');
-    assignin('base','lwdata',lwdata);
+    lwdata(i).data=data;
+    lwdata(i).header=header;
 end;
+disp('Sending to workspace : lwdata');
+assignin('base','lwdata',lwdata);
 
 
 
