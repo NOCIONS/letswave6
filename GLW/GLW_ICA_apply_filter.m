@@ -100,7 +100,7 @@ else
             case 'LW_ICA_compute';
                 ICA_um=history(j).configuration.parameters.ICA_um;
                 ICA_mm=history(j).configuration.parameters.ICA_mm;
-            case 'LW_ICA_assign'
+            case 'LW_ICA_assign_matrix'
                 ICA_um=history(j).configuration.parameters.ICA_um;
                 ICA_mm=history(j).configuration.parameters.ICA_mm;
             case 'LW_ICA_compute_merged'
