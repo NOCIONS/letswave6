@@ -235,8 +235,12 @@ configuration.parameters.segment_data=get(handles.segment_data_chk,'Value');
 configuration.parameters.x_start=str2num(get(handles.x_start_edit,'String'));
 configuration.parameters.x_end=str2num(get(handles.x_end_edit,'String'));
 %event_name
+event_name=[];
 st=get(handles.event_listbox,'String');
-event_name=st{get(handles.event_listbox,'Value')};
+if isempty(st);
+else
+    event_name=st{get(handles.event_listbox,'Value')};
+end;
 configuration.parameters.event_name=event_name;
 %
 %!!!
