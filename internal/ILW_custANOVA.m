@@ -100,7 +100,7 @@ if isempty(within_levels);
     outdataset_pvalue.header=header;
     outdataset_pvalue.header.datasize=size(outdataset_pvalue.data);
     for i=2:size(result_T,1)-2;
-        outdataset_pvalue.indexlabels{i-1}=result_T{i,1};
+        outdataset_pvalue.index_labels{i-1}=result_T{i,1};
     end;
     outdataset_Fvalue.header=outdataset_pvalue.header;
 else
@@ -141,7 +141,7 @@ else
     outdataset_pvalue.header.datasize=size(outdataset_pvalue.data);
     result=anovaNxM(rand(length(tpsubjects),1),tpsubjects,wtfactors,wtfactornames,btfactors,btfactornames);
     for i=1:length(result.eff);
-        outdataset_pvalue.header.indexlabels{i}=result.eff(i).Name;
+        outdataset_pvalue.header.index_labels{i}=result.eff(i).Name;
     end;
     outdataset_Fvalue.header=outdataset_pvalue.header;
     toc;

@@ -184,8 +184,8 @@ else
     for i=1:length(wavedata);
         datasetpos=wavedata(i).datasetpos;
         header=datasets(datasetpos).header;
-        if isfield(header,'indexlabels');
-            st{i}=[datasetstring{datasetpos} ' E:' num2str(wavedata(i).epochpos) ' C:' header.chanlocs(wavedata(i).channelpos).labels ' I:' header.indexlabels{wavedata(i).indexpos}];
+        if isfield(header,'index_labels');
+            st{i}=[datasetstring{datasetpos} ' E:' num2str(wavedata(i).epochpos) ' C:' header.chanlocs(wavedata(i).channelpos).labels ' I:' header.index_labels{wavedata(i).indexpos}];
         else
             st{i}=[datasetstring{datasetpos} ' E:' num2str(wavedata(i).epochpos) ' C:' header.chanlocs(wavedata(i).channelpos).labels ' I:' num2str(wavedata(i).indexpos)];
         end;
