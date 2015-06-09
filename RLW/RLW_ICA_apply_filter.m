@@ -33,8 +33,7 @@ out_data=data;
 
 %selected ICs?
 if isempty(IC_list);
-    message_string{1}='No ICs selected. Exit.';
-    return;
+    message_string{1}='No ICs selected.';
 else
     message_string{1}=['Selected ICs : ',num2str(IC_list)];
 end;
@@ -45,11 +44,14 @@ removeICs(IC_list)=[];
 ICA_mm(:,removeICs)=0;
 
 %loop through epochs
-for epochpos=1:header.datasize(1);
-    %unmix & remix
-    out_data(epochpos,:,1,1,1,:)=ICA_mm*(ICA_um*(squeeze(data(epochpos,:,1,1,1,:))));
+if isempty(IC_list);
+    out_data=data*0;
+else
+    for epochpos=1:header.datasize(1);
+        %unmix & remix
+        out_data(epochpos,:,1,1,1,:)=ICA_mm*(ICA_um*(squeeze(data(epochpos,:,1,1,1,:))));
+    end;
 end;
-
 
 
 

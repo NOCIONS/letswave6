@@ -58,35 +58,35 @@ guidata(hObject, handles);
 % UIWAIT makes letswave_GUI_options wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 %load configuration > config
-load letswave.mat
-set(handles.save_btn,'Userdata',config);
+load letswave_config.mat
+set(handles.save_btn,'Userdata',letswave_config);
 %font list
 t=listfonts;
 set(handles.font_popup,'String',t);
 %find font in list
-a=find(strcmpi(t,config.FontName)==1);
+a=find(strcmpi(t,letswave_config.FontName)==1);
 if isempty(a);
 else
     set(handles.font_popup,'Value',a(1));
 end;
 %FontSize
-set(handles.FontSize_edit,'String',num2str(config.FontSize));
+set(handles.FontSize_edit,'String',num2str(letswave_config.FontSize));
 %FontUnits
 st=get(handles.FontUnits_popup,'String');
-a=find(strcmpi(st,config.FontUnits));
+a=find(strcmpi(st,letswave_config.FontUnits));
 if isempty(a);
 else
     set(handles.FontUnits_popup,'Value',a(1));
 end;
 %proportional
-set(handles.proportional_chk,'Value',config.proportional);
+set(handles.proportional_chk,'Value',letswave_config.proportional);
 %size
-if config.proportional==1;
+if letswave_config.proportional==1;
     set(handles.size_edit,'Enable','on');
 else
     set(handles.size_edit,'Enable','off');
 end;
-set(handles.size_edit,'String',num2str(config.size));
+set(handles.size_edit,'String',num2str(letswave_config.size));
 
 
 
@@ -128,16 +128,16 @@ function save_btn_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 %config
-config=get(handles.save_btn,'Userdata');
+letswave_config=get(handles.save_btn,'Userdata');
 st=get(handles.font_popup,'String');
-config.FontName=st{get(handles.font_popup,'Value')};
-config.FontSize=str2num(get(handles.FontSize_edit,'String'));
+letswave_config.FontName=st{get(handles.font_popup,'Value')};
+letswave_config.FontSize=str2num(get(handles.FontSize_edit,'String'));
 st=get(handles.FontUnits_popup,'String');
-config.FontUnits=st{get(handles.FontUnits_popup,'Value')};
-config.proportional=get(handles.proportional_chk,'Value');
-config.size=str2num(get(handles.size_edit,'String'));
-a=which('letswave.mat');
-save(a,'config');
+letswave_config.FontUnits=st{get(handles.FontUnits_popup,'Value')};
+letswave_config.proportional=get(handles.proportional_chk,'Value');
+letswave_config.size=str2num(get(handles.size_edit,'String'));
+a=which('letswave_config.mat');
+save(a,'letswave_config');
 
 
 
