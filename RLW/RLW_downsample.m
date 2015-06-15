@@ -56,9 +56,9 @@ message_string{3}=['Z downsampling ratio : ' num2str(z_downsample_ratio)];
 out_header=header;
 
 %adjust xstep,ystep,zstep
-header.xstep=header.xstep*x_downsample_ratio;
-header.ystep=header.ystep*y_downsample_ratio;
-header.zstep=header.zstep*z_downsample_ratio;
+out_header.xstep=header.xstep*x_downsample_ratio;
+out_header.ystep=header.ystep*y_downsample_ratio;
+out_header.zstep=header.zstep*z_downsample_ratio;
 
 %set xvector,yvector,zvector
 zvector=1:z_downsample_ratio:header.datasize(4);
