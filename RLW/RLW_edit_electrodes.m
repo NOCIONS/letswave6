@@ -1,4 +1,4 @@
-function [out_header,message_string]=RLW_edit_electrodes_SEEG(header,chanlocs);
+function [out_header,message_string]=RLW_edit_electrodes(header,chanlocs);
 %RLW_edit_electrodes
 %
 %Edit electrodes
