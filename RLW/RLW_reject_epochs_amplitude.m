@@ -113,6 +113,12 @@ else
     else
         select_channels=varargin{a+1};
     end;
+    %selected_channel_labels
+    a=find(strcmpi(varargin,'selected_channel_labels'));
+    if isempty(a);
+    else
+        selected_channel_labels=varargin{a+1};
+    end;
 end;
 
 %init message_string
