@@ -125,14 +125,24 @@ else
                         tp_mm=history(j).configuration.parameters.ICA_mm;
                 end;
             end;
+            if size(tp_um)==size(ICA_um);
+            else
+                disp('ERROR : the datasets have non matching matrix sizes!');
+                return;
+            end;
+            if size(tp_mm)==size(ICA_mm);
+            else
+                disp('ERROR : the datasets have non matching matrix sizes!');
+                return;
+            end;
             if tp_um==ICA_um;
             else
-                disp('ERROR : the datasets do not have matching unmixing matrices');
+                disp('ERROR : the datasets have non identical matrices!');
                 return;
             end;
             if tp_mm==ICA_mm;
             else
-                disp('ERROR : the datasets to not have matching mixing matrices!');
+                disp('ERROR : the datasets have non identical matrices!');
                 return;
             end;
         end;
