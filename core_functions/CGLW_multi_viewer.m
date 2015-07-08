@@ -823,6 +823,9 @@ epoch_labels=st(output.selected_epochs);
 st=get(handles.channel_listbox,'String');
 channel_labels=st(output.selected_channels);
 %loop through datasets
+k=1;
+%reset table_data
+table_data={};
 for datasetpos=1:length(output.selected_datasets);
     %header
     header=datasets_header(output.selected_datasets(datasetpos)).header;
@@ -842,10 +845,7 @@ for datasetpos=1:length(output.selected_datasets);
     [a,dx1]=min(abs(squeeze(output.tpdata_x(datasetpos,1,1,:))-x1));
     %dx2
     [a,dx2]=min(abs(squeeze(output.tpdata_x(datasetpos,1,1,:))-x2));
-    %reset table_data
-    table_data={};
     %loop through epochs
-    k=1;
     for epochpos=1:length(output.selected_epochs);
         %loop through channels
         for chanpos=1:length(output.selected_channels);
