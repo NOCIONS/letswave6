@@ -7,7 +7,7 @@ function [out_header,out_data,message_string]=RLW_butterworth_filter(header,data
 %'filter_type' : 'bandpass','lowpass','highpass','notch'
 %'low_cutoff' : 0.5
 %'high_cutoff' : 30
-%'filter_order' : 2
+%'filter_order' : 4
 %
 % Author : 
 % Andre Mouraux
@@ -23,7 +23,7 @@ function [out_header,out_data,message_string]=RLW_butterworth_filter(header,data
 filter_type='bandpass';
 low_cutoff=0.5;
 high_cutoff=30;
-filter_order=2;
+filter_order=4;
 
 %parse varagin
 if isempty(varargin);
@@ -70,13 +70,6 @@ fnyquist=Fs/2;
 
 %filter order : filtOrder
 filtOrder=filter_order;
-if mod(filter_order,2);
-    message_string{end+1}='Warning : even number of filter order is needed.';
-    message_string{end+1}=['Converting order from ' num2str(filtOrder) ' to ' num2str(filtOrder-1) '.'];
-    filtOrder=filtOrder-1;
-    filter_order=filtOrder;
-end
-filtOrder=filtOrder/2;
 
 %b,a
 switch filter_type

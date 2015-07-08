@@ -65,7 +65,7 @@ switch operation
         out_configuration.parameters.filter_type='bandpass'; %'bandpass','lowpass','highpass','notch'
         out_configuration.parameters.low_cutoff=0.5;
         out_configuration.parameters.high_cutoff=30;
-        out_configuration.parameters.filter_order=2;
+        out_configuration.parameters.filter_order=4;
         %datasets
         out_datasets=datasets;
         
