@@ -855,6 +855,8 @@ for datasetpos=1:length(output.selected_datasets);
             %min
             [ymin,dx]=min(squeeze(output.tpdata_y(datasetpos,epochpos,chanpos,dx1:dx2)));
             xmin=output.tpdata_x(datasetpos,epochpos,chanpos,(dx-1)+dx1);
+            %mean
+            xmean=mean(squeeze(output.tpdata_y(datasetpos,epochpos,chanpos,dx1:dx2)));
             %x1,y1
             y1=output.tpdata_y(datasetpos,epochpos,chanpos,dx1);
             %x2,y2
@@ -867,10 +869,11 @@ for datasetpos=1:length(output.selected_datasets);
             table_data{k,5}=num2str(ymax);
             table_data{k,6}=num2str(xmin);
             table_data{k,7}=num2str(ymin);
-            table_data{k,8}=num2str(x1);
-            table_data{k,9}=num2str(y1);
-            table_data{k,10}=num2str(x2);
-            table_data{k,11}=num2str(y2);
+            table_data{k,8}=num2str(xmean);
+            table_data{k,9}=num2str(x1);
+            table_data{k,10}=num2str(y1);
+            table_data{k,11}=num2str(x2);
+            table_data{k,12}=num2str(y2);
             k=k+1;
         end;
     end;
@@ -882,10 +885,11 @@ col_headers{4}='xmax';
 col_headers{5}='ymax';
 col_headers{6}='xmin';
 col_headers{7}='ymin';
-col_headers{8}='x1';
-col_headers{9}='y1';
-col_headers{10}='x2';
-col_headers{11}='y2';
+col_headers{8}='ymean';
+col_headers{9}='x1';
+col_headers{10}='y1';
+col_headers{11}='x2';
+col_headers{12}='y2';
 h=figure;
 uitable(h,'Data',table_data,'ColumnName',col_headers,'Units','normalized','Position', [0 0 1 1]);
 
