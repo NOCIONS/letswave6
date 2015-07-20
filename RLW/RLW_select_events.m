@@ -155,28 +155,21 @@ out_data=data(ok_idx,:,:,:,:,:);
 %adjust number of epochs
 out_header.datasize(1)=length(ok_idx);
 
-%adjust events
-if isfield(header,'events');
-    if isempty(header.events);
-    else
-        for i=1:length(header.events);
-            event_epoch_idx(i)=header.events(i).epoch;
+%fix events
+if isfield(out_header,'events');
+    events_to_delete=[];
+    events=out_header.events;
+    for i=1:length(events);
+        a=find(ok_idx==events(i).epoch);
+        if isempty(a);
+            events_to_delete(end+1)=i;
+        else
+            events(i).epoch=a(1);
         end;
-        new_events=[];
-        for i=1:length(ok_idx);
-            a=find(event_epoch_idx==ok_idx(i));
-            if isempty(a);
-            else
-                tp=header.events(a);
-                for i=1:length(tp);
-                    tp(i).epoch=i;
-                end;
-                new_events=[new_events tp];
-            end;
-        end;
-        out_header.events=new_events;
     end;
-end;
+    events(events_to_delete)=[];
+    out_header.events=events;
+end
 
 %adjust epoch_data
 if isfield(header,'epochdata');
