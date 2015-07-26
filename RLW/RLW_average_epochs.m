@@ -58,9 +58,6 @@ if isfield(out_header,'events');
     end;
 end;
 
-%delete duplicate events
-out_header=RLW_events_delete_duplicate(out_header);
-
 %delete epochdata
 if isfield(out_header,'epochdata');
     rmfield(out_header,'epochdata');

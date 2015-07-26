@@ -65,13 +65,13 @@ end;
 header=datasets(1).header;
 %fill event_listbox
 event_string=search_events(handles,header);
-if isempty(event_string);
-    return;
-end;
 set(handles.event_listbox,'String',event_string);
 %event_table
-event_string=get(handles.event_listbox,'String');
-event_string=event_string{get(handles.event_listbox,'Value')};
+if isempty(event_string);
+else
+    event_string=get(handles.event_listbox,'String');
+    event_string=event_string{get(handles.event_listbox,'Value')};
+end;
 table=make_table(handles,header,event_string);
 set(handles.event_table,'Data',table);
 %datasets
@@ -243,7 +243,11 @@ disp(['Event table sent to : ' varname]);
 %datasets
 datasets=get(handles.event_listbox,'Userdata');
 %events
-events=datasets(1).header.events;
+if isfield(datasets(1).header,'events');
+    events=datasets(1).header.events;
+else
+    events=[];
+end;
 %convert events structure to matrix
 tp={};
 for i=1:length(events);

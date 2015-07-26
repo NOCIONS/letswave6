@@ -15,17 +15,17 @@ end;
 %!!!!!!
 %check header consistency
 %check for duplicate events
+%check for duplicate events
 if isfield(header,'events');
     events=header.events;
     %loop through events
     if length(events)>1;
         event_index=[];
-        for eventpos=1:length(events);
+        for eventpos=2:length(events);
             current_code=events(eventpos).code;
             current_latency=events(eventpos).latency;
             current_epoch=events(eventpos).epoch;
-            event_list=1:length(events);
-            event_list(eventpos)=[];
+            event_list=1:eventpos-1;
             for eventpos2=1:length(event_list);
                 if strcmpi(events(event_list(eventpos2)).code,current_code);
                     if events(event_list(eventpos2)).epoch==current_epoch;
