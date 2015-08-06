@@ -131,7 +131,7 @@ header.zstart=0;
 header.xstep=1/sampling_rate;
 header.ystep=1;
 header.zstep=1;
-message_string{end+1}=['Number of epochs found : ' num2str(header.datasize(1))],1,0)];
+message_string{end+1}=['Number of epochs found : ' num2str(header.datasize(1))];
 %set chanlocs
 %dummy chanloc
 chanloc.labels='';
