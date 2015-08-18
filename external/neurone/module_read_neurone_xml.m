@@ -1,10 +1,15 @@
 function xmlStruct = module_read_neurone_xml(xmlfile)
 %MODULE_READ_NEURONE_XML   Read NeurOne XML-files into structures.
 %
-%  Input  : A NeurOne XML file (e.g. Session.xml, Protocol.xml)
+%  Version 1.1.3.8 (2014-12-04)
+%  See version_history.txt for details.
+%
+%  Input  : A NeurOne XML file (e.g. Session.xml, Protocol.xml,
+%           Triggers.xml)
 %  Output : A structure with the information from the XML-file.
 %  Example: Session  = read_neurone_xml('/data/Session.xml');
 %           Protocol = read_neurone_xml('/data/Protocol.xml');
+%           Triggers = read_neurone_xml('/data/Triggers.xml');
 %
 %  Dependencies: none
 %
@@ -17,11 +22,8 @@ function xmlStruct = module_read_neurone_xml(xmlfile)
 %  ========================================================================
 %  COPYRIGHT NOTICE
 %  ========================================================================
-%  Copyright 2009 - 2012
-%  Andreas Henelius (andreas.henelius@ttl.fi)
+%  Copyright 2009, 2010 Andreas Henelius (andreas.henelius@ttl.fi)
 %  Finnish Institute of Occupational Health (http://www.ttl.fi/)
-%  and
-%  Mega Electronics Ltd (mega@megaemg.com, http://www.megaemg.com)
 %  ========================================================================
 %  This file is part of NeurOne Tools for Matlab.
 % 
@@ -39,8 +41,6 @@ function xmlStruct = module_read_neurone_xml(xmlfile)
 %  along with NeurOne Tools for Matlab.
 %  If not, see <http://www.gnu.org/licenses/>.
 %  =======================================================================
-%  Version 1.1.3.5 (2012-11-30)
-%  See version_history.txt for details.
 
 %% Read XML-data using the builtin xmlread-function and get all child nodes
 % of the root XML-element.
@@ -99,6 +99,10 @@ xmlStruct = walkNodes(children, 0, {});
         for n=0:childNodes.getLength-1
             childNode = childNodes.item(n) ;
             nodeName = char(childNode.getNodeName);
+            % Also skip comment nodes
+            if (strcmpi(nodeName,'#comment'))
+                continue;
+            end
             % Skip "empty" nodes (#text)
             if ~strcmpi(nodeName,'#text') && isempty(strfind(nodeName,':'))
                 % If the node has children (i.e. the element has a value),

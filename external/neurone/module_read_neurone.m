@@ -1,12 +1,19 @@
 function recording = module_read_neurone(basePath, varargin)
-%MODULE_READ_NEURONE   Read data from a Mega NeurOne device.
+%MODULE_READ_NEURONE   Read data from a NeurOne file format.
+%
+%  Version 1.1.3.8 (2014-12-04)
+%  See version_history.txt for details.
 %
 %  Input  : Path to directory containing NeurOne data files from one
 %           measurement.
+% 
 %  Variable input arguments:
-%         : headerOnly <to be implemented>
-%         : sessionPhaseNumber : specifies which session phase to be read,
+%         : sessionPhaseNumber : Specifies which session phase to be read,
 %           if multiple sessions are present within the same
+%         : headerOnly         : Reads only xml files, not binaries.
+%         : offset     		   : <not implemented>.
+%         : dataLength 		   : <not implemented>.
+%         : channels   		   : Cell array of channel names to load.
 %
 %  Output : A structure with all numerical data and all data from the
 %           XML-files describing the experimental setup.
@@ -29,7 +36,7 @@ function recording = module_read_neurone(basePath, varargin)
 %  ========================================================================
 %  COPYRIGHT NOTICE
 %  ========================================================================
-%  Copyright 2009 - 2012
+%  Copyright 2009 - 2013
 %  Andreas Henelius (andreas.henelius@ttl.fi)
 %  Finnish Institute of Occupational Health (http://www.ttl.fi/)
 %  and
@@ -51,8 +58,6 @@ function recording = module_read_neurone(basePath, varargin)
 %  along with NeurOne Tools for Matlab.
 %  If not, see <http://www.gnu.org/licenses/>.
 %  ========================================================================
-%  Version 1.1.3.5 (2012-11-30)
-%  See version_history.txt for details.
 
 %% Define Constants
 SESSIONFILE          = 'Session.xml';
@@ -67,7 +72,7 @@ p.addOptional('sessionPhaseNumber', 1 ,@isnumeric);
 p.addOptional('headerOnly', false, @islogical);
 p.addOptional('offset', 0, @isnumeric);
 p.addOptional('dataLength', -1 ,@isnumeric);
-p.addOptional('channel', {}, @iscellstr);
+p.addOptional('channels', {}, @iscellstr);
 
 p.parse(basePath, varargin{:});
 Arg = p.Results;
@@ -88,7 +93,7 @@ recording = {};
 % Read Session from XML-file, to get number of files in session etc
 recording.Session =  module_read_neurone_xml([basePath SESSIONFILE]);
 if (str2double(recording.Session.TableInfo.Revision) > 1)
-    warning(strcat('Warning: This reader does not support the revision of Session.xml (Version ', ...
+    warning(strcat('This reader does not support the revision of Session.xml (', ...
         num2str(recording.Session.TableInfo.Revision), ...
         '). Please contact mega@megaemg.com for an update.'))
 end
@@ -96,14 +101,10 @@ end
 % Read Protocol from XML-file, to get channel names etc
 recording.Protocol = module_read_neurone_xml([basePath PROTOCOLFILE]);
 if (str2double(recording.Protocol.TableInfo.Revision) > 4)
-    warning(strcat('Warning: This reader does not support the revision of Protocol.xml (Version ', ...
+    warning(strcat('This reader does not support the revision of Protocol.xml (', ...
         num2str(recording.Protocol.TableInfo.Revision), ...
         '). Please contact mega@megaemg.com for an update.'))
 end
-
-% Number of sessions in recording
-nSessionPhases = numel(recording.Session.TableSessionPhase);
-disp(['Number of sessions: ' num2str(nSessionPhases)])
 
 %% For each session, binary data files are stored in separate folders inside
 % the main recording folder for each phase during the session.
@@ -116,12 +117,21 @@ disp(['Number of sessions: ' num2str(nSessionPhases)])
 % Currently only support reading of first (or explicitly named) session
 % (sessionPhase), otherwise we would need to return multiple recordings.
 
+% Number of sessions in recording
+nSessionPhases = numel(recording.Session.TableSessionPhase);
+
 if Arg.sessionPhaseNumber > nSessionPhases
-    disp 'Given sessionPhaseNumber exceeds total number of session phases.'
+    warning('Given sessionPhaseNumber exceeds total number of session phases.')
     disp 'Defaulting to first sessionPhase.'
     sessionPhaseNumber = 1;
 else
     sessionPhaseNumber = Arg.sessionPhaseNumber;
+end
+
+if ~(Arg.headerOnly)
+    disp(['Session ' num2str(sessionPhaseNumber) '/' num2str(nSessionPhases)])
+else
+    disp(['Number of sessions: ' num2str(nSessionPhases)])
 end
 
 sessionDataFiles = {};
@@ -138,7 +148,6 @@ for j=1:numel(sessionFiles);
     end
 end
 
-
 %% Organise data into recording structure, using channel names etc
 % Set a shorthand for protocol
 protocol = recording.Protocol;
@@ -150,17 +159,38 @@ samplingRate = str2double(protocol.TableProtocol.ActualSamplingFrequency);
 channelCount = numel(protocol.TableInput);
 
 if ~(Arg.headerOnly)
-    %% Read NeurOne binary data
-    data = module_read_neurone_data(sessionDataFiles, channelCount, samplingRate);
+    
+    % Show measurement size. The .bin file is int32, but matlab uses double.
+    fileSize = 0;
+    for fileIndex = 1:numel(sessionDataFiles)
+        temp = dir(sessionDataFiles{fileIndex});
+        fileSize = fileSize + temp.bytes;
+    end
+    memInfo = memory;
+    formatSpec = 'Measurement size: %.1f MB.\n';
+    fprintf(formatSpec, fileSize * 2 / (1024^2));
     
     %% Organise input and channel data
     %  The fields in channelLayout are used to get the data in the correct
-    %  order from the data structure. The data apppears multiplexed, but
+    %  order from the data structure. The data appears multiplexed, but
     %  organised according to increasing inputNumber. The fields in
     %  channelLayout are organised with increasing inputNumber.
     
     [inputData, channelLayout] = organiseData(protocol.TableInput);
-    channels = fieldnames(inputData);
+    
+    % if channels argument is supplied, form channel indexes based on
+    % channel names
+    channelInds = findChannelIndices(Arg.channels, channelLayout);
+	
+    %% Read NeurOne binary data
+    data = module_read_neurone_data(sessionDataFiles, channelCount, ...
+        samplingRate, memInfo.MaxPossibleArrayBytes, 'channels', channelInds);
+    
+    % discard metadata for channels we're not interested in
+    if (~isempty(channelInds))
+       channelCount = length(channelInds);
+       channelLayout = channelLayout(channelInds);
+    end
     
     for n=1:channelCount
         channelName = channelLayout(n).name;
@@ -207,10 +237,6 @@ timeTmp = datenum(recording.Session.TableSession.StartDateTime(1:end-6),'yyyy-mm
 recording.properties.start.time     = datestr(timeTmp,'yyyymmddTHHMMSS');
 recording.properties.start.unixTime = (timeTmp - datenum(1970,1,1,0,0,0))*24*60*60;
 
-
-% Store offset information
-recording.properties.offset = Arg.offset;
-
 % Store sampling rate
 recording.properties.samplingRate = samplingRate;
 
@@ -247,6 +273,38 @@ recording.identifier = 'N/A';
         % Sort channels according to input Number number
         [tmp, order] = sort([channelLayout(:).inputNumber]);
         channelLayout = channelLayout(order);
+    end
+
+
+    % returns channel indices matching given channel names
+    function [channelInds] = findChannelIndices(chNames, chLayout)
+        if (isempty(chNames))
+            channelInds = [];
+            return;
+        end
+        
+        chCount = size(chLayout, 2);
+        
+        % channel names who aren't found will have zero index
+        channelInds = zeros(length(chNames), 1);
+        
+        for i=1:length(channelInds)
+            for c=1:chCount
+                if (strcmp(chNames{i}, chLayout(c).name) == 1)
+                    channelInds(i) = c;
+                    break;
+                end
+            end
+            
+            if (channelInds(i) == 0)
+                warning('Channel "%s" not found', chNames{i});
+            end
+        end
+        
+        % drop channels whose indices couldn't be found
+        channelInds = channelInds(find(channelInds > 0));
+        % sort indices in ascending order
+        channelInds = sort(channelInds);
     end
 
 end % end of module_read_neurone.m

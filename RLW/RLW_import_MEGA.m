@@ -27,10 +27,10 @@ recording=module_read_neurone(input_folder,session_number);
 %prepare header
 message_string{end+1}='Generating header.';
 out_header.filetype='time_amplitude';
-out_header.name=input_folder;
+out_header.name=[input_folder,'_',session_number];
 out_header.tags={};
 out_header.history(1).configuration=[];
-out_header.datasize=[1 length(recording.signalTypes) 1 1 1 recording.properties.length*recording.properties.samplingRate];
+out_header.datasize=double([1 length(recording.signalTypes) 1 1 1 recording.properties.length*recording.properties.samplingRate]);
 out_header.xstart=1/recording.properties.samplingRate;
 out_header.ystart=0;
 out_header.zstart=0;
