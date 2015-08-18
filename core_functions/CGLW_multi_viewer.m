@@ -446,7 +446,7 @@ for datasetpos=1:length(tdata);
     %header
     header=datasets_header(selected_datasets(datasetpos)).header;
     %tpx
-    tpx=1:1:header.datasize(6);
+    tpx=1:1:double(header.datasize(6));
     tpx=((tpx-1)*header.xstep)+header.xstart;
     for epochpos=1:length(selected_epochs);
         for chanpos=1:length(channel_idx);
