@@ -327,7 +327,7 @@ for wavepos=1:length(wavedata);
         end;
         dxlim2=length(tpx);
         if xlim2<tpx(end);
-            [a,b]=min(abs(tpx-xlimE));
+            [a,b]=min(abs(tpx-xlim2));
             dxlim2=b;
         end;
         tpx=tpx(dxlim1:dxlim2);
