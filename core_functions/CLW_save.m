@@ -20,7 +20,7 @@ if isfield(header,'events');
     events=header.events;
     %loop through events
     if length(events)>1;
-        event_index=[];
+        event_index=ones(size(events));
         for eventpos=2:length(events);
             current_code=events(eventpos).code;
             current_latency=events(eventpos).latency;
