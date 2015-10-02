@@ -69,7 +69,7 @@ within_limits=1;
 while within_limits==1;
     chunk_start=((chunk_pos-1)*chunk_interval)+chunk_onset;
     chunk_start_dx=fix((chunk_start-header.xstart)/header.xstep)+1;
-    if (chunk_start_dx+chunk_size_dx)>header.datasize(6);
+    if (chunk_start_dx+(chunk_size_dx-1))>header.datasize(6);
         %outside limits, end while
         within_limits=0;
     else

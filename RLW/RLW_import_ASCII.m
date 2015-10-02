@@ -108,17 +108,31 @@ else
 end;
 message_string{end+1}=['Number of channels : ',num2str(numchannels)];
 message_string{end+1}=['Epoch size : ',num2str(epoch_size)];
-%read epochs
-epoch_pos=1;
-while not(feof(f));
-    [tp,position]=textscan(f,'%n',epoch_size*numchannels,'Delimiter',column_delimiters,'MultipleDelimsAsOne',1);
-    if length(tp{1})==epoch_size*numchannels;
-        data(epoch_pos,:,1,1,1,:)=reshape(tp{1},numchannels,epoch_size);
-        epoch_pos=epoch_pos+1;
+
+%if epoch_size>0, then read epochs
+if epoch_size>0;
+    %read epochs
+    epoch_pos=1;
+    while not(feof(f));
+        [tp,position]=textscan(f,'%n',epoch_size*numchannels,'Delimiter',column_delimiters,'MultipleDelimsAsOne',1);
+        if length(tp{1})==epoch_size*numchannels;
+            data(epoch_pos,:,1,1,1,:)=reshape(tp{1},numchannels,epoch_size);
+            epoch_pos=epoch_pos+1;
+        else
+            fread(f,1);
+        end;
+    end;
+else
+    %if epoch_size==0, this means that it is continuous data
+    [tp,position]=textscan(f,'%n','Delimiter',column_delimiters,'MultipleDelimsAsOne',1);
+    if mod(length(tp{1}),numchannels)==0;
+        epoch_size=length(tp{1})/numchannels;
+        data(1,:,1,1,1,:)=reshape(tp{1},numchannels,epoch_size);
     else
         fread(f,1);
     end;
 end;
+
 %build header
 header.filetype='time_amplitude';
 [p,n,e]=fileparts(filename);

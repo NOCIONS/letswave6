@@ -70,7 +70,7 @@ switch operation
         out_configuration.parameters.sampling_rate=1000;
         out_configuration.parameters.xstart=-0.5;
         out_configuration.parameters.discard_characters_channel_labels='''"';
-        out_configuration.parameters.column_delimiters=' ';
+        out_configuration.parameters.column_delimiters{1}=' ';
         %datasets
         out_datasets=datasets;
         

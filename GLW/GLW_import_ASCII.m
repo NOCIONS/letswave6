@@ -103,7 +103,10 @@ set(handles.xstart_edit,'String',num2str(configuration.parameters.xstart));
 %configuration.parameters.discard_characters_channel_labels='''"';
 set(handles.discard_characters_channel_labels_edit,'String',configuration.parameters.discard_characters_channel_labels);
 %delimiter_string
-delimiterstring=' ,\t;';
+delimiterstring{1}=' ';
+delimiterstring{2}=',';
+delimiterstring{3}='\t';
+delimiterstring{4}=';';
 set(handles.column_delimiters_listbox,'Userdata',delimiterstring);
 %configuration.parameters.column_delimiters
 idx=[];
@@ -111,7 +114,7 @@ j=1;
 if isempty(configuration.parameters.column_delimiters);
 else
     for i=1:length(configuration.parameters.column_delimiters);
-        a=find(configuration.parameters.column_delimiters(i)==delimiterstring);
+        a=find([delimiterstring{:}]==configuration.parameters.column_delimiters{i});
         if isempty(a);
         else
             idx(j)=a(1);
@@ -488,4 +491,17 @@ a=uigetdir(st);
 if isempty(a);
 else
     set(handles.output_folder_edit,'String',a);
+end;
+
+
+% --- Executes on button press in continuous_chk.
+function continuous_chk_Callback(hObject, eventdata, handles)
+% hObject    handle to continuous_chk (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+if get(handles.continuous_chk,'Value')==1;
+    set(handles.epoch_size_edit,'Enable','off');
+    set(handles.epoch_size_edit,'String','0');
+else
+    set(handles.epoch_size_edit,'Enable','on');
 end;
