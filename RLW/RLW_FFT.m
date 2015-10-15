@@ -6,7 +6,7 @@ function [out_header,out_data,message_string,time_header]=RLW_FFT(header,data,va
 %varargin
 %'output' ('amplitude') %'power','amplitude','complex','phase','real','imag','special'
 %'half_spectrum' (1)
-%'normalize' (1)
+%'normalize' (1 or 2 - divide by N or N/2)
 %
 % Author : 
 % Andre Mouraux
@@ -117,8 +117,12 @@ end;
 
 %normalize?
 if normalize==1;
-    message_string{end+1}='Normalizing spectrum';
+    message_string{end+1}='Normalizing spectrum (divide by N)';
     out_data=out_data/size(out_data,6);
+end
+if normalize==2;
+    message_string{end+1}='Normalizing spectrum (divide by N/2)';
+    out_data=out_data/(size(out_data,6)/2);
 end
 
 %square? (power)

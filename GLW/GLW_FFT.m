@@ -97,7 +97,7 @@ end;
 %half_spectrum
 set(handles.half_spectrum_chk,'Value',configuration.parameters.half_spectrum);
 %normalize
-set(handles.normalize_chk,'Value',configuration.parameters.normalize);
+set(handles.normalize_popup,'Value',configuration.parameters.normalize+1);
 %!!!
 %END
 %!!!
@@ -184,7 +184,7 @@ configuration.parameters.output=st{get(handles.output_popup,'Value')};
 %half_spectrum
 configuration.parameters.half_spectrum=get(handles.half_spectrum_chk,'Value');
 %normalize
-configuration.parameters.normalize=get(handles.normalize_chk,'Value');
+configuration.parameters.normalize=get(handles.normalize_popup,'Value')-1;
 %!!!
 %END
 %!!!
@@ -265,3 +265,26 @@ function normalize_chk_Callback(hObject, eventdata, handles)
 % hObject    handle to normalize_chk (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on selection change in normalize_popup.
+function normalize_popup_Callback(hObject, eventdata, handles)
+% hObject    handle to normalize_popup (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns normalize_popup contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from normalize_popup
+
+
+% --- Executes during object creation, after setting all properties.
+function normalize_popup_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to normalize_popup (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
