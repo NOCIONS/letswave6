@@ -1,9 +1,8 @@
-function [out_header,out_data,message_string]=RLW_segmentation_chunk(header,data,event_labels,varargin);
+function [out_header,out_data,message_string]=RLW_segmentation_chunk(header,data,varargin);
 %RLW_segmentation_chunk
 %
 %segment data (chunk)
 %
-%%event_labels={$};
 %
 %varargin
 %'chunk_onset' (0)          
