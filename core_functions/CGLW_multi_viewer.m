@@ -360,7 +360,7 @@ function update_graph_axis_limits(handles);
 userdata=get(handles.graph_wave_popup,'UserData');
 axis(userdata.axes_handle(1,1),[userdata.xmin userdata.xmax userdata.ymin userdata.ymax]);
 ydir_text={'normal','reverse'};
-set(userdata.axes_handle(1,1),'YDir',ydir_text{userdata.display_reverse_y+1});
+set(userdata.axes_handle(:),'YDir',ydir_text{userdata.display_reverse_y+1});
 
 
 
