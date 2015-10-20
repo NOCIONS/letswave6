@@ -9,6 +9,7 @@ function varargout = CGLW_multi_viewer_figure(varargin)
 
 
 
+
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 0;
 gui_State = struct('gui_Name',       mfilename, ...
@@ -79,11 +80,11 @@ else
     userdata=get(mother_handle.graph_wave_popup,'UserData');
     if isempty(userdata);
     else
-        for i=1:size(userdata.currentaxis,2);
-            currentpoint=get(userdata.currentaxis(1,i),'CurrentPoint');
+        for i=1:size(userdata.axes_handle,2);
+            currentpoint=get(userdata.axes_handle(1,i),'CurrentPoint');
             cp(i)=currentpoint(2,1);
         end;
-        xlim=get(userdata.currentaxis(1,1),'XLim');
+        xlim=get(userdata.axes_handle(1,1),'XLim');
         xdist=abs(cp(:)-xlim(1))+abs(cp(:)-xlim(2));
         [a,b]=min(xdist);
         set(handles.xtext,'String',num2str(cp(b)));
@@ -104,22 +105,22 @@ function figure1_WindowButtonDownFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 mother_handle=get(handles.xtext,'UserData');
 userdata=get(mother_handle.graph_wave_popup,'UserData');
-for i=1:size(userdata.currentaxis,2);
-    currentpoint=get(userdata.currentaxis(1,i),'CurrentPoint');
+for i=1:size(userdata.axes_handle,2);
+    currentpoint=get(userdata.axes_handle(1,i),'CurrentPoint');
     cp(i)=currentpoint(2,1);
 end;
-xlim=get(userdata.currentaxis(1,1),'XLim');
+xlim=get(userdata.axes_handle(1,1),'XLim');
 xdist=abs(cp(:)-xlim(1))+abs(cp(:)-xlim(2));
 [a,b]=min(xdist);
 cursor1=cp(b);
 set(handles.xtext1,'String',num2str(cursor1));
 CGLW_multi_viewer('update_graph',mother_handle);
 %draw cursor
-for i=1:size(userdata.currentaxis,1);
-    for j=1:size(userdata.currentaxis,2);
-        subplot(userdata.currentaxis(i,j));
+for i=1:size(userdata.axes_handle,1);
+    for j=1:size(userdata.axes_handle,2);
+        subplot(userdata.axes_handle(i,j));
         hold on;
-        ylim=get(userdata.currentaxis(i,j),'YLim');
+        ylim=get(userdata.axes_handle(i,j),'YLim');
         plot([cursor1 cursor1],ylim,'r:');
         hold off;
     end;
@@ -142,22 +143,22 @@ function figure1_WindowButtonUpFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 mother_handle=get(handles.xtext,'UserData');
 userdata=get(mother_handle.graph_wave_popup,'UserData');
-for i=1:size(userdata.currentaxis,2);
-    currentpoint=get(userdata.currentaxis(1,i),'CurrentPoint');
+for i=1:size(userdata.axes_handle,2);
+    currentpoint=get(userdata.axes_handle(1,i),'CurrentPoint');
     cp(i)=currentpoint(2,1);
 end;
-xlim=get(userdata.currentaxis(1,1),'XLim');
+xlim=get(userdata.axes_handle(1,1),'XLim');
 xdist=abs(cp(:)-xlim(1))+abs(cp(:)-xlim(2));
 [a,b]=min(xdist);
 set(handles.xtext,'String',num2str(cp(b)));
 cursor2=cp(b);
 set(handles.xtext2,'String',num2str(cursor2));
 %draw cursor
-for i=1:size(userdata.currentaxis,1);
-    for j=1:size(userdata.currentaxis,2);
-        subplot(userdata.currentaxis(i,j));
+for i=1:size(userdata.axes_handle,1);
+    for j=1:size(userdata.axes_handle,2);
+        subplot(userdata.axes_handle(i,j));
         hold on;
-        ylim=get(userdata.currentaxis(i,j),'YLim');
+        ylim=get(userdata.axes_handle(i,j),'YLim');
         plot([cursor2 cursor2],ylim,'b:');
         hold off;
     end;

@@ -27,7 +27,7 @@ recording=module_read_neurone(input_folder,session_number);
 %prepare header
 message_string{end+1}='Generating header.';
 out_header.filetype='time_amplitude';
-out_header.name=[input_folder,'_',session_number];
+out_header.name=[input_folder,'_',num2str(session_number)];
 out_header.tags={};
 out_header.history(1).configuration=[];
 out_header.datasize=double([1 length(recording.signalTypes) 1 1 1 recording.properties.length*recording.properties.samplingRate]);
@@ -72,7 +72,7 @@ end;
 
 %data
 message_string{end+1}=['Importing data (',num2str(out_header.datasize(6)),' samples, ',num2str(out_header.datasize(1)),' epoch(s))'];
-out_data=zeros(out_header.datasize);
+out_data=zeros(round(out_header.datasize));
 for k=1:length(recording.signalTypes)
     eval(['out_data(1,k,1,1,:)=squeeze(recording.signal.',recording.signalTypes{k},'.data);']);
 end
