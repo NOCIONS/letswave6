@@ -157,6 +157,9 @@ fetch_graph_options(handles);
 fetch_graph_axis_limits(handles);
 %create graph
 create_graph(handles);
+%adjust object sizes
+adjust_object_sizes(handles);
+%update graph cursors
 update_graph_cursors(handles);
 
 
@@ -2298,6 +2301,13 @@ function figure1_SizeChangedFcn(hObject, eventdata, handles)
 % hObject    handle to figure1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+adjust_object_sizes(handles);
+
+
+
+%******
+function adjust_object_sizes(handles);
+%adjust figure objects to the size of the figure
 userdata=get(handles.graph_wave_popup,'UserData');
 if isempty(userdata);
     return;
@@ -2308,9 +2318,13 @@ for row_pos=1:userdata.num_rows;
         set(userdata.axes_handle(row_pos,col_pos),'Position',[userdata.left(col_pos) userdata.bottom(row_pos) userdata.plot_width userdata.plot_height]);
     end;
 end;
+%uipanel_main
 p=get(handles.uipanel_main,'Position');
 p(4)=fix(0.99*handles.figure1.Position(4));
 set(handles.uipanel_main,'Position',p);
+%uipanel_cursor
 p=get(handles.uipanel_cursor,'Position');
 p(3)=fix(0.99*(handles.figure1.Position(3)-p(1)));
 set(handles.uipanel_cursor,'Position',p);
+%dataset_listbox
+p=get(handles.dataset_listbox,'Position');
