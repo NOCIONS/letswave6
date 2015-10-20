@@ -521,12 +521,15 @@ vert_margin=20;
 userdata.horz_margin=horz_margin;
 userdata.vert_margin=vert_margin;
 %left_offset
-left_offset=handles.uipanel_main.Position(1)+handles.uipanel_main.Position(3)+horz_margin;
+p=get(handles.uipanel_main,'Position');
+left_offset=p(1)+p(3)+horz_margin;
 %bottom_offset
-bottom_offset=handles.uipanel_cursor.Position(2)+handles.uipanel_cursor.Position(4)+vert_margin;
+p=get(handles.uipanel_cursor,'Position');
+bottom_offset=p(2)+p(4)+vert_margin;
 %figure width and height (in pixels)
-figure_width=handles.figure1.Position(3);
-figure_height=handles.figure1.Position(4);
+p=get(handles.figure1,'Position');
+figure_width=p(3);
+figure_height=p(4);
 f_width=figure_width-left_offset;
 f_height=figure_height-bottom_offset;
 userdata.figure_width=figure_width;
@@ -2312,6 +2315,10 @@ userdata=get(handles.graph_wave_popup,'UserData');
 if isempty(userdata);
     return;
 end;
+if isfield(userdata,'num_rows')
+else
+    return;
+end;
 userdata=calculate_axes_sizes(userdata,handles);
 for row_pos=1:userdata.num_rows;
     for col_pos=1:userdata.num_cols;
@@ -2320,11 +2327,10 @@ for row_pos=1:userdata.num_rows;
 end;
 %uipanel_main
 p=get(handles.uipanel_main,'Position');
-p(4)=fix(0.99*handles.figure1.Position(4));
+fp=get(handles.figure1,'Position');
+p(4)=fix(0.99*fp(4));
 set(handles.uipanel_main,'Position',p);
 %uipanel_cursor
 p=get(handles.uipanel_cursor,'Position');
-p(3)=fix(0.99*(handles.figure1.Position(3)-p(1)));
+p(3)=fix(0.99*(fp(3)-p(1)));
 set(handles.uipanel_cursor,'Position',p);
-%dataset_listbox
-p=get(handles.dataset_listbox,'Position');
