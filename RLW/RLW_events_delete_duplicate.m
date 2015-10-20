@@ -56,7 +56,7 @@ if exact_latencies==1;
     message_string{1}='Finding events with identical latencies';
 else
     message_string{1}='Finding events with similar latencies';
-    message_string{1}=['Tolerance : ' num2str(configuration.parameters.tolerance)];
+    message_string{1}=['Tolerance : ' num2str(tolerance)];
 end;
 
 %events
