@@ -1,17 +1,35 @@
-function varargout = GLW_ICA_assign_matrix(varargin)
-% GLW_ICA_ASSIGN_MATRIX MATLAB code for GLW_ICA_assign_matrix.fig
+function varargout = GLW_PCA_compute(varargin)
+% GLW_PCA_COMPUTE MATLAB code for GLW_PCA_compute.fig
+%      GLW_PCA_COMPUTE, by itself, creates a new GLW_PCA_COMPUTE or raises the existing
+%      singleton*.
+%
+%      H = GLW_PCA_COMPUTE returns the handle to a new GLW_PCA_COMPUTE or the handle to
+%      the existing singleton*.
+%
+%      GLW_PCA_COMPUTE('CALLBACK',hObject,eventData,handles,...) calls the local
+%      function named CALLBACK in GLW_PCA_COMPUTE.M with the given input arguments.
+%
+%      GLW_PCA_COMPUTE('Property','Value',...) creates a new GLW_PCA_COMPUTE or raises the
+%      existing singleton*.  Starting from the left, property value pairs are
+%      applied to the GUI before GLW_PCA_compute_OpeningFcn gets called.  An
+%      unrecognized property name or invalid value makes property application
+%      stop.  All inputs are passed to GLW_PCA_compute_OpeningFcn via varargin.
+%
+%      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
+%      instance to run (singleton)".
+%
+% See also: GUIDE, GUIDATA, GUIHANDLES
 
+% Edit the above text to modify the response to help GLW_PCA_compute
 
-
-
-
+% Last Modified by GUIDE v2.5 21-Oct-2015 10:46:55
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @GLW_ICA_assign_matrix_OpeningFcn, ...
-                   'gui_OutputFcn',  @GLW_ICA_assign_matrix_OutputFcn, ...
+                   'gui_OpeningFcn', @GLW_PCA_compute_OpeningFcn, ...
+                   'gui_OutputFcn',  @GLW_PCA_compute_OutputFcn, ...
                    'gui_LayoutFcn',  [] , ...
                    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
@@ -26,26 +44,22 @@ end
 % End initialization code - DO NOT EDIT
 
 
-
-
-
-
-
-
-
-% --- Executes just before GLW_ICA_assign_matrix is made visible.
-function GLW_ICA_assign_matrix_OpeningFcn(hObject, eventdata, handles, varargin)
+% --- Executes just before GLW_PCA_compute is made visible.
+function GLW_PCA_compute_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
-% hObject    handle to figure1
+% hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to GLW_ICA_assign_matrix (see VARARGIN)
-% Choose default command line output for GLW_ICA_assign_matrix
+% varargin   command line arguments to GLW_PCA_compute (see VARARGIN)
+
+% Choose default command line output for GLW_PCA_compute
 handles.output = hObject;
+
 % Update handles structure
 guidata(hObject, handles);
-%function('dummy',configuration,datasets);
-%configuration
+
+% UIWAIT makes GLW_PCA_compute wait for user response (see UIRESUME)
+% uiwait(handles.figure1);
 configuration=varargin{2};
 set(handles.process_btn,'Userdata',configuration);
 %datasets
@@ -82,28 +96,18 @@ if strcmpi(configuration.gui_info.process_overwrite,'yes');
     set(handles.overwrite_chk,'Value',1);
 else
     set(handles.overwrite_chk,'Value',0);
-end;
-%!!!!!!!!!!!!!!!!!!!!!!!!
-%update GUI configuration
-%!!!!!!!!!!!!!!!!!!!!!!!!
-set(handles.load_btn,'Userdata',[]);
-%!!!
-%END
-%!!!
+end
 % UIWAIT makes the GUI wait for user response (see UIRESUME)
 uiwait(handles.figure1);
 
 
-
-
-
-
 % --- Outputs from this function are returned to the command line.
-function varargout = GLW_ICA_assign_matrix_OutputFcn(hObject, eventdata, handles) 
+function varargout = GLW_PCA_compute_OutputFcn(hObject, eventdata, handles) 
 % varargout  cell array for returning output args (see VARARGOUT);
-% hObject    handle to figure1
+% hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
 % Get default command line output from handles structure
 varargout{1} = handles.output;
 %configuration
@@ -116,42 +120,11 @@ end;
 delete(hObject);
 
 
-
-
-% --- Executes during object creation, after setting all properties.
-function figure1_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to figure1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-
-
-
-% --- Executes on selection change in filebox.
-function filebox_Callback(hObject, eventdata, handles)
-% hObject    handle to filebox (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-
-
-
-% --- Executes during object creation, after setting all properties.
-function filebox_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to filebox (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-
 % --- Executes on button press in process_btn.
 function process_btn_Callback(hObject, eventdata, handles)
 % hObject    handle to process_btn (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
 %fetch configuration
 configuration=get(handles.process_btn,'Userdata');
 %notify that process_btn has been pressed
@@ -164,28 +137,32 @@ if get(handles.overwrite_chk,'Value')==0;
 else
     configuration.gui_info.process_overwrite='yes';
 end;
-%!!!!!!!!!!!!!!!!!!!!
-%UPDATE CONFIGURATION
-%!!!!!!!!!!!!!!!!!!!!
-matrix=get(handles.load_btn,'Userdata');
-if isempty(matrix);
-    disp('No matrix was assigned. Exiting.');
-    set(handles.overwrite_chk,'Userdata',0);
-else
-    configuration.parameters.ICA_mm=matrix.ICA_mm;
-    configuration.parameters.ICA_um=matrix.ICA_um;
-end;
-%!!!
-%END
-%!!!
+
 %put back configuration
 set(handles.process_btn,'Userdata',configuration);
 close(handles.figure1);
 
 
+function prefix_edit_Callback(hObject, eventdata, handles)
+% hObject    handle to prefix_edit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of prefix_edit as text
+%        str2double(get(hObject,'String')) returns contents of prefix_edit as a double
 
 
+% --- Executes during object creation, after setting all properties.
+function prefix_edit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to prefix_edit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
 
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
 
 
 % --- Executes on button press in overwrite_chk.
@@ -200,9 +177,8 @@ else
     set(handles.prefix_text,'Visible','on');
     set(handles.prefix_edit,'Visible','on');
 end;
-    
 
-
+% Hint: get(hObject,'Value') returns toggle state of overwrite_chk
 
 
 % --- Executes when user attempts to close figure1.
@@ -210,44 +186,6 @@ function figure1_CloseRequestFcn(hObject, eventdata, handles)
 % hObject    handle to figure1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+% Hint: delete(hObject) closes the figure
 uiresume(handles.figure1);
-
-
-% --- Executes on button press in load_btn.
-function load_btn_Callback(hObject, eventdata, handles)
-% hObject    handle to load_btn (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-filterspec={'*.lw6'};
-dialogtitle='Choose dataset';
-[filename pathname]=uigetfile(filterspec,dialogtitle);
-filename=[pathname filename];
-header=CLW_load_header(filename);
-%find matrix in history
-ICA_mm=[];
-ICA_um=[];
-for i=1:length(header.history);
-    switch header.history(i).configuration.gui_info.function_name
-        case 'LW_ICA_compute'
-            ICA_mm=header.history(i).configuration.parameters.ICA_mm;
-            ICA_um=header.history(i).configuration.parameters.ICA_um;
-        case 'LW_PCA_compute'
-            ICA_mm=header.history(i).configuration.parameters.ICA_mm;
-            ICA_um=header.history(i).configuration.parameters.ICA_um;
-        case 'LW_ICA_compute_merged'
-            ICA_mm=header.history(i).configuration.parameters.ICA_mm;
-            ICA_um=header.history(i).configuration.parameters.ICA_um;
-        case 'LW_ICA_assign_matrix'
-            ICA_mm=header.history(i).configuration.parameters.ICA_mm;
-            ICA_um=header.history(i).configuration.parameters.ICA_um;
-    end;
-end;
-if isempty(ICA_mm);
-    disp('Error : no matrix found in the dataset');
-else
-    disp('Success : found a matrix in the dataset');
-    matrix.ICA_mm=ICA_mm;
-    matrix.ICA_um=ICA_um;
-    set(handles.load_btn,'Userdata',matrix);
-end;
-    
