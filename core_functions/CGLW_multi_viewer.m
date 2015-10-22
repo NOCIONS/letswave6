@@ -557,6 +557,7 @@ for i=1:num_rows;
 end;
 left=(left+left_offset)/figure_width;
 bottom=(bottom+bottom_offset)/figure_height;
+bottom=fliplr(bottom);
 userdata.left=left;
 userdata.bottom=bottom;
 out_userdata=userdata;
@@ -626,6 +627,13 @@ for col_pos=1:userdata.data_num_cols;
                 end;
             lstr(find(lstr=='_'))=' ';
             legend_string{wave_pos}=lstr;
+            end;
+            if size(userdata.vert_cursor_handle,1)>=row_pos;
+                if size(userdata.vert_cursor_handle,2)>=col_pos;
+                    if ishandle(userdata.vert_cursor_handle(row_pos,col_pos).handle);
+                        uistack(userdata.vert_cursor_handle(row_pos,col_pos).handle,'top');
+                    end;
+                end;
             end;
             legend(userdata.axes_handle(row_pos,col_pos),legend_string,'Location','NorthEast');
         else
@@ -1212,6 +1220,7 @@ fetch_graph_axis_limits(handles);
 update_graph_axes(handles);
 update_graph_data(handles);
 update_graph_cursors(handles);
+
 
 
 
