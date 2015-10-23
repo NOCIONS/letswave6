@@ -143,6 +143,7 @@ for i=1:length(datasets_data);
 end;
 userdata.datasets_ymin=min(mini(i));
 userdata.datasets_ymax=max(maxi(i));
+userdata.cursor_mode=-1;
 %store userdata
 set(handles.graph_wave_popup,'UserData',userdata);
 %figure ands uipanel_main uipanel_cursor position in pixels
@@ -796,8 +797,6 @@ end;
 if and(userdata.num_rows==userdata.data_num_rows,userdata.num_cols==userdata.data_num_cols);
     %set axis
     axis(userdata.axes_handle(1,1),[userdata.xmin userdata.xmax userdata.ymin userdata.ymax]);
-    ydir_text={'normal','reverse'};
-    set(userdata.axes_handle(1,1),'YDir',ydir_text{userdata.display_reverse_y+1});
     return;
 end;
 %axes set sizes
@@ -810,6 +809,14 @@ for row_pos=1:userdata.data_num_rows;
             %if the handle does not exist, create it
             userdata.axes_handle(row_pos,col_pos)=subplot('position',[userdata.left(col_pos) userdata.bottom(row_pos) userdata.plot_width userdata.plot_height]);
             hold(userdata.axes_handle(row_pos,col_pos),'on');
+            %decoration
+            set(userdata.axes_handle(row_pos,col_pos),'FontName','Arial');
+            set(userdata.axes_handle(row_pos,col_pos),'FontUnits','pixels');
+            set(userdata.axes_handle(row_pos,col_pos),'FontSize',9);
+            set(userdata.axes_handle(row_pos,col_pos),'Box','off');
+            set(userdata.axes_handle(row_pos,col_pos),'TickDir','out');
+            set(userdata.axes_handle(row_pos,col_pos),'TickLength',[0.005 0.005]);
+
         else            
             %if the handle exists
             set(userdata.axes_handle(row_pos,col_pos),'Position',[userdata.left(col_pos) userdata.bottom(row_pos) userdata.plot_width userdata.plot_height]);
@@ -842,6 +849,9 @@ userdata.axes_handle=userdata.axes_handle(1:userdata.num_rows,1:userdata.num_col
 linkaxes(userdata.axes_handle(:),'xy');
 %set axis
 axis(userdata.axes_handle(1,1),[userdata.xmin userdata.xmax userdata.ymin userdata.ymax]);
+%ydir
+ydir_text={'normal','reverse'};
+set(userdata.axes_handle(:),'YDir',ydir_text{userdata.display_reverse_y+1});
 %store userdata
 set(handles.graph_wave_popup,'UserData',userdata);
 
@@ -853,199 +863,6 @@ set(handles.graph_wave_popup,'UserData',userdata);
 
 
 
-
-
-
-function update_graph(handles);
-%figure_handles
-userdata=get(handles.graph_wave_popup,'UserData');
-%fetch legend options
-display_legend_dataset=strcmpi(get(handles.menu_legend_dataset,'Checked'),'on');
-display_legend_epoch=strcmpi(get(handles.menu_legend_epoch,'Checked'),'on');
-display_legend_channel=strcmpi(get(handles.menu_legend_channel,'Checked'),'on');
-%fetch plot options
-display_waves=1;
-if strcmpi(get(handles.menu_wave_plot,'Checked'),'on');
-    display_waves=1;
-end;
-if strcmpi(get(handles.menu_wave_stem,'Checked'),'on');
-    display_waves=2;
-end;
-if strcmpi(get(handles.menu_wave_stair,'Checked'),'on');
-    display_waves=3;
-end;
-if strcmpi(get(handles.menu_reverse_yaxis,'Checked'),'on');
-    display_reverse_y=1;
-else
-    display_reverse_y=0;
-end;
-%output.tpdata_y(dataset,epoch,channel,dx)
-%output.tpdata_x(dataset,epoch,channel,dx)
-output=get(handles.channel_listbox,'Userdata');
-%graph_row_idx,graph_col_idx,graph_wave_idx
-graph_row_idx=get(handles.graph_row_popup,'Value');
-graph_col_idx=get(handles.graph_col_popup,'Value');
-graph_wave_idx=get(handles.graph_wave_popup,'Value');
-%display_legend?
-if sum([display_legend_dataset display_legend_epoch display_legend_channel])>0;
-    display_legend=1;
-else
-    display_legend=0;
-end;
-%prepare labels
-if display_legend==1;
-    %a legend must be displayed
-    %selected_dataset_labels
-    st=get(handles.dataset_listbox,'String');
-    selected_dataset_labels=st(output.selected_datasets);
-    %selected_epoch_labels
-    st=get(handles.epoch_listbox,'String');
-    selected_epoch_labels=st(output.selected_epochs);
-    %selected_channel_labels
-    st=get(handles.channel_listbox,'String');
-    selected_channel_labels=st(output.selected_channels);
-    %tpdata_labels
-    tpdata_labels=[];
-    for i=1:length(output.selected_datasets);
-        for j=1:length(output.selected_epochs);
-            for k=1:length(output.selected_channels);
-                tpdata_labels(i,j,k).dataset_label=selected_dataset_labels{i};
-                tpdata_labels(i,j,k).epoch_label=selected_epoch_labels{j};
-                tpdata_labels(i,j,k).channel_label=selected_channel_labels{k};
-            end;
-        end;
-    end;
-end;
-%permute dimensions (tpdata(rowpos,colpos,wavepos))
-tpdata_y=permute(output.tpdata_y,[graph_row_idx,graph_col_idx,graph_wave_idx,4]);
-tpdata_x=permute(output.tpdata_x,[graph_row_idx,graph_col_idx,graph_wave_idx,4]);
-if display_legend==1;
-    tpdata_labels=permute(tpdata_labels,[graph_row_idx,graph_col_idx,graph_wave_idx]);
-end;
-%num_rows,num_cols,num_waves,num_graphs
-num_rows=size(tpdata_y,1);
-num_cols=size(tpdata_y,2);
-num_waves=size(tpdata_y,3);
-num_graphs=num_rows*num_cols;
-%linecolors
-linecolors=distinguishable_colors(num_waves);
-%check number of rows and columns
-axis_ok=0;
-if isfield(userdata,'currentaxis');
-    a=size(userdata.currentaxis);
-    if a(1)==num_rows;
-        if a(2)==num_cols;
-            axis_ok=1;
-        end;
-    end;
-end;
-%create axes if needed
-if axis_ok==0;
-    figure(userdata.wave_figure);
-    %loop through graph columns
-    k=1;
-    for col_pos=1:num_cols;
-        %loop through graph rows
-        for row_pos=1:num_rows;
-            graph_pos=col_pos+((row_pos-1)*num_cols);
-            currentaxis(row_pos,col_pos)=subaxis(num_rows,num_cols,graph_pos,'MarginLeft',0.06,'MarginRight',0.02,'MarginTop',0.04,'MarginBottom',0.08,'SpacingHoriz',0.06,'SpacingVert',0.06);
-            allaxis(k)=currentaxis(row_pos,col_pos);
-            k=k+1;
-        end;
-    end;
-    figure(handles.figure1);
-else
-    currentaxis=userdata.currentaxis;
-    allaxis=userdata.allaxis;
-end;
-
-for col_pos=1:num_cols;
-    %loop through graph rows
-    for row_pos=1:num_rows;
-        %cla('reset');
-        for wave_pos=1:num_waves;
-            switch display_waves
-                case 1
-                    plot(currentaxis(row_pos,col_pos),squeeze(tpdata_x(row_pos,col_pos,wave_pos,:)),squeeze(tpdata_y(row_pos,col_pos,wave_pos,:)),'Color',linecolors(wave_pos,:));
-                case 2
-                    stem(currentaxis(row_pos,col_pos),squeeze(tpdata_x(row_pos,col_pos,wave_pos,:)),squeeze(tpdata_y(row_pos,col_pos,wave_pos,:)),'Color',linecolors(wave_pos,:));
-                case 3
-                    stairs(currentaxis(row_pos,col_pos),squeeze(tpdata_x(row_pos,col_pos,wave_pos,:)),squeeze(tpdata_y(row_pos,col_pos,wave_pos,:)),'Color',linecolors(wave_pos,:));
-            end;
-            hold(currentaxis(row_pos,col_pos),'on');
-        end;
-        hold(currentaxis(row_pos,col_pos),'off');
-        %legend
-        if display_legend==1;
-            for wave_pos=1:num_waves;
-                legend_string{wave_pos}='';
-                if display_legend_dataset==1;
-                    legend_string{wave_pos}=[legend_string{wave_pos} tpdata_labels(row_pos,col_pos,wave_pos).dataset_label ' '];
-                end;
-                if display_legend_epoch==1;
-                    legend_string{wave_pos}=[legend_string{wave_pos} '[' tpdata_labels(row_pos,col_pos,wave_pos).epoch_label '] '];
-                end;
-                if display_legend_channel==1;
-                    legend_string{wave_pos}=[legend_string{wave_pos} '[' tpdata_labels(row_pos,col_pos,wave_pos).channel_label '] '];
-                end;
-            end;
-            legend(currentaxis(row_pos,col_pos),legend_string,'Location','NorthEast');
-        end;
-    end;
-end;
-%link axis
-linkaxes(allaxis,'xy')
-%xlim
-if get(handles.xaxis_auto_chk,'Value')==1;
-    xmin=min(tpdata_x(:));
-    xmax=max(tpdata_x(:));
-    set(handles.xaxis_min_edit,'String',num2str(xmin));
-    set(handles.xaxis_max_edit,'String',num2str(xmax));
-else
-    xmin=str2num(get(handles.xaxis_min_edit,'String'));
-    xmax=str2num(get(handles.xaxis_max_edit,'String'));
-end;
-%ylim
-if get(handles.yaxis_auto_chk,'Value')==1;
-    ymin=min(tpdata_y(:));
-    ymax=max(tpdata_y(:));
-    set(handles.yaxis_min_edit,'String',num2str(ymin));
-    set(handles.yaxis_max_edit,'String',num2str(ymax));
-else
-    ymin=str2num(get(handles.yaxis_min_edit,'String'));
-    ymax=str2num(get(handles.yaxis_max_edit,'String'));
-end;
-if ymin==ymax;
-    ymin=-1;
-    ymax=1;
-end;
-if xmin==xmax;
-    xmin=0;
-    xmax=1;
-end;
-axis(allaxis(1),[xmin xmax ymin ymax]);
-%decoration
-for i=1:length(allaxis);
-    set(allaxis(i),'FontName','Arial');
-    set(allaxis(i),'FontUnits','pixels');
-    set(allaxis(i),'FontSize',9);
-    set(allaxis(i),'Box','off');
-    set(allaxis(i),'TickDir','out');
-    set(allaxis(i),'TickLength',[0.005 0.005]);
-    %ydir
-    if display_reverse_y==0;
-        set(allaxis(i),'YDir','normal');
-    else
-        set(allaxis(i),'YDir','reverse');
-    end;
-end;
-%update userdata
-userdata.currentaxis=currentaxis;
-userdata.allaxis=allaxis;
-set(handles.graph_wave_popup,'UserData',userdata);
-%update info for figure
-set(userdata.wave_figure_handles.xtext,'UserData',handles);
-%
 
 
 
@@ -1988,6 +1805,7 @@ update_graph_axis_limits(handles);
 
 
 
+
 % --- Executes during object creation, after setting all properties.
 function yaxis_max_edit_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to yaxis_max_edit (see GCBO)
@@ -1998,11 +1816,18 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
+
+
+
+
 % --- Executes on selection change in camera_popup.
 function camera_popup_Callback(hObject, eventdata, handles)
 % hObject    handle to camera_popup (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+
+
 
 
 
@@ -2051,29 +1876,39 @@ switch userdata.cursor_mode
     case 2
         set(handles.x_text2,'String',num2str(userdata.cursor_pos));
         set(handles.interval2_edit,'String',num2str(userdata.cursor_pos));
+    case -1
+        set(handles.x_text1,'String',num2str(userdata.cursor_pos));
+        set(handles.interval1_edit,'String',num2str(userdata.cursor_pos));
+    case -2
+        set(handles.x_text1,'String',num2str(userdata.cursor_pos));
+        set(handles.interval1_edit,'String',num2str(userdata.cursor_pos));
 end;
 
 
 
 % --------------------------------------------------------------------
-function Untitled_1_Callback(hObject, eventdata, handles)
-% hObject    handle to Untitled_1 (see GCBO)
+function menu_waveforms_Callback(hObject, eventdata, handles)
+% hObject    handle to menu_waveforms (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
 
 % --------------------------------------------------------------------
-function Untitled_5_Callback(hObject, eventdata, handles)
-% hObject    handle to Untitled_5 (see GCBO)
+function menu_axes_Callback(hObject, eventdata, handles)
+% hObject    handle to menu_axes (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
 
 % --------------------------------------------------------------------
-function Untitled_7_Callback(hObject, eventdata, handles)
-% hObject    handle to Untitled_7 (see GCBO)
+function menu_legend_Callback(hObject, eventdata, handles)
+% hObject    handle to menu_legend (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+
+
+
 
 
 % --------------------------------------------------------------------
@@ -2168,6 +2003,7 @@ update_graph_axis_limits(handles);
 
 
 
+
 % --------------------------------------------------------------------
 function menu_wave_plot_Callback(hObject, eventdata, handles)
 % hObject    handle to menu_wave_plot (see GCBO)
@@ -2179,6 +2015,9 @@ set(handles.menu_wave_stair,'Checked','off');
 clear_plots(handles);
 fetch_graph_options(handles);
 update_graph_data(handles);
+
+
+
 
 
 % --------------------------------------------------------------------
@@ -2193,6 +2032,10 @@ clear_plots(handles);
 fetch_graph_options(handles);
 update_graph_data(handles);
 
+
+
+
+
 % --------------------------------------------------------------------
 function menu_wave_stair_Callback(hObject, eventdata, handles)
 % hObject    handle to menu_wave_stair (see GCBO)
@@ -2204,6 +2047,10 @@ set(handles.menu_wave_stair,'Checked','on');
 clear_plots(handles);
 fetch_graph_options(handles);
 update_graph_data(handles);
+
+
+
+
 
 % --- Executes on button press in update_x_btn.
 function update_x_btn_Callback(hObject, eventdata, handles)
@@ -2239,6 +2086,7 @@ set(handles.yaxis_auto_chk,'Value',0);
 
 
 % --- Executes on mouse motion over figure - except title and menu.
+%******************************************************************
 function figure1_WindowButtonMotionFcn(hObject, eventdata, handles)
 % hObject    handle to figure1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -2261,6 +2109,7 @@ update_graph_cursors(handles);
 
 
 % --- Executes on button press in cursor_btn.
+%********************************************************
 function cursor_btn_Callback(hObject, eventdata, handles)
 % hObject    handle to cursor_btn (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -2274,6 +2123,7 @@ update_graph_cursors(handles);
 
 
 % --- Executes on button press in cursor1_btn.
+%********************************************************
 function cursor1_btn_Callback(hObject, eventdata, handles)
 % hObject    handle to cursor1_btn (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -2285,7 +2135,12 @@ set(handles.graph_wave_popup,'UserData',userdata);
 update_graph_cursors(handles);
 
 
+
+
+
+
 % --- Executes on button press in cursor2_btn.
+%*********************************************************
 function cursor2_btn_Callback(hObject, eventdata, handles)
 % hObject    handle to cursor2_btn (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -2298,6 +2153,7 @@ update_graph_cursors(handles);
 
 
 % --- Executes on button press in cursor_no_btn.
+%***********************************************************
 function cursor_no_btn_Callback(hObject, eventdata, handles)
 % hObject    handle to cursor_no_btn (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -2308,7 +2164,12 @@ set(handles.graph_wave_popup,'UserData',userdata);
 update_graph_cursors(handles);
 
 
+
+
+
+
 % --- Executes when figure1 is resized.
+%***********************************************************
 function figure1_SizeChangedFcn(hObject, eventdata, handles)
 % hObject    handle to figure1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -2317,8 +2178,12 @@ adjust_object_sizes(handles);
 
 
 
-%******
-function adjust_object_sizes(handles);
+
+
+
+
+%************************************
+function adjust_object_sizes(handles)
 %adjust figure objects to the size of the figure
 userdata=get(handles.graph_wave_popup,'UserData');
 if isempty(userdata);
@@ -2343,3 +2208,38 @@ set(handles.uipanel_main,'Position',p);
 p=get(handles.uipanel_cursor,'Position');
 p(3)=fix(0.99*(fp(3)-p(1)));
 set(handles.uipanel_cursor,'Position',p);
+
+
+
+
+
+% --- Executes on mouse press over figure background, over a disabled or
+% --- inactive control, or over an axes background.
+%**************************************************************
+function figure1_WindowButtonUpFcn(hObject, eventdata, handles)
+% hObject    handle to figure1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+userdata=get(handles.graph_wave_popup,'UserData');
+switch userdata.cursor_mode
+    case -1
+        set(handles.x_text2,'String',num2str(userdata.cursor_pos));
+        set(handles.interval2_edit,'String',num2str(userdata.cursor_pos));
+    case -2
+        set(handles.x_text2,'String',num2str(userdata.cursor_pos));
+        set(handles.interval2_edit,'String',num2str(userdata.cursor_pos));
+end;
+
+
+% --- Executes on button press in zoom_btn.
+function zoom_btn_Callback(hObject, eventdata, handles)
+% hObject    handle to zoom_btn (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+h=zoom;
+zoom_state=get(h,'Enable');
+if strcmpi(zoom_state,'off');
+    set(h,'Enable','on');
+else
+    set(h,'Enable','off');
+end;
