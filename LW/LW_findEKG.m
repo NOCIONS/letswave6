@@ -36,8 +36,8 @@ end;
 
 %gui_info
 gui_info.function_name='LW_findEKG';
-gui_info.name='Find the EKG event';
-gui_info.description='Find the EKG event';
+gui_info.name='Find EKG QRS events';
+gui_info.description='Find EKG QRS events';
 gui_info.parent='events_menu';
 gui_info.scriptable='yes';                      %function can be used in scripts?
 gui_info.configuration_mode='direct';           %configuration GUI run in 'direct' 'script' 'history' mode?
