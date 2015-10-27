@@ -218,6 +218,92 @@ end;
 set(handles.graph_wave_popup,'UserData',userdata);
 
 
+%************
+function output=fetch_data_for_tables(handles)
+%datasets_header
+datasets_header=get(handles.dataset_listbox,'Userdata');
+%datasets_data
+datasets_data=get(handles.epoch_listbox,'Userdata');
+%selected_datasets
+output.selected_datasets=get(handles.dataset_listbox,'Value');
+%selected_epochs
+output.selected_epochs=get(handles.epoch_listbox,'Value');
+%selected_channels
+output.selected_channels=get(handles.channel_listbox,'Value');
+%selected_channels_string
+st=get(handles.channel_listbox,'String');
+output.selected_channels_string=st(output.selected_channels);
+%indexpos
+indexpos=get(handles.index_popup,'Value');
+%loop through selected datasets
+for datasetpos=1:length(output.selected_datasets);
+    %header
+    header=datasets_header(output.selected_datasets(datasetpos)).header;
+    output.selected_datasets_header(datasetpos).header=header;
+    output.selected_datasets_labels{datasetpos}=header.name;
+    %chanlabels
+    chanlabels={};
+    for i=1:length(header.chanlocs);
+        chanlabels{i}=header.chanlocs(i).labels;
+    end;
+    %find index of selected channels
+    channel_idx=[];
+    for i=1:length(output.selected_channels_string);
+        a=find(strcmpi(output.selected_channels_string{i},chanlabels));
+        channel_idx(i)=a(1);
+    end;
+    %dy
+    if header.datasize(5)==1;
+        dy=1;
+    else
+        y=str2num(get(handles.y_edit,'String'));
+        dy=((y-header.ystart)*header.ystep)+1;
+        if dy<1;
+            dy=1;
+        end;
+        if dy>header.datasize(5);
+            dy=header.datasize(5);
+        end;
+    end;
+    %dz
+    if header.datasize(4)==1;
+        dz=1;
+    else
+        z=str2num(get(handles.y_edit,'String'));
+        dz=((z-header.zstart)*header.zstep)+1;
+        if dz<1;
+            dz=1;
+        end;
+        if dz>header.datasize(4);
+            dz=header.datasize(4);
+        end;
+    end;
+    tdata(datasetpos).data(:,:,:,:,:,:)=datasets_data(output.selected_datasets(datasetpos)).data(output.selected_epochs,channel_idx,indexpos,dz,dy,:);
+end;
+%datasize_max
+datasize=[];
+for i=1:length(tdata);
+    datasize(i)=size(tdata(i).data,6);
+end;
+datasize_max=max(datasize);
+%prepare tpdata
+output.tpdata_y=nan(length(tdata),length(output.selected_epochs),length(channel_idx),datasize_max);
+output.tpdata_x=nan(length(tdata),length(output.selected_epochs),length(channel_idx),datasize_max);
+for datasetpos=1:length(tdata);
+    output.tpdata_y(datasetpos,:,:,1:size(tdata(datasetpos).data,6))=squeeze(tdata(datasetpos).data(:,:,1,1,1,:));
+    %header
+    header=datasets_header(output.selected_datasets(datasetpos)).header;
+    %tpx
+    tpx=1:1:double(header.datasize(6));
+    tpx=((tpx-1)*header.xstep)+header.xstart;
+    for epochpos=1:length(output.selected_epochs);
+        for chanpos=1:length(channel_idx);
+            output.tpdata_x(datasetpos,epochpos,chanpos,1:size(tdata(datasetpos).data,6))=tpx;
+        end;
+    end;
+end;
+
+
 
 
 %***************************
@@ -1289,7 +1375,7 @@ function table_btn_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 %output
-output=get(handles.channel_listbox,'Userdata');
+output=fetch_data_for_tables(handles);
 %peakdir
 peakdir=get(handles.peakdir_popup,'Value');
 %x1
@@ -1300,26 +1386,16 @@ x2=str2num(get(handles.interval2_edit,'String'));
 y=str2num(get(handles.y_edit,'String'));
 %z
 z=str2num(get(handles.z_edit,'String'));
-%indexpos
-indexpos=get(handles.index_popup,'Value');
-%datasets_header
-datasets_header=get(handles.dataset_listbox,'Userdata');
-%dataset_labels
-st=get(handles.dataset_listbox,'String');
-dataset_labels=st(output.selected_datasets);
 %epoch_labels
 st=get(handles.epoch_listbox,'String');
 epoch_labels=st(output.selected_epochs);
-%channel_labels
-st=get(handles.channel_listbox,'String');
-channel_labels=st(output.selected_channels);
 %loop through datasets
 k=1;
 %reset table_data
 table_data={};
 for datasetpos=1:length(output.selected_datasets);
     %header
-    header=datasets_header(output.selected_datasets(datasetpos)).header;
+    header=output.selected_datasets_header(datasetpos).header;
     %dy
     if header.datasize(5)==1;
         dy=1;
@@ -1353,8 +1429,8 @@ for datasetpos=1:length(output.selected_datasets);
             %x2,y2
             y2=output.tpdata_y(datasetpos,epochpos,chanpos,dx2);
             %table_data
-            table_data{k,1}=dataset_labels{datasetpos};
-            table_data{k,2}=channel_labels{chanpos};
+            table_data{k,1}=output.selected_datasets_labels{datasetpos};
+            table_data{k,2}=output.selected_channels_string{chanpos};
             table_data{k,3}=epoch_labels{epochpos};
             table_data{k,4}=num2str(xmax);
             table_data{k,5}=num2str(ymax);
@@ -1400,7 +1476,7 @@ function topo_btn_Callback(hObject, eventdata, handles)
 display_legend_dataset=strcmpi(get(handles.menu_legend_dataset,'Checked'),'on');
 display_legend_epoch=strcmpi(get(handles.menu_legend_epoch,'Checked'),'on');
 %output
-output=get(handles.channel_listbox,'Userdata');
+output=fetch_data_for_tables(handles);
 %peakdir
 peakdir=get(handles.peakdir_popup,'Value');
 %x1
@@ -1413,14 +1489,6 @@ y=str2num(get(handles.y_edit,'String'));
 z=str2num(get(handles.z_edit,'String'));
 %indexpos
 indexpos=get(handles.index_popup,'Value');
-%datasets_header
-datasets_header=get(handles.dataset_listbox,'Userdata');
-%dataset_labels
-st=get(handles.dataset_listbox,'String');
-dataset_labels=st(output.selected_datasets);
-%epoch_labels
-st=get(handles.epoch_listbox,'String');
-epoch_labels=st(output.selected_epochs);
 %figure
 f=figure;
 %numrows,numcols
@@ -1435,7 +1503,7 @@ cmax=str2num(get(handles.yaxis_max_edit,'String'));
 plotpos=1;
 for datasetpos=1:length(output.selected_datasets);
     %header
-    header=datasets_header(output.selected_datasets(datasetpos)).header;
+    header=output.selected_datasets_header(datasetpos).header;
     %dy
     if header.datasize(5)==1;
         dy=1;
@@ -1523,7 +1591,7 @@ function headplot_btn_Callback(hObject, eventdata, handles)
 display_legend_dataset=strcmpi(get(handles.menu_legend_dataset,'Checked'),'on');
 display_legend_epoch=strcmpi(get(handles.menu_legend_epoch,'Checked'),'on');
 %output
-output=get(handles.channel_listbox,'Userdata');
+output=fetch_data_for_tables(handles);
 %peakdir
 peakdir=get(handles.peakdir_popup,'Value');
 %x1
