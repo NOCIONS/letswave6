@@ -521,16 +521,37 @@ update(handles);
 
 
 
+
+
+
 function find_plugins(handles,p);
 %search for plugins
 disp(['Searching for plugins in : ' p filesep 'plugins']);
-tp=dir([p filesep 'plugins' filesep 'LW' filesep '*.m']);
+tp=dir([p filesep 'plugins' filesep '*.plugin']);
 if length(tp)>0;
-   disp('Plugins found in the plugins folder.');
-   for i=1:length(tp);
-       %load the plugins
-   end;
+    disp('Some plugins were found');
+    plugOrder = 1:length(tp);
+    %1.load the pluggins once to get the description names to allow
+    %sorting the plugins based on description (it makes it easier to
+    %navigate through pluggins when there are a bunch of them.
+    pluginDescription={};
+    for i=1:length(tp);
+        load([p filesep 'plugins' filesep tp(plugOrder(i)).name],'-mat');
+        pluginDescription{i} = plugin_data.string;
+    end
+    %sort pluggins description disregarding capitalized first letter
+    [dumy plugOrder] = sort(lower(pluginDescription));
+    %2. load pluggins in the order specified by plugin description.
+    st={};
+    for i=1:length(tp);
+        load([p filesep 'plugins' filesep tp(plugOrder(i)).name],'-mat');
+        disp(['Found : ' plugin_data.string]);
+        fh=uimenu(handles.mb_plugin,'Label',plugin_data.string,'Callback',{@plugin_callback,i},'UserData',plugin_data.function);
+        st{i}=plugin_data.function;
+    end;
+    set(handles.mb_plugin,'UserData',st);
 end;
+%%%%%%%%%%%%
 
 
 
@@ -931,6 +952,24 @@ if header.datasize(5)==1;
 else
     CGLW_multi_viewer_maps(cb,inputfiles,send_update_status(handles));
 end;
+
+
+%***************
+%plugin function
+function plugin_callback(src,evt,plugin_index);
+handles=guidata(src);
+try
+   inputfiles=getfiles(handles);
+catch
+   inputfiles={};
+end
+disp(inputfiles);
+cb='test';
+st=get(handles.mb_plugin,'UserData');
+eval_st=[st{plugin_index} '(cb,inputfiles)']
+eval(eval_st);
+%*************
+
 
 
 
@@ -1371,3 +1410,10 @@ function reference_manual_menu_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 web https://github.com/NOCIONS/letswave6/wiki -browser
+
+
+% --------------------------------------------------------------------
+function mb_plugin_Callback(hObject, eventdata, handles)
+% hObject    handle to mb_plugin (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)

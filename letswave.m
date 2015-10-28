@@ -29,9 +29,7 @@ addpath([p filesep 'external' filesep 'pica']);
 addpath([p filesep 'external' filesep 'visualisationmodule']);
 addpath([p filesep 'external' filesep 'csd_maker']);
 addpath([p filesep 'external' filesep 'neurone']);
-addpath([p filesep 'plugins' filesep 'RLW']);
-addpath([p filesep 'plugins' filesep 'LW']);
-addpath([p filesep 'plugins' filesep 'GLW']);
+addpath([p filesep 'plugins']);
 %experimental
 if isempty(varargin);
 else
