@@ -2,7 +2,7 @@ function varargout = CGLW_multi_viewer_continuous(varargin)
 % CGLW_MULTI_VIEWER_CONTINUOUS MATLAB code for CGLW_multi_viewer_continuous.fig
 
 
-% Last Modified by GUIDE v2.5 31-Oct-2015 14:13:49
+% Last Modified by GUIDE v2.5 31-Oct-2015 12:59:17
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -67,9 +67,6 @@ for i=1:length(st);
 end;
 set(handles.dataset_popup,'UserData',datasets_header);
 set(handles.epoch_popup,'UserData',datasets_data);
-%set default y_scale
-tp=max(abs(datasets_data(1).data(:)));
-set(handles.y_scale_edit,'String',num2str(tp));
 %dataset_listbox
 st={};
 for i=1:length(datasets_header);
@@ -81,19 +78,11 @@ update_popups(handles);
 fetch_data(handles);
 update_graph(handles);
 addlistener(handles.axes,'YLim','PostSet',@(hAxes,eventData) axis_was_changed(handles));
-grid on;
-
-
 
 
 function axis_was_changed(handles);
 a=axis(handles.axes);
 set(handles.x_start_edit,'String',num2str(a(1)));
-set(handles.x_width_edit,'String',num2str(a(2)-a(1)));
-%set(handles.y_scale_edit,'String',num2str(a(4)-a(3)));
-
-
-
 
 
 
@@ -141,12 +130,11 @@ selected_events=get(handles.reposition_btn,'UserData');
 if isempty(selected_events);
 else
     hold(handles.axes,'on');
-    y=str2num(get(handles.y_scale_edit,'String'));
     for i=1:length(selected_events);
-        event_plot_handles{i}=plot([selected_events(i).latency selected_events(i).latency],[-y y],'r:','LineWidth',2);
+        plot([selected_events
     end;
     hold(handles.axes,'off');
-    set(handles.x_width_edit,'Userdata',event_plot_handles);
+    
 end;
 %update_axis
 update_axis(handles);
@@ -161,14 +149,6 @@ x2=x1+str2num(get(handles.x_width_edit,'String'));
 y_scale=str2num(get(handles.y_scale_edit,'String'));
 y1=-y_scale;
 y2=y_scale;
-%events
-event_handles=get(handles.x_width_edit,'Userdata');
-if isempty(event_handles);
-else
-    for i=1:length(event_handles);
-        set(event_handles{i},'YData',[y1 y2]);
-    end;
-end;
 %axis
 axis(handles.axes,[x1 x2 y1 y2]);
 
@@ -486,14 +466,6 @@ function event_listbox_Callback(hObject, eventdata, handles)
 % hObject    handle to event_listbox (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-selected_events=get(handles.reposition_btn,'UserData');
-if isempty(selected_events);
-    return;
-end;
-a=selected_events(get(handles.event_listbox,'Value')).latency;
-x_width=str2num(get(handles.x_width_edit,'String'));
-set(handles.x_start_edit,'String',num2str(a-(x_width/2)));
-update_axis(handles);
 
 
 
@@ -513,7 +485,6 @@ function channel_listbox_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 update_graph(handles);
-update_axis(handles);
 
 
 
@@ -563,21 +534,3 @@ function reposition_btn_Callback(hObject, eventdata, handles)
 % hObject    handle to reposition_btn (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-update_axis(handles);
-%update_graph(handles);
-
-
-% --- Executes on button press in zoom_btn.
-function zoom_btn_Callback(hObject, eventdata, handles)
-% hObject    handle to zoom_btn (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-zoom on;
-
-
-% --- Executes on button press in pan_btn.
-function pan_btn_Callback(hObject, eventdata, handles)
-% hObject    handle to pan_btn (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-pan on;
