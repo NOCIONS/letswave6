@@ -2,7 +2,7 @@ function varargout = CGLW_multi_viewer_continuous(varargin)
 % CGLW_MULTI_VIEWER_CONTINUOUS MATLAB code for CGLW_multi_viewer_continuous.fig
 
 
-% Last Modified by GUIDE v2.5 31-Oct-2015 14:13:49
+% Last Modified by GUIDE v2.5 01-Nov-2015 07:22:49
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -70,6 +70,12 @@ set(handles.epoch_popup,'UserData',datasets_data);
 %set default y_scale
 tp=max(abs(datasets_data(1).data(:)));
 set(handles.y_scale_edit,'String',num2str(tp));
+%set default DS
+SR=1/datasets_header(1).header.xstep;
+DS=fix(SR/256);
+if DS>1
+    set(handles.DS_edit,'String',num2str(DS));
+end;
 %dataset_listbox
 st={};
 for i=1:length(datasets_header);
@@ -108,6 +114,11 @@ datas=get(handles.epoch_popup,'UserData');
 %tpx
 data.tpx=1:header.datasize(6);
 data.tpx=((data.tpx-1)*header.xstep)+header.xstart;
+%downsample?
+DS=fix(str2num(get(handles.DS_edit,'String')));
+if DS>1;
+    data.tpx=downsample(data.tpx,DS);
+end;
 %epoch_pos
 epoch_pos=get(handles.epoch_popup,'Value');
 %index_pos
@@ -126,14 +137,71 @@ else
     z=str2num(get(handles.z_edit,'String'));
     dz=((z-header.zstart)*header.zstep)+1;
 end;
-%tpy
+%data.tpy
 data.tpy=squeeze(datas(dataset_pos).data(epoch_pos,:,index_pos,dy,dz,:));
+%filter?
+low_chk=get(handles.low_chk,'Value');
+high_chk=get(handles.high_chk,'Value');
+if and(low_chk,high_chk);
+    Fs=1/header.xstep;
+    fnyquist=Fs/2;
+    low_value=str2num(get(handles.low_filter_edit,'String'));
+    high_value=str2num(get(handles.high_filter_edit,'String'));
+    [bLow,aLow]=butter(2,high_value/fnyquist,'low');
+    [bHigh,aHigh]=butter(2,low_value/fnyquist,'high');
+    b=[bLow;bHigh];
+    a=[aLow;aHigh];
+    for chanpos=1:size(data.tpy,1);
+        data.tpy(chanpos,:)=filtfilt(b(1,:),a(1,:),data.tpy(chanpos,:));
+        data.tpy(chanpos,:)=filtfilt(b(2,:),a(2,:),data.tpy(chanpos,:));
+    end;
+end;
+if or(low_chk,high_chk);
+    Fs=1/header.xstep;
+    fnyquist=Fs/2;
+    if high_chk;
+        high_value=str2num(get(handles.high_filter_edit,'String'));
+        [b,a]=butter(4,high_value/fnyquist,'low');
+    end;
+    if low_chk;
+        low_value=str2num(get(handles.low_filter_edit,'String'));
+        [b,a]=butter(4,low_value/fnyquist,'high');
+    end;
+    for chanpos=1:size(data.tpy,1);
+        data.tpy(chanpos,:)=filtfilt(b,a,data.tpy(chanpos,:));
+    end;
+end;
+%notch filter?
+notch=get(handles.notch_popup,'Value');
+if notch==2;
+    %50 Hz notch
+    Fs=1/header.xstep;
+    fnyquist=Fs/2;
+    [b,a]=butter(4,[48/fnyquist 52/fnyquist],'stop');
+    for chanpos=1:size(data.tpy,1);
+        data.tpy(chanpos,:)=filtfilt(b,a,data.tpy(chanpos,:));
+    end;
+end;
+if notch==3;
+    %60 Hz notch
+    Fs=1/header.xstep;
+    fnyquist=Fs/2;
+    [b,a]=butter(4,[58/fnyquist 62/fnyquist],'stop');
+    for chanpos=1:size(data.tpy,1);
+        data.tpy(chanpos,:)=filtfilt(b,a,data.tpy(chanpos,:));
+    end;
+end;
+%DS
+if DS>1
+    data.tpy=downsample(data.tpy',DS)';
+end;
 set(handles.event_listbox,'UserData',data);
 set(handles.y_scale_edit,'UserData',header);
 %selected_channels
 selected_channels=get(handles.channel_listbox,'Value');
 %plot
 a=plot(handles.axes,data.tpx,data.tpy(selected_channels,:));
+grid on;
 set(handles.x_start_edit,'UserData',a);
 pan on;
 %plot events
@@ -581,3 +649,119 @@ function pan_btn_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 pan on;
+
+
+
+function DS_edit_Callback(hObject, eventdata, handles)
+% hObject    handle to DS_edit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+fetch_data(handles);
+update_graph(handles);
+
+
+
+
+
+% --- Executes during object creation, after setting all properties.
+function DS_edit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to DS_edit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function low_filter_edit_Callback(hObject, eventdata, handles)
+% hObject    handle to low_filter_edit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+fetch_data(handles);
+update_graph(handles);
+
+
+
+
+
+% --- Executes during object creation, after setting all properties.
+function low_filter_edit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to low_filter_edit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function high_filter_edit_Callback(hObject, eventdata, handles)
+% hObject    handle to high_filter_edit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+fetch_data(handles);
+update_graph(handles);
+
+
+
+
+
+% --- Executes during object creation, after setting all properties.
+function high_filter_edit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to high_filter_edit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in low_chk.
+function low_chk_Callback(hObject, eventdata, handles)
+% hObject    handle to low_chk (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+fetch_data(handles);
+update_graph(handles);
+
+
+
+
+
+% --- Executes on button press in high_chk.
+function high_chk_Callback(hObject, eventdata, handles)
+% hObject    handle to high_chk (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+fetch_data(handles);
+update_graph(handles);
+
+
+% --- Executes on selection change in notch_popup.
+function notch_popup_Callback(hObject, eventdata, handles)
+% hObject    handle to notch_popup (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+fetch_data(handles);
+update_graph(handles);
+
+
+
+% --- Executes during object creation, after setting all properties.
+function notch_popup_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to notch_popup (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
