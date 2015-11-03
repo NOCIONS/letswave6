@@ -162,6 +162,7 @@ create_graph(handles);
 adjust_object_sizes(handles);
 %update graph cursors
 update_graph_cursors(handles);
+disp('THIS IS OVERRIDE');
 
 
 
@@ -540,7 +541,7 @@ for col_pos=1:num_cols;
                 case 1
                     userdata.plot_handle(row_pos,col_pos,wave_pos).handle=plot(userdata.axes_handle(row_pos,col_pos),squeeze(output.tpdata_x(row_pos,col_pos,wave_pos,:)),squeeze(output.tpdata_y(row_pos,col_pos,wave_pos,:)),'Color',linecolors(wave_pos,:));
                 case 2
-                    userdata.plot_handle(row_pos,col_pos,wave_pos).handle=stem(userdata.axes_handle(row_pos,col_pos),squeeze(output.tpdata_x(row_pos,col_pos,wave_pos,:)),squeeze(output.tpdata_y(row_pos,col_pos,wave_pos,:)),'Color',linecolors(wave_pos,:));
+                    userdata.plot_handle(row_pos,col_pos,wave_pos).handle=stem(userdata.axes_handle(row_pos,col_pos),squeeze(output.tpdata_x(row_pos,col_pos,wave_pos,:)),squeeze(output.tpdata_y(row_pos,col_pos,wave_pos,:)),'Color',linecolors(wave_pos,:),'Marker','.');
                 case 3
                     userdata.plot_handle(row_pos,col_pos,wave_pos).handle=stairs(userdata.axes_handle(row_pos,col_pos),squeeze(output.tpdata_x(row_pos,col_pos,wave_pos,:)),squeeze(output.tpdata_y(row_pos,col_pos,wave_pos,:)),'Color',linecolors(wave_pos,:));
             end;
@@ -686,7 +687,7 @@ for col_pos=1:userdata.data_num_cols;
                     case 1
                         userdata.plot_handle(row_pos,col_pos,wave_pos).handle=plot(userdata.axes_handle(row_pos,col_pos),squeeze(output.tpdata_x(row_pos,col_pos,wave_pos,:)),squeeze(output.tpdata_y(row_pos,col_pos,wave_pos,:)),'Color',userdata.linecolors(wave_pos,:));
                     case 2
-                        userdata.plot_handle(row_pos,col_pos,wave_pos).handle=stem(userdata.axes_handle(row_pos,col_pos),squeeze(output.tpdata_x(row_pos,col_pos,wave_pos,:)),squeeze(output.tpdata_y(row_pos,col_pos,wave_pos,:)),'Color',userdata.linecolors(wave_pos,:));
+                        userdata.plot_handle(row_pos,col_pos,wave_pos).handle=stem(userdata.axes_handle(row_pos,col_pos),squeeze(output.tpdata_x(row_pos,col_pos,wave_pos,:)),squeeze(output.tpdata_y(row_pos,col_pos,wave_pos,:)),'Color',userdata.linecolors(wave_pos,:),'Marker','.');
                     case 3
                         userdata.plot_handle(row_pos,col_pos,wave_pos).handle=stairs(userdata.axes_handle(row_pos,col_pos),squeeze(output.tpdata_x(row_pos,col_pos,wave_pos,:)),squeeze(output.tpdata_y(row_pos,col_pos,wave_pos,:)),'Color',userdata.linecolors(wave_pos,:));
                 end;

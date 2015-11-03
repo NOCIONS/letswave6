@@ -41,6 +41,7 @@ else
     end;
 end;
 %override
+addpath([p filesep 'override']);
 addpath([p filesep 'override' filesep 'RLW']);
 addpath([p filesep 'override' filesep 'LW']);
 addpath([p filesep 'override' filesep 'GLW']);
