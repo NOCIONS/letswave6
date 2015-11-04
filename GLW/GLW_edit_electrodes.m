@@ -171,6 +171,19 @@ end;
 chanloc_filename=get(handles.chanloc_filename_edit,'String');
 %read locs
 locs=readlocs(chanloc_filename);
+idx=[];
+for i=1:length(locs)
+    if isempty(locs(i).X);
+    else
+        idx=[idx i];
+    end;
+end;
+%[X Y Z newcenter]= chancenter( [ locs(idx).X ]', [ locs(idx).Y ]', [ locs(idx).Z ]',[0 0 0]);
+%for i=1:length(idx);
+%    locs(idx(i)).X=X(i);
+%    locs(idx(i)).Y=Y(i);
+%    locs(idx(i)).Z=Z(i);
+%end;
 %create chanlocs
 chanpos=1;
 for locpos=1:length(locs);

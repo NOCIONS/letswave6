@@ -162,7 +162,6 @@ create_graph(handles);
 adjust_object_sizes(handles);
 %update graph cursors
 update_graph_cursors(handles);
-disp('THIS IS OVERRIDE');
 
 
 
@@ -1638,6 +1637,7 @@ for datasetpos=1:length(output.selected_datasets);
     if isempty(splinefile);
         return;
     end;
+    disp(['splinefile : ' splinefile]);
     %dy
     if header.datasize(5)==1;
         dy=1;
