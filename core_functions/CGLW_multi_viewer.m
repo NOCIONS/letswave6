@@ -117,7 +117,7 @@ start(handles.timer);
 %% fig1_init
     function fig1_init()
         icon=load('multi_viewer_icon.mat');
-        handles.fig1=figure('CloseRequestFcn',@fig1_CloseReq_Callback,'Visible','off');
+        handles.fig1=figure('CloseRequestFcn',@fig1_CloseReq_Callback,'Visible','off','Color',0.94*[1,1,1]);
         set(handles.fig1,'WindowButtonDownFcn',@fig_BtnDown);
         set(handles.fig1,'WindowButtonMotionFcn',@fig_BtnMotion);
         set(handles.fig1,'WindowButtonUpFcn',@fig_BtnUp);
@@ -321,7 +321,7 @@ start(handles.timer);
         handles.filter_checkbox=uicontrol(handles.filter_panel,'style','checkbox');
         set(handles.filter_checkbox,'String','Enable');
         set(handles.filter_checkbox,'Units','pixels');
-        set(handles.filter_checkbox,'Position',[5,115,105,20]);
+        set(handles.filter_checkbox,'Position',[5,112,105,20]);
         set(handles.filter_checkbox,'Units','normalized');
         set(handles.filter_checkbox,'Value',userdata.is_filter);
         set(handles.filter_checkbox,'Callback',@edit_filter_Changed);
@@ -381,6 +381,25 @@ start(handles.timer);
         set(handles.filter_order_popup,'value',userdata.filter_order);
         set(handles.filter_order_popup,'Callback',@edit_filter_Changed);
         
+        set(handles.dataset_listbox,'backgroundcolor',[1,1,1]);
+        set(handles.epoch_listbox,'backgroundcolor',[1,1,1]);
+        set(handles.channel_listbox,'backgroundcolor',[1,1,1]);
+        set(handles.graph_row_popup,'backgroundcolor',[1,1,1]);
+        set(handles.graph_col_popup,'backgroundcolor',[1,1,1]);
+        set(handles.graph_wave_popup,'backgroundcolor',[1,1,1]);
+        set(handles.index_popup,'backgroundcolor',[1,1,1]);
+        set(handles.y_edit,'backgroundcolor',[1,1,1]);
+        set(handles.z_edit,'backgroundcolor',[1,1,1]);
+        set(handles.xaxis1_edit,'backgroundcolor',[1,1,1]);
+        set(handles.xaxis2_edit,'backgroundcolor',[1,1,1]);
+        set(handles.yaxis1_edit,'backgroundcolor',[1,1,1]);
+        set(handles.yaxis2_edit,'backgroundcolor',[1,1,1]);
+        set(handles.interval1_edit,'backgroundcolor',[1,1,1]);
+        set(handles.interval2_edit,'backgroundcolor',[1,1,1]);
+        set(handles.filter_lowpass_edit,'backgroundcolor',[1,1,1]);
+        set(handles.filter_highpass_edit,'backgroundcolor',[1,1,1]);
+        set(handles.filter_notch_popup,'backgroundcolor',[1,1,1]);
+        set(handles.filter_order_popup,'backgroundcolor',[1,1,1]);
         if userdata.is_filter==0
             set(handles.filter_lowpass_checkbox,'Enable','off');
             set(handles.filter_lowpass_edit,'Enable','off');
