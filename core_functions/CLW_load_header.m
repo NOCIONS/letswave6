@@ -2,7 +2,11 @@ function [outheader] = CLW_load_header(filename)
 
 [p,n,e]=fileparts(filename);
 %load header
-st=[p,filesep,n,'.lw6'];
+if isempty(p);
+    st=[n,'.lw6'];
+else
+    st=[p,filesep,n,'.lw6'];
+end
 load(st,'-MAT');
 outheader=header;
 %update header.name
