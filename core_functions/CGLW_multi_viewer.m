@@ -1028,6 +1028,14 @@ start(handles.timer);
                     else
                         userdata.minmax_axis=[min([x,userdata.minmax_axis(1)]),max([x,userdata.minmax_axis(2)]),min([y,userdata.minmax_axis(3)]),max([y,userdata.minmax_axis(4)])];
                     end
+                    if userdata.minmax_axis(1)==userdata.minmax_axis(2)
+                        userdata.minmax_axis(1)=userdata.minmax_axis(1)-1;
+                        userdata.minmax_axis(2)=userdata.minmax_axis(2)+1;
+                    end
+                    if userdata.minmax_axis(3)==userdata.minmax_axis(4)
+                        userdata.minmax_axis(3)=userdata.minmax_axis(3)-1;
+                        userdata.minmax_axis(4)=userdata.minmax_axis(4)+1;
+                    end
                     set(handles.line(wave_idx),'XData',x);
                     set(handles.line(wave_idx),'YData',y);
                     set(handles.line(wave_idx),'Parent',handles.axes(ax_idx));
@@ -1664,6 +1672,12 @@ start(handles.timer);
     function edit_xaxis_Changed(~, ~)
         x(1) = str2double(get(handles.xaxis1_edit, 'String'));
         x(2) = str2double(get(handles.xaxis2_edit, 'String'));
+        if x(1)==x(2)
+            x(1)=x(1)-1;
+            x(2)=x(2)+1;
+            set(handles.xaxis1_edit,'String',x(1));
+            set(handles.xaxis2_edit,'String',x(2));
+        end
         if(x(1)>x(2))
             x=x([2,1]);
             set(handles.xaxis1_edit,'String',x(1));
@@ -1681,6 +1695,12 @@ start(handles.timer);
     function edit_yaxis_Changed(~, ~)
         x(1) = str2double(get(handles.yaxis1_edit, 'String'));
         x(2) = str2double(get(handles.yaxis2_edit, 'String'));
+        if x(1)==x(2)
+            x(1)=x(1)-1;
+            x(2)=x(2)+1;
+            set(handles.yaxis1_edit,'String',x(1));
+            set(handles.yaxis2_edit,'String',x(2));
+        end
         if(x(1)>x(2))
             x=x([2,1]);
             set(handles.yaxis1_edit,'String',x(1));
@@ -1836,6 +1856,7 @@ start(handles.timer);
             userdata.last_axis(1:2)=userdata.minmax_axis(1:2);
             set(handles.xaxis1_edit,'String',num2str(userdata.last_axis(1)));
             set(handles.xaxis2_edit,'String',num2str(userdata.last_axis(2)));
+            
         end
         set(handles.axes,'XLim',userdata.last_axis(1:2));
         for k=1:userdata.num_cols*userdata.num_rows
