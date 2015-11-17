@@ -541,13 +541,12 @@ start(handles.timer);
         set(handles.graph_wave_popup,'Value',userdata.graph_style(3));
         
         CGLW_my_view_UpdataFcn;
-        v=version('-release');
-        if str2num(v(1:4))<2014
-            set(handles.fig1,'resizefcn',@fig1_SizeChangedFcn);
-            set(handles.fig2,'resizefcn',@fig2_SizeChangedFcn);
-        else
+        try
             set(handles.fig1,'SizeChangedFcn',@fig1_SizeChangedFcn);
             set(handles.fig2,'SizeChangedFcn',@fig2_SizeChangedFcn);
+        catch
+            set(handles.fig1,'resizefcn',@fig1_SizeChangedFcn);
+            set(handles.fig2,'resizefcn',@fig2_SizeChangedFcn);
         end
         set(handles.fig1,'Visible','on');
         if userdata.is_split==1
