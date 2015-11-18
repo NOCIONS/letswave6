@@ -1048,10 +1048,10 @@ start(handles.timer);
 %% fig_polarity
     function fig_polarity(~, ~)
         if strcmp(get(handles.toolbar2_polarity,'State'),'on')
-            userdata.polarity=1;
+            userdata.is_polarity=1;
             set(handles.axes,'YDir','reverse');
         else
-            userdata.polarity=0;
+            userdata.is_polarity=0;
             set(handles.axes,'YDir','normal');
         end
     end
@@ -1219,8 +1219,13 @@ start(handles.timer);
                             set(handles.point_y(wave_idx),'visible','off');
                             continue;
                         end
-                        point_pos(2)=fig_pos(4)+fig_pos(2)-(fig_pos(4)+fig_pos(2)-fig_pos(2))/...
-                            (userdata.last_axis(4)-userdata.last_axis(3))*(userdata.last_axis(4)-current_point_y);
+                        if ~userdata.is_polarity
+                            point_pos(2)=fig_pos(4)+fig_pos(2)-fig_pos(4)/...
+                                (userdata.last_axis(4)-userdata.last_axis(3))*(userdata.last_axis(4)-current_point_y);
+                        else
+                            point_pos(2)=fig_pos(2)+fig_pos(4)/...
+                                (userdata.last_axis(4)-userdata.last_axis(3))*(userdata.last_axis(4)-current_point_y);
+                        end
                         set(handles.text_y(wave_idx),'String',num2str(current_point_y,'%0.3g'));
                         c1=get(handles.text_y(wave_idx),'extent');
                         c3=[fig_pos(1)+5,point_pos(2)-c1(4)/2,c1(3),c1(4)-5];
