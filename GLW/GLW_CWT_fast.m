@@ -121,10 +121,16 @@ set(handles.segment_data_chk,'Value',configuration.parameters.segment_data);
 %event names
 st={};
 if isfield(header,'events');
-    for i=1:length(header.events);
-        st{i}=header.events(i).code;
+    if isempty(header.events);
+        st{1}='<empty>';
+        set(handles.segment_data_chk,'Enable','off');
+        set(handles.segment_data_chk,'Value',0);
+    else
+        for i=1:length(header.events);
+            st{i}=header.events(i).code;
+        end;
+        st=sort(unique(st));
     end;
-    st=sort(unique(st));
 else
     st{1}='<empty>';
     set(handles.segment_data_chk,'Enable','off');
@@ -247,9 +253,13 @@ configuration.parameters.output=st{get(handles.output_popup,'Value')};
 configuration.parameters.average_epochs=get(handles.average_epochs_chk,'Value');
 %segment data
 configuration.parameters.segment_data=get(handles.segment_data_chk,'Value');
-%event names
-st=get(handles.event_listbox,'String');
-configuration.parameters.event_name=st{get(handles.event_listbox,'Value')};
+if configuration.parameters.segment_data==1;
+    %event names
+    st=get(handles.event_listbox,'String');
+    configuration.parameters.event_name=st{get(handles.event_listbox,'Value')};
+else
+    configuration.parameters.event_name=[];  
+end;
 %x_start
 configuration.parameters.x_start=str2num(get(handles.x_start_edit,'String'));
 %x_end
