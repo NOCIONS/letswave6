@@ -605,6 +605,7 @@ for row_pos=1:size(table_data,1);
         %parse data and chanlocs according to topo_enabled
         k=1;
         vector2=[];
+        chanlocs=dataset.header.chanlocs;
         chanlocs2=chanlocs(1);
         for chanpos=1:size(chanlocs,2);
             if chanlocs(chanpos).topo_enabled==1
