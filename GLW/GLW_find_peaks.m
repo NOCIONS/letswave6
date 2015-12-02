@@ -310,7 +310,7 @@ for i=1:length(datasets);
     filename=[pwd filesep header.name];
     disp(['Saving : ' filename]);
     %save header
-    CLW_save_header(filename,[],header);
+    LW_save_header(filename,[],header);
 end;
 %close
 close(handles.figure1);
