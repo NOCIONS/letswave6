@@ -116,6 +116,9 @@ if isfield(header,'events');
 else
     return;
 end;
+if isempty(header.events);
+    return;
+end;
 %loop through events > event_string
 for eventpos=1:length(header.events);
     if isnumeric(header.events(eventpos).code)
@@ -142,6 +145,9 @@ set(handles.event_popup,'String',event_string);
 if get(handles.event_popup,'Value')>length(event_string);
     set(handles.event_popup,'Value',1);
 end;
+if  isempty(event_string);
+    set(handles.event_popup,'String',{'<empty>'});
+end;
 
 
 
@@ -155,6 +161,15 @@ datasets=get(handles.dataset_popup,'Userdata');
 header=datasets(get(handles.dataset_popup,'Value')).header;
 %event_string
 st=get(handles.event_popup,'String');
+if or(isempty(st),strcmpi(st{1},'<empty>'));
+    for i=1:header.datasize(1);
+        st{i}=[num2str(i) ' : NaN'];
+        tdata(i)=NaN;
+    end;
+    set(handles.event_listbox,'String',st);
+    set(handles.event_listbox,'Userdata',tdata);
+    return;
+end;
 event_string=st{get(handles.event_popup,'Value')};
 %init tdata
 for epochpos=1:header.datasize(1);
@@ -250,6 +265,9 @@ end;
 legend(handles.axes,legend_string);
 %tdata
 tdata=get(handles.event_listbox,'Userdata');
+if isempty(tdata);
+    return;
+end;
 peak_latencies=tdata(selected_epochs);
 %
 %plot peaks
@@ -395,6 +413,7 @@ selected_dataset=get(handles.dataset_popup,'Value');
 %header
 header=datasets(selected_dataset).header;
 %loop through events > event_string
+event_string={};
 for eventpos=1:length(header.events);
     if isnumeric(header.events(eventpos).code)
         code=num2str(header.events(eventpos).code);
