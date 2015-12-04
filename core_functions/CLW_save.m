@@ -23,9 +23,9 @@ if isfield(header,'events');
     if event_num~=0
         event_latency=[events.latency];
         [~,event_index]=sort(event_latency);
-        event_baned=[];
+        event_banned=[];
         for eventpos=1:event_num
-            if  ismember(eventpos,event_baned)
+            if  ismember(eventpos,event_banned)
                 continue;
             end
             current_code=events(event_index(eventpos)).code;
@@ -35,20 +35,20 @@ if isfield(header,'events');
                 if strcmpi(events(event_index(eventpos2)).code,current_code) &&...
                         (events(event_index(eventpos2)).epoch==current_epoch) &&...
                         (current_latency==events(event_index(eventpos2)).latency)
-                    event_baned=[event_baned,eventpos2];
+                    event_banned=[event_banned,eventpos2];
                 else
                     break;
                 end
             end
         end
-        event_baned=event_index(event_baned);
-        event_baned=[event_baned,find([events.epoch]<0)];
-        event_baned=[event_baned,find([events.epoch]>header.datasize(1))];
-        event_baned=[event_baned,find([events.latency]<header.xstart)];
-        event_baned=[event_baned,find([events.latency]>header.xstart+(header.datasize(6)-1)*header.xstep)];
-        event_baned=unique(event_baned);
-        disp(['Deleting ' num2str(length(event_baned)) ' invalid events.']);
-        header.events=events(setdiff(1:event_num,event_baned));
+        event_banned=event_index(event_banned);
+        event_banned=[event_banned,find([events.epoch]<0)];
+        event_banned=[event_banned,find([events.epoch]>header.datasize(1))];
+        event_banned=[event_banned,find([events.latency]<header.xstart)];
+        event_banned=[event_banned,find([events.latency]>header.xstart+(header.datasize(6)-1)*header.xstep)];
+        event_banned=unique(event_banned);
+        disp(['Deleting ' num2str(length(event_banned)) ' invalid events.']);
+        header.events=events(setdiff(1:event_num,event_banned));
     end
     
     %     %loop through events
