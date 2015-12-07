@@ -1,10 +1,10 @@
 function CGLW_multi_viewer(varargin)
-clc;
-figure('Visible','off');
-close all;
-file_path=which('CGLW_multi_viewer');
-[path, n, ~]=fileparts(file_path);
-varargin{2}={[path,'\avg merged_epochs_I.lw6']};
+% clc;
+% figure('Visible','off');
+% close all;
+% file_path=which('CGLW_multi_viewer');
+% [path, n, ~]=fileparts(file_path);
+% varargin{2}={[path,'\avg merged_epochs_I.lw6']};
 if isempty(varargin{2})
     return;
 end
