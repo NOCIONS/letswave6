@@ -4,7 +4,7 @@ function CGLW_multi_viewer(varargin)
 % close all;
 % file_path=which('CGLW_multi_viewer');
 % [path, n, ~]=fileparts(file_path);
-% varargin{2}={[path,'\avg merged_epochs_I.lw6']};
+% varargin{2}={[path,'\fft avg merged_epochs_I.lw6']};
 if isempty(varargin{2})
     return;
 end
@@ -37,7 +37,7 @@ CGLW_my_view_OpeningFcn;
 
 %% fig1_init
     function fig1_init()
-        icon=load('multi_viewer_icon.mat');
+        icon=load('icon.mat');
         handles.fig1=figure('CloseRequestFcn',@fig1_CloseReq_Callback,...
             'Visible','off','Color',0.94*[1,1,1]);
         set(handles.fig1,'WindowButtonDownFcn',@fig_BtnDown);
@@ -335,6 +335,8 @@ CGLW_my_view_OpeningFcn;
         set(handles.xaxis2_edit,'backgroundcolor',[1,1,1]);
         set(handles.yaxis1_edit,'backgroundcolor',[1,1,1]);
         set(handles.yaxis2_edit,'backgroundcolor',[1,1,1]);
+        set(handles.cursor_edit,'backgroundcolor',[1,1,1]);
+        
         set(handles.interval1_edit,'backgroundcolor',[1,1,1]);
         set(handles.interval2_edit,'backgroundcolor',[1,1,1]);
         set(handles.filter_lowpass_edit,'backgroundcolor',[1,1,1]);
@@ -354,7 +356,7 @@ CGLW_my_view_OpeningFcn;
 
 %% fig2_init
     function fig2_init()
-        icon=load('multi_viewer_icon.mat');
+        icon=load('icon.mat');
         handles.fig2=figure('CloseRequestFcn',@fig2_CloseReq_Callback,'Visible','off');
         set(handles.fig2,'WindowButtonDownFcn',@fig_BtnDown);
         set(handles.fig2,'WindowButtonMotionFcn',@fig_BtnMotion);
@@ -2060,8 +2062,14 @@ CGLW_my_view_OpeningFcn;
         col_headers{10}='y1';
         col_headers{11}='x2';
         col_headers{12}='y2';
-        h=figure;
-        uitable(h,'Data',table_data,'ColumnName',col_headers,'Units','normalized','Position', [0 0 1 1]);
+        h = figure('name','LW_Table','numbertitle','off');
+        set(h,'MenuBar','none');
+        set(h,'DockControls','off');
+        pos=get(h,'position');
+        uitable(h,'position',[1,40,pos(3),pos(4)-40],'Data',table_data,'ColumnName',col_headers,'Units','normalized','Position', [0 0 1 1]);
+        btn=uicontrol('style','pushbutton','position',[1,1,pos(3),39],...
+            'string','send the table to workspace');
+        set(btn,'callback',@(src,eventdata)assignin('base','lw_table',table_data));
     end
 
 %% fig_axis_Changed
@@ -2228,19 +2236,21 @@ CGLW_my_view_OpeningFcn;
 
 %% set_header_filter
     function set_header_filter()
-        for k=1:length(datasets_header)
-            Fs=1/datasets_header(k).header.xstep;
-            if userdata.is_filter_low
-                [datasets_header(k).header.filter_low_b,datasets_header(k).header.filter_low_a]=butter(userdata.filter_order,userdata.filter_low/(Fs/2),'low');
-            end
-            if userdata.is_filter_high
-                [datasets_header(k).header.filter_high_b,datasets_header(k).header.filter_high_a]=butter(userdata.filter_order,userdata.filter_high/(Fs/2),'high');
-            end
-            if userdata.is_filter_notch
-                if userdata.filter_notch==1 %50Hz
-                    [datasets_header(k).header.filter_notch_b,datasets_header(k).header.filter_notch_a]=butter(userdata.filter_order,[48,52]/(Fs/2),'stop');
-                else %60Hz
-                    [datasets_header(k).header.filter_notch_b,datasets_header(k).header.filter_notch_a]=butter(userdata.filter_order,[58,62]/(Fs/2),'stop');
+        if userdata.is_filter
+            for k=1:length(datasets_header)
+                Fs=1/datasets_header(k).header.xstep;
+                if userdata.is_filter_low
+                    [datasets_header(k).header.filter_low_b,datasets_header(k).header.filter_low_a]=butter(userdata.filter_order,userdata.filter_low/(Fs/2),'low');
+                end
+                if userdata.is_filter_high
+                    [datasets_header(k).header.filter_high_b,datasets_header(k).header.filter_high_a]=butter(userdata.filter_order,userdata.filter_high/(Fs/2),'high');
+                end
+                if userdata.is_filter_notch
+                    if userdata.filter_notch==1 %50Hz
+                        [datasets_header(k).header.filter_notch_b,datasets_header(k).header.filter_notch_a]=butter(userdata.filter_order,[48,52]/(Fs/2),'stop');
+                    else %60Hz
+                        [datasets_header(k).header.filter_notch_b,datasets_header(k).header.filter_notch_a]=butter(userdata.filter_order,[58,62]/(Fs/2),'stop');
+                    end
                 end
             end
         end
