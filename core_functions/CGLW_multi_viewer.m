@@ -1548,7 +1548,7 @@ CGLW_my_view_OpeningFcn;
                 end
                 header=datasets_header(userdata.selected_datasets(dataset_index)).header;
                 t=(0:header.datasize(6)-1)*header.xstep+header.xstart;
-                if isempty(header.indices)
+                if isempty(header.spl.indices)
                     P=zeros(length(userdata.POS),1);
                     for epoch_index=1:length(userdata.selected_epochs)
                         ax_idx=ax_idx+1;
@@ -1561,7 +1561,7 @@ CGLW_my_view_OpeningFcn;
                     [index_pos,y_pos,z_pos]=get_iyz_pos(header);
                     [~,b]=min(abs(t-userdata.cursor_point));
                     data=squeeze(datasets_data(userdata.selected_datasets(dataset_index)).data...
-                        (:,header.indices,index_pos,z_pos,y_pos,b));
+                        (:,header.spl.indices,index_pos,z_pos,y_pos,b));
                     for epoch_index=1:length(userdata.selected_epochs)
                         ax_idx=ax_idx+1;
                         if(ax_idx>ax_num)
@@ -1570,7 +1570,7 @@ CGLW_my_view_OpeningFcn;
                         values=data(userdata.selected_epochs(epoch_index),:);
                         enum = length(values);
                         meanval = mean(values); values = values - meanval;
-                        P=header.gx*pinv([(header.G + 0.1);ones(1,enum)]) * [values(:);0]+meanval;
+                        P=header.spl.gx*pinv([(header.spl.G + 0.1);ones(1,enum)]) * [values(:);0]+meanval;
                         set( handles.surface_headplot(ax_idx),'FaceVertexCdata',P);
                     end
                 end
@@ -1755,9 +1755,9 @@ CGLW_my_view_OpeningFcn;
                     if(ax_idx>ax_num)
                         break;
                     end
-                    set( handles.dot_headplot(ax_idx),'XData',header.newElect(:,1));
-                    set( handles.dot_headplot(ax_idx),'YData',header.newElect(:,2));
-                    set( handles.dot_headplot(ax_idx),'ZData',header.newElect(:,3));
+                    set( handles.dot_headplot(ax_idx),'XData',header.spl.newElect(:,1));
+                    set( handles.dot_headplot(ax_idx),'YData',header.spl.newElect(:,2));
+                    set( handles.dot_headplot(ax_idx),'ZData',header.spl.newElect(:,3));
                 end
             end
             fig_headplot_Update();

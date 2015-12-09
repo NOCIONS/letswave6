@@ -47,10 +47,10 @@ newElect(k,:)=mean(POS(I(k,1:20),:))+M./norm(M)*5;
 end
 
 gx = fastcalcgx(x,y,z,Xe,Ye,Ze);
-header.G=G;
-header.gx=gx;
-header.indices=indices;
-header.newElect=newElect;
+header.spl.G=G;
+header.spl.gx=gx;
+header.spl.indices=indices;
+header.spl.newElect=newElect;
 
 
 
