@@ -1,4 +1,4 @@
-function [out_header,out_data,message_string]=RLW_merge_epochs(datasets,merge_idx);
+function [out_header,out_data,message_string]=RLW_merge_epochs(datasets,merge_idx)
 %RLW_merge_epochs
 %
 %Merge epochs
@@ -57,11 +57,11 @@ if length(merge_idx)>1;
             return;
         end;
         
-        %merge data
-        out_data=cat(1,out_data,datasets(merge_idx(merge_pos)).data);
-        
         %number of epochs
         num_epochs=size(out_data,1);
+        
+        %merge data
+        out_data=cat(1,out_data,datasets(merge_idx(merge_pos)).data);
         
         %header
         header=datasets(merge_idx(merge_pos)).header;
