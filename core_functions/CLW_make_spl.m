@@ -42,15 +42,22 @@ z = spherePOS(:,3);
 [~,I]=sort(dist([Xe Ye Ze],spherePOS'),2);
 center=[0,0,-100];
 for k=1:enum
-M=mean(POS(I(k,1:20),:))-center;
-newElect(k,:)=mean(POS(I(k,1:20),:))+M./norm(M)*5;
+    M=mean(POS(I(k,1:20),:))-center;
+    newElect(k,:)=mean(POS(I(k,1:20),:))+M./norm(M)*5;
 end
 
 gx = fastcalcgx(x,y,z,Xe,Ye,Ze);
+<<<<<<< HEAD
 header.spl.G=G;
 header.spl.gx=gx;
 header.spl.indices=indices;
 header.spl.newElect=newElect;
+=======
+header.GG=gx*pinv([(G + 0.1);ones(1,length(indices))]);
+header.indices=indices;
+header.newElect=newElect;
+end
+>>>>>>> origin/master
 
 
 
@@ -58,9 +65,10 @@ function [out] = calcgx(in)
 out = zeros(size(in));
 m = 4;       % 4th degree Legendre polynomial
 for n = 1:7  % compute 7 terms
-    out = out + ((2*n+1)/(n^m*(n+1)^m))*CLW_legendre(n,in);
+    out = out + ((2*n+1)/(n^m*(n+1)^m))*my_legendre(n,in);
 end
 out = out/(4*pi);
+end
 
 
 %%%%%%%%%%%%%%%%%%%
@@ -73,7 +81,36 @@ EI = onemat - sqrt((repmat(x,1,length(Xe)) - repmat(Xe',length(x),1)).^2 +...
 gx = zeros(length(x),length(Xe));
 m = 4;
 for n = 1:7
-    gx = gx + ((2*n+1)/(n^m*(n+1)^m))*CLW_legendre(n,EI);
+    gx = gx + ((2*n+1)/(n^m*(n+1)^m))*my_legendre(n,EI);
 end
 gx = gx/(4*pi);
+end
+
+function y=my_legendre(n,x)
+switch n
+    case 0
+        p=1;
+    case 1
+        p=[1,0];
+    case 2
+        p=[3 0 -1]/2;
+    case 3
+        p=[5 0 -3 0]/2;
+    case 4
+        p=[35 0 -30 0 3]/8;
+    case 5
+        p=[63 0 -70 0 15 0]/8;
+    case 6
+        p=[231 0 -315 0 105 0 -5]/16;
+    case 7
+        p=[429 0 -693 0 315 0 -35 0]/16;
+    case 8
+        p=[6435 0 -12012 0 6930 0 -1260 0 35]/128;
+    case 9
+        p=[12155 0 -25740 0 18018 0 -4620 0 315 0]/128;
+    case 10
+        p=[46189 0 -109395 0 90090 0 -30030 0 3465 0 -63]/256;
+end
+y=polyval(p,x);
+end
 
