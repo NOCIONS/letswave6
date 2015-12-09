@@ -1579,14 +1579,8 @@ CGLW_my_view_OpeningFcn;
                             break;
                         end
                         values=data(userdata.selected_epochs(epoch_index),:);
-<<<<<<< HEAD
-                        enum = length(values);
-                        meanval = mean(values); values = values - meanval;
-                        P=header.spl.gx*pinv([(header.spl.G + 0.1);ones(1,enum)]) * [values(:);0]+meanval;
-=======
                         meanval = mean(values);
-                        P=header.GG* [values(:)- meanval;0]+meanval;
->>>>>>> origin/master
+                        P=header.spl.GG*[values(:)- meanval;0]+meanval;
                         set( handles.surface_headplot(ax_idx),'FaceVertexCdata',P);
                     end
                 end
