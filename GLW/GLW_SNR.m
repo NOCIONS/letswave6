@@ -184,7 +184,7 @@ st=get(handles.operation_popup,'Userdata');
 configuration.parameters.operation=st{get(handles.operation_popup,'Value')};
 %xstart,xend
 configuration.parameters.xstart=str2num(get(handles.xstart_edit,'String'));
-configuraiton.parameters.xend=str2num(get(handles.xend_edit,'String'));
+configuration.parameters.xend=str2num(get(handles.xend_edit,'String'));
 %num_extreme
 configuration.parameters.num_extreme=str2num(get(handles.num_extreme_edit,'String'));
 %!!!
