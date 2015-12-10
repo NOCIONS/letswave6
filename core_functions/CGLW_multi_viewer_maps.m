@@ -1023,16 +1023,16 @@ plotpos=1;
 for datasetpos=1:length(output.selected_datasets);
     %header
     header=datasets_header(output.selected_datasets(datasetpos)).header;
-    %splinefile
-    st='LW_headmodel_compute';
-    for i=1:length(header.history);
-        if strcmpi(st,header.history(i).configuration.gui_info.function_name);
-            splinefile=header.history(i).configuration.parameters.spl_filename;
-        end;
-    end;
-    if isempty(splinefile);
-        return;
-    end;
+%     %splinefile
+%     st='LW_headmodel_compute';
+%     for i=1:length(header.history);
+%         if strcmpi(st,header.history(i).configuration.gui_info.function_name);
+%             splinefile=header.history(i).configuration.parameters.spl_filename;
+%         end;
+%     end;
+%     if isempty(splinefile);
+%         return;
+%     end;
     %dz
     if header.datasize(4)==1;
         dz=1;
@@ -1101,8 +1101,9 @@ for datasetpos=1:length(output.selected_datasets);
                chanlocs2(k)=chanlocs(chanpos);
                k=k+1;
            end;
-       end;
-       headplot(vector2,splinefile,'maplimits',[cmin cmax]);
+       end
+       CLW_headplot(vector2,header,'maplimits',[cmin cmax]);
+       %headplot(vector2,splinefile,'maplimits',[cmin cmax]);
        %camera
        st=get(handles.camera_popup,'String');
        a=get(handles.camera_popup,'Value');

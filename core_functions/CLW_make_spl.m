@@ -47,9 +47,7 @@ for k=1:enum
 end
 
 gx = fastcalcgx(x,y,z,Xe,Ye,Ze);
-header.spl.G=G;
 header.spl.GG=gx*pinv([(G + 0.1);ones(1,length(indices))]);
-header.spl.gx=gx;
 header.spl.indices=indices;
 header.spl.newElect=newElect;
 

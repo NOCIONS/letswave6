@@ -217,7 +217,7 @@ for row_pos=1:num_rows;
                 tpdata_mean=squeeze(mean(tpdata_y(:,row_pos,wavepos,:),1));
                 h(wavepos)=plot(squeeze(tpdata_x(1,row_pos,1,:)),tpdata_mean,'Color',linecolors(wavepos,:));
             case 2 %mean_sd
-                %calculate mean ± sd
+                %calculate mean ?sd
                 tpdata_mean=zeros([1 size(tpdata_y,4)]);
                 tpdata_sd=zeros([1 size(tpdata_y,4)]);
                 tpdata_mean=squeeze(mean(tpdata_y(:,row_pos,wavepos,:),1));
@@ -225,12 +225,12 @@ for row_pos=1:num_rows;
                 h(wavepos)=plot(squeeze(tpdata_x(1,row_pos,1,:)),tpdata_mean,'Color',linecolors(wavepos,:));
                 shadedErrorBar(tpdata_x(1,row_pos,1,:),tpdata_mean,tpdata_sd,{'color',squeeze(linecolors(wavepos,:))},1);
             case 3 %median
-                %calculate median ± iqr
+                %calculate median ?iqr
                 tpdata_mean=zeros([1 size(tpdata_y,4)]);
                 tpdata_mean=squeeze(median(tpdata_y(:,row_pos,wavepos,:),1));
                 h(wavepos)=plot(squeeze(tpdata_x(1,row_pos,1,:)),tpdata_mean,'Color',linecolors(wavepos,:));
             case 4 %median_iqr
-                %calculate median ± iqr
+                %calculate median ?iqr
                 tpdata_mean=zeros([1 size(tpdata_y,4)]);
                 tpdata_sd=zeros([2 size(tpdata_y,4)]);
                 tpdata_mean=squeeze(median(tpdata_y(:,row_pos,wavepos,:),1));
@@ -1037,16 +1037,16 @@ plotpos=1;
 for datasetpos=1:length(output.selected_datasets);
     %header
     header=datasets_header(output.selected_datasets(datasetpos)).header;
-    %splinefile
-    st='LW_headmodel_compute';
-    for i=1:length(header.history);
-        if strcmpi(st,header.history(i).configuration.gui_info.function_name);
-            splinefile=header.history(i).configuration.parameters.spl_filename;
-        end;
-    end;
-    if isempty(splinefile);
-        return;
-    end;
+%     %splinefile
+%     st='LW_headmodel_compute';
+%     for i=1:length(header.history);
+%         if strcmpi(st,header.history(i).configuration.gui_info.function_name);
+%             splinefile=header.history(i).configuration.parameters.spl_filename;
+%         end;
+%     end;
+%     if isempty(splinefile);
+%         return;
+%     end;
     %dy
     if header.datasize(5)==1;
         dy=1;
@@ -1100,7 +1100,8 @@ for datasetpos=1:length(output.selected_datasets);
                k=k+1;
            end;
        end;
-       headplot(vector2,splinefile,'maplimits',[cmin cmax]);
+       CLW_headplot(vector2,header,'maplimits',[cmin cmax]);
+       %headplot(vector2,splinefile,'maplimits',[cmin cmax]);
        %camera
        st=get(handles.camera_popup,'String');
        a=get(handles.camera_popup,'Value');

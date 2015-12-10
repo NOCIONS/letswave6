@@ -1637,7 +1637,7 @@ CGLW_my_view_OpeningFcn;
             for dataset_index=1:length(userdata.selected_datasets)
                 header=datasets_header(userdata.selected_datasets(dataset_index)).header;
                 t=(0:header.datasize(6)-1)*header.xstep+header.xstart;
-                if isempty(header.indices)
+                if isempty(header.spl.indices)
                     P=zeros(length(userdata.POS),1);
                     for epoch_index=1:length(userdata.selected_epochs)
                         ax_idx=ax_idx+1;
@@ -1650,17 +1650,17 @@ CGLW_my_view_OpeningFcn;
                     [index_pos,y_pos,z_pos]=get_iyz_pos(header);
                     [~,b]=min(abs(t-userdata.cursor_point));
                     data=squeeze(datasets_data(userdata.selected_datasets(dataset_index)).data...
-                        (:,header.indices,index_pos,z_pos,y_pos,b));
+                        (:,header.spl.indices,index_pos,z_pos,y_pos,b));
                     for epoch_index=1:length(userdata.selected_epochs)
                         ax_idx=ax_idx+1;
-                        set( dot_headplot(ax_idx),'XData',header.newElect(:,1));
-                        set( dot_headplot(ax_idx),'YData',header.newElect(:,2));
-                        set( dot_headplot(ax_idx),'ZData',header.newElect(:,3));
+                        set( dot_headplot(ax_idx),'XData',header.spl.newElect(:,1));
+                        set( dot_headplot(ax_idx),'YData',header.spl.newElect(:,2));
+                        set( dot_headplot(ax_idx),'ZData',header.spl.newElect(:,3));
                         str=[char(userdata.str_dataset(userdata.selected_datasets(dataset_index))),' [',num2str(epoch_index),']'];
                         title_headplot(ax_idx)=title(axes_headplot(ax_idx),str,'Interpreter','none');
                         values=data(userdata.selected_epochs(epoch_index),:);
                         meanval = mean(values); values = values - meanval;
-                        P=header.GG * [values(:);0]+meanval;
+                        P=header.spl.GG * [values(:);0]+meanval;
                         set( surface_headplot(ax_idx),'FaceVertexCdata',P);
                     end
                 end
