@@ -55,7 +55,7 @@ for chanpos=1:length(channel_labels);
         header_chanlocs(chanpos).X=chanlocs(a).X;
         header_chanlocs(chanpos).Y=chanlocs(a).Y;
         header_chanlocs(chanpos).Z=chanlocs(a).Z;
-        header_chanlocs(chanpos).topo_enabled=1;
+        header_chanlocs(chanpos).topo_enabled=chanlocs(a).topo_enabled;
         header_chanlocs(chanpos).SEEG_enabled=0;
     end;
 end;
