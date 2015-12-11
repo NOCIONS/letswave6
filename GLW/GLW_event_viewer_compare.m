@@ -588,18 +588,10 @@ CLim=[0 0.1];
 if plot_2D==1;
     h=topoplot(vector,chanlocs,'gridscale',128,'shading','interp','whitebk','on','maplimits',CLim);
 else
-    %filename_spl
-    spl_filename=[];
-    history=output.header.history;
-    for i=1:length(history);
-        if strcmpi(history(i).configuration.gui_info.function_name,'LW_headmodel_compute');
-            spl_filename=history(i).configuration.parameters.spl_filename;
-        end;
-    end;
-    if isempty(spl_filename);
-        return;
-    end;
-    h=headplot(vector,spl_filename,'maplimits',CLim);
+    %spl
+    output.header=CLW_make_spl(output.header);
+    %headplot
+    CLW_headplot(vector,output.header,'maplimits',CLim);
 end;
 title('p');
 %$$$ h $$$
@@ -612,10 +604,7 @@ CLim=[0 1];
 if plot_2D==1;
     h=topoplot(vector,chanlocs,'gridscale',128,'shading','interp','whitebk','on','maplimits',CLim);
 else
-    if isempty(spl_filename);
-        return;
-    end;
-    h=headplot(vector,spl_filename,'maplimits',CLim);
+    CLW_headplot(vector,output.header,'maplimits',CLim);
 end;
 title('h');
 %$$$ mean1 $$$
@@ -628,10 +617,7 @@ CLim=[str2num(get(handles.cmin_edit,'String')) str2num(get(handles.cmax_edit,'St
 if plot_2D==1;
     h=topoplot(vector,chanlocs,'gridscale',128,'shading','interp','whitebk','on','maplimits',CLim);
 else
-    if isempty(spl_filename);
-        return;
-    end;
-    h=headplot(vector,spl_filename,'maplimits',CLim);
+    CLW_headplot(vector,output.header,'maplimits',CLim);
 end;
 title('mean1');
 %$$$ mean2 $$$
@@ -643,10 +629,7 @@ vector=double(squeeze(output.mean2(chan_idx,indexpos,dz,dy)));
 if plot_2D==1;
     h=topoplot(vector,chanlocs,'gridscale',128,'shading','interp','whitebk','on','maplimits',CLim);
 else
-    if isempty(spl_filename);
-        return;
-    end;
-    h=headplot(vector,spl_filename,'maplimits',CLim);
+    CLW_headplot(vector,output.header,'maplimits',CLim);
 end;
 title('mean2');
 set(gcf,'color',[1 1 1]);

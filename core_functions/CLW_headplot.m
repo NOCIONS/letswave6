@@ -35,7 +35,10 @@ if isempty(chan_used)
     header=RLW_edit_electrodes(header,userdata.chanlocs);
 end
 load('headmodel.mat');
-header=CLW_make_spl(header);
+if isfield(header,'spl');
+else
+    header=CLW_make_spl(header);
+end;
 if length(vector)~=length(header.spl.indices)
     error('problem of index or electrode number with splinefile');
 end

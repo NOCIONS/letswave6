@@ -229,7 +229,7 @@ for row_pos=1:size(table_data,1);
         end;
         %subplot
         subplot(size(table_data,1),length(dxi),((row_pos-1)*length(dxi))+i);
-        %headplot
+        %topoplot
         CLW_topoplot(dataset.header,dataset.data,epoch_pos,index_pos,fdxi,dy,dz,'maplimits',[cmin cmax]);
         %title
         title(gca,num2str(xi(i)));
@@ -554,12 +554,12 @@ for row_pos=1:size(table_data,1);
     dataset_pos=table_data(row_pos,1);
     dataset=datasets(dataset_pos);
     %splinefile
-    st='LW_headmodel_compute';
-    for i=1:length(dataset.header.history);
-        if strcmpi(st,dataset.header.history(i).configuration.gui_info.function_name);
-            splinefile=dataset.header.history(i).configuration.parameters.spl_filename;
-        end;
-    end;
+    %st='LW_headmodel_compute';
+    %for i=1:length(dataset.header.history);
+    %    if strcmpi(st,dataset.header.history(i).configuration.gui_info.function_name);
+    %        splinefile=dataset.header.history(i).configuration.parameters.spl_filename;
+    %    end;
+    %end;
     %epoch_pos
     epoch_pos=table_data(row_pos,2);
     %index_pos
@@ -587,6 +587,8 @@ for row_pos=1:size(table_data,1);
     %dxi1,dxi2 (tolerance)
     dxi1=dxi-floor(tolerance/2);
     dxi2=dxi+ceil(tolerance/2);
+    %spl
+    dataset.header=CLW_make_spl(dataset.header);
     %loop through dxi
     for i=1:length(dxi);
         %find max_dxi
@@ -615,7 +617,7 @@ for row_pos=1:size(table_data,1);
             end;
         end;
         %headplot
-        headplot(vector2,splinefile,'maplimits',[cmin cmax]);
+        CLW_headplot(vector2,dataset.header,'maplimits',[cmin cmax]);
         %title
         title(gca,num2str(xi(i)));
         %viewpoint

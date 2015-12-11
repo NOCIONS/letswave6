@@ -1,8 +1,7 @@
-function varargout = CGLW_multi_viewer_figure(varargin)
-% CGLW_MULTI_VIEWER_FIGURE MATLAB code for CGLW_multi_viewer_figure.fig
-% Edit the above text to modify the response to help CGLW_multi_viewer_figure
+function varargout = CGLW_multi_viewer_figure_average(varargin)
+% CGLW_MULTI_VIEWER_FIGURE_AVERAGE MATLAB code for CGLW_multi_viewer_figure_average.fig
+% Edit the above text to modify the response to help CGLW_multi_viewer_figure_average
 %
-
 
 
 
@@ -14,8 +13,8 @@ function varargout = CGLW_multi_viewer_figure(varargin)
 gui_Singleton = 0;
 gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @CGLW_multi_viewer_figure_OpeningFcn, ...
-                   'gui_OutputFcn',  @CGLW_multi_viewer_figure_OutputFcn, ...
+                   'gui_OpeningFcn', @CGLW_multi_viewer_figure_average_OpeningFcn, ...
+                   'gui_OutputFcn',  @CGLW_multi_viewer_figure_average_OutputFcn, ...
                    'gui_LayoutFcn',  [] , ...
                    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
@@ -36,24 +35,24 @@ end
 
 
 
-% --- Executes just before CGLW_multi_viewer_figure is made visible.
-function CGLW_multi_viewer_figure_OpeningFcn(hObject, eventdata, handles, varargin)
+% --- Executes just before CGLW_multi_viewer_figure_average is made visible.
+function CGLW_multi_viewer_figure_average_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to CGLW_multi_viewer_figure (see VARARGIN)
-% Choose default command line output for CGLW_multi_viewer_figure
+% varargin   command line arguments to CGLW_multi_viewer_figure_average (see VARARGIN)
+% Choose default command line output for CGLW_multi_viewer_figure_average
 handles.output = hObject;
 % Update handles structure
 guidata(hObject, handles);
-% UIWAIT makes CGLW_multi_viewer_figure wait for user response (see UIRESUME)
+% UIWAIT makes CGLW_multi_viewer_figure_average wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = CGLW_multi_viewer_figure_OutputFcn(hObject, eventdata, handles) 
+function varargout = CGLW_multi_viewer_figure_average_OutputFcn(hObject, eventdata, handles) 
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -80,11 +79,11 @@ else
     userdata=get(mother_handle.graph_wave_popup,'UserData');
     if isempty(userdata);
     else
-        for i=1:size(userdata.axes_handle,2);
-            currentpoint=get(userdata.axes_handle(1,i),'CurrentPoint');
+        for i=1:size(userdata.currentaxis,2);
+            currentpoint=get(userdata.currentaxis(1,i),'CurrentPoint');
             cp(i)=currentpoint(2,1);
         end;
-        xlim=get(userdata.axes_handle(1,1),'XLim');
+        xlim=get(userdata.currentaxis(1,1),'XLim');
         xdist=abs(cp(:)-xlim(1))+abs(cp(:)-xlim(2));
         [a,b]=min(xdist);
         set(handles.xtext,'String',num2str(cp(b)));
@@ -105,22 +104,22 @@ function figure1_WindowButtonDownFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 mother_handle=get(handles.xtext,'UserData');
 userdata=get(mother_handle.graph_wave_popup,'UserData');
-for i=1:size(userdata.axes_handle,2);
-    currentpoint=get(userdata.axes_handle(1,i),'CurrentPoint');
+for i=1:size(userdata.currentaxis,2);
+    currentpoint=get(userdata.currentaxis(1,i),'CurrentPoint');
     cp(i)=currentpoint(2,1);
 end;
-xlim=get(userdata.axes_handle(1,1),'XLim');
+xlim=get(userdata.currentaxis(1,1),'XLim');
 xdist=abs(cp(:)-xlim(1))+abs(cp(:)-xlim(2));
 [a,b]=min(xdist);
 cursor1=cp(b);
 set(handles.xtext1,'String',num2str(cursor1));
-CGLW_multi_viewer('update_graph',mother_handle);
+CGLW_multi_viewer_average('update_graph',mother_handle);
 %draw cursor
-for i=1:size(userdata.axes_handle,1);
-    for j=1:size(userdata.axes_handle,2);
-        subplot(userdata.axes_handle(i,j));
+for i=1:size(userdata.currentaxis,1);
+    for j=1:size(userdata.currentaxis,2);
+        subplot(userdata.currentaxis(i,j));
         hold on;
-        ylim=get(userdata.axes_handle(i,j),'YLim');
+        ylim=get(userdata.currentaxis(i,j),'YLim');
         plot([cursor1 cursor1],ylim,'r:');
         hold off;
     end;
@@ -143,22 +142,22 @@ function figure1_WindowButtonUpFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 mother_handle=get(handles.xtext,'UserData');
 userdata=get(mother_handle.graph_wave_popup,'UserData');
-for i=1:size(userdata.axes_handle,2);
-    currentpoint=get(userdata.axes_handle(1,i),'CurrentPoint');
+for i=1:size(userdata.currentaxis,2);
+    currentpoint=get(userdata.currentaxis(1,i),'CurrentPoint');
     cp(i)=currentpoint(2,1);
 end;
-xlim=get(userdata.axes_handle(1,1),'XLim');
+xlim=get(userdata.currentaxis(1,1),'XLim');
 xdist=abs(cp(:)-xlim(1))+abs(cp(:)-xlim(2));
 [a,b]=min(xdist);
 set(handles.xtext,'String',num2str(cp(b)));
 cursor2=cp(b);
 set(handles.xtext2,'String',num2str(cursor2));
 %draw cursor
-for i=1:size(userdata.axes_handle,1);
-    for j=1:size(userdata.axes_handle,2);
-        subplot(userdata.axes_handle(i,j));
+for i=1:size(userdata.currentaxis,1);
+    for j=1:size(userdata.currentaxis,2);
+        subplot(userdata.currentaxis(i,j));
         hold on;
-        ylim=get(userdata.axes_handle(i,j),'YLim');
+        ylim=get(userdata.currentaxis(i,j),'YLim');
         plot([cursor2 cursor2],ylim,'b:');
         hold off;
     end;

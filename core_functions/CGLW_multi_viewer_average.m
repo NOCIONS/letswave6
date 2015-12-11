@@ -53,9 +53,10 @@ for i=1:length(inputfiles);
     st{i}=n;
 end;
 %figure handles
-[userdata.wave_figure userdata.wave_figure_handles]=CGLW_multi_viewer_figure;
+[userdata.wave_figure userdata.wave_figure_handles]=CGLW_multi_viewer_figure_average;
 userdata.mother_handles=handles;
 set(handles.graph_wave_popup,'UserData',userdata);
+%set(userdata.wave_figure_handles.xtext,'UserData',userdata);
 %datasets_header, datasets_data
 for i=1:length(st);
     [datasets_header(i).header datasets_data(i).data]=CLW_load(inputfiles{i});
