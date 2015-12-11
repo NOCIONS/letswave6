@@ -19,19 +19,7 @@ end;
 %headplot
 %h=topoplot(vector2,chanlocs2,varargin{:});
 %headplot(values,'spline_file','Param','Value',...)
-%splinefile
-st='LW_headmodel_compute';
-for i=1:length(header.history);
-    if strcmpi(st,header.history(i).configuration.gui_info.function_name);
-        splinefile=header.history(i).configuration.parameters.spl_filename;
-    end;
-end;
-if isempty(splinefile);
-    disp('SPL file not found. Run the Build spline file function to display headplots');
-    return;
-end;
-
-h=headplot(vector2,splinefile,varargin{:});
+h=headplot(vector2,header,varargin{:});
     
 
 
