@@ -1440,6 +1440,15 @@ CGLW_my_view_OpeningFcn;
     function fig_topo(~,~)
         userdata.is_topo=strcmp(get(handles.toolbar2_topo,'State'),'on');
         if userdata.is_topo
+            topo_enabled=1;
+            for dataset_index=1:length(userdata.selected_datasets)
+                topo_enabled=topo_enabled*sum([datasets_header(userdata.selected_datasets(dataset_index)).header.chanlocs.topo_enabled]);
+            end
+            if ~topo_enabled
+                set(handles.toolbar2_topo,'State','off');
+                msgbox('Please assign the electrode!','Unable to show the headmodel');
+                return;
+            end
             if userdata.is_filter
                 userdata.is_filter=0;
                 set(handles.filter_checkbox,'value',userdata.is_filter);
@@ -1673,6 +1682,15 @@ CGLW_my_view_OpeningFcn;
     function fig_headplot(~,~)
         userdata.is_headplot=strcmp(get(handles.toolbar2_headplot,'State'),'on');
         if userdata.is_headplot
+            topo_enabled=1;
+            for dataset_index=1:length(userdata.selected_datasets)
+                topo_enabled=topo_enabled*sum([datasets_header(userdata.selected_datasets(dataset_index)).header.chanlocs.topo_enabled]);
+            end
+            if ~topo_enabled
+                set(handles.toolbar2_topo,'State','off');
+                msgbox('Please assign the electrode!','Unable to show the headmodel');
+                return;
+            end
             if userdata.is_filter
                 userdata.is_filter=0;
                 set(handles.filter_checkbox,'value',userdata.is_filter);

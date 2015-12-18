@@ -1,4 +1,7 @@
 function header=CLW_make_spl(header)
+if sum([header.chanlocs.topo_enabled]==0)
+    return;
+end
 load('headmodel.mat');
 HeadCenter = [0,0,30];
 ElectDFac  = 1.06;
