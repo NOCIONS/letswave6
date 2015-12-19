@@ -117,9 +117,13 @@ else
     set(handles.segment_data_chk,'Enable','off');
     set(handles.segment_data_chk,'Value',0);
 end;
+if isempty(st);
+    st{1}='empty';
+end;
 set(handles.event_listbox,'String',st);
 a=find(strcmpi(configuration.parameters.event_name,st)==1);
 if isempty(a);
+    set(handles.event_listbox,'Value',1);
 else
     set(handles.event_listbox,'Value',a(1));
 end;
@@ -219,8 +223,12 @@ configuration.parameters.average_epochs=get(handles.average_epochs_chk,'Value');
 %segment data
 configuration.parameters.segment_data=get(handles.segment_data_chk,'Value');
 %event names
-st=get(handles.event_listbox,'String');
-configuration.parameters.event_name=st{get(handles.event_listbox,'Value')};
+if configuration.parameters.segment_data==1;
+    st=get(handles.event_listbox,'String');
+    configuration.parameters.event_name=st{get(handles.event_listbox,'Value')};
+else
+    configuration.parameters.event_name='';
+end;
 %x_start
 configuration.parameters.x_start=str2num(get(handles.x_start_edit,'String'));
 %x_end
