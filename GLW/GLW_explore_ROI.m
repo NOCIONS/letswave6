@@ -446,8 +446,8 @@ for datasetpos=1:length(selected_datasets);
             %'top%_Z'
             table_data{linepos,21}=mean_tp_data_sort_idx(3);
             %'bottom%'
-            tp_data_sort=flip(tp_data_sort);
-            tp_data_sort_idx=flip(tp_data_sort_idx,1);
+            tp_data_sort=flipdim(tp_data_sort,1);
+            tp_data_sort_idx=flipdim(tp_data_sort_idx,1);
             table_data{linepos,22}=mean(tp_data_sort(length(tp_data)-round(length(tp_data)/top_percent):length(tp_data)));
             mean_tp_data_sort_idx=mean(tp_data_sort_idx(length(tp_data)-round(length(tp_data)/top_percent):length(tp_data),:),1);
             %'bottom%_X'
