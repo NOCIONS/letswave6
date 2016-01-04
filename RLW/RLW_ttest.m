@@ -194,7 +194,7 @@ if permutation==1;
                 blobpos=1;
                 for i=1:max(max(RLL));
                     ff=find(RLL==i);
-                    v=sum(sum(abs(RLL(ff))));
+                    v=sum(sum(abs(tres_Tvalue(ff))));
                     if v>0;
                         RLL_size(blobpos)=v;
                         blobpos=blobpos+1;
