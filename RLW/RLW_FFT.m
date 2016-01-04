@@ -116,14 +116,21 @@ for epochpos=1:size(data,1);
 end;
 
 %normalize?
-if normalize==1;
-    message_string{end+1}='Normalizing spectrum (divide by N)';
-    out_data=out_data/size(out_data,6);
-end
-if normalize==2;
-    message_string{end+1}='Normalizing spectrum (divide by N/2)';
-    out_data=out_data/(size(out_data,6)/2);
-end
+if normalize>0;
+    if or(strcmpi(output,'power'),strcmpi(output,'amplitude'));      
+        if normalize==1;
+            message_string{end+1}='Normalizing spectrum (divide by N)';
+            out_data=out_data/size(out_data,6);
+        end
+        if normalize==2;
+            message_string{end+1}='Normalizing spectrum (divide by N/2)';
+            out_data=out_data/(size(out_data,6)/2);
+        end
+    else
+        message_string{end+1}='Normalize was chosen, but will not be applied.';
+        message_string{end+1}='Normalize is only valid for amplitude and power.';
+    end;
+end;
 
 %square? (power)
 if strcmpi(output,'power');
