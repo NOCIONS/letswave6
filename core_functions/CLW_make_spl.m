@@ -1,5 +1,5 @@
 function header=CLW_make_spl(header)
-if sum([header.chanlocs.topo_enabled]==0)
+if sum([header.chanlocs.topo_enabled])==0
     return;
 end
 load('headmodel.mat');
