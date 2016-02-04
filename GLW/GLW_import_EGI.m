@@ -238,7 +238,7 @@ function select_files_btn_Callback(hObject, eventdata, handles)
 % hObject    handle to select_files_btn (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-filterspec='*.edf;*.EDF';
+filterspec='*.egis;*.EGIS;*.sbin;*.SBIN;*.mff;*.MFF';
 st={};
 [st,pathname]=uigetfile(filterspec,'select datafiles','MultiSelect','on');
 if isempty(st);
