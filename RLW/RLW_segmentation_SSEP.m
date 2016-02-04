@@ -102,7 +102,7 @@ else
     message_string{end+1}=[num2str(length(event_idx)) ' corresponding events found in dataset.'];
     %adjust header
     %dxsize
-    dxsize=fix(((cycle_total-cycle_skip)/cycle_frequency)/header.xstep);
+    dxsize=round(((cycle_total-cycle_skip)/cycle_frequency)/header.xstep);
     %set datasize
     out_header.datasize(1)=length(event_idx);
     out_header.datasize(6)=dxsize;
@@ -114,7 +114,7 @@ else
     %loop through events_idx
     for i=1:length(event_idx);
         %dx1
-        dx1=fix((((header.events(event_idx(i)).latency+(cycle_skip/cycle_frequency))-header.xstart)/header.xstep))+1;
+        dx1=round((((header.events(event_idx(i)).latency+(cycle_skip/cycle_frequency))-header.xstart)/header.xstep))+1;
         %dx2
         dx2=(dx1+dxsize)-1;
         %out_data > epoch(i)

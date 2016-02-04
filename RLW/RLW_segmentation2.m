@@ -103,7 +103,7 @@ for event_labels_pos=1:length(event_labels);
         message_string{end+1}=[event_code ' : event code found in dataset.'];
         message_string{end+1}=[num2str(length(event_idx)) ' corresponding events found in dataset.'];
         %dxsize
-        dxsize=fix((x_duration)/header.xstep);
+        dxsize=round((x_duration)/header.xstep);
         %adjust header
         %set datasize (number of epochs and xsize)
         out_header.datasize(1)=length(event_idx);
@@ -118,7 +118,7 @@ for event_labels_pos=1:length(event_labels);
         %loop through events_idx
         for i=1:length(event_idx);
             %dx1
-            dx1=fix((((header.events(event_idx(i)).latency+x_start)-header.xstart)/header.xstep))+1;
+            dx1=round((((header.events(event_idx(i)).latency+x_start)-header.xstart)/header.xstep))+1;
             %dx2
             dx2=(dx1+dxsize)-1;
             %out_data > epoch(i)
