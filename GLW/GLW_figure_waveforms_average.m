@@ -325,15 +325,15 @@ for wavepos=1:length(wavedata);
     %
     switch display_option;
         case 1
-            %average ±sd
+            %average Â±sd
             tp_sd=std(tpy,[],average_dimension);
             tpy=mean(tpy,average_dimension);
             tpy_low=tpy-tp_sd;
             tpy_high=tpy+tp_sd;
         case 2
-            %median ±iqr
-            tpy_low=prctile(tpy,0.25);
-            tpy_high=prctile(tpy,0.75);
+            %median Â±iqr
+            tpy_low=prctile(tpy,25);
+            tpy_high=prctile(tpy,75);
             tpy=median(tpy,average_dimension);
     end;
     %vertical spread?
@@ -357,11 +357,13 @@ for wavepos=1:length(wavedata);
         end;
         dxlim2=length(tpx);
         if xlim2<tpx(end);
-            [a,b]=min(abs(tpx-xlimE));
+            [a,b]=min(abs(tpx-xlim2));
             dxlim2=b;
         end;
         tpx=tpx(dxlim1:dxlim2);
         tpy=tpy(dxlim1:dxlim2);
+        tpy_low = tpy_low(dxlim1:dxlim2);
+        tpy_high = tpy_high(dxlim1:dxlim2);
     end;
     %subplot
     ax=subplot(1,1,1);
