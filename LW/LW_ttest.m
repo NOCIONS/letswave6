@@ -94,7 +94,7 @@ switch operation
             if strcmpi(n1,n2);
             else
                 %process
-                [out_datasets(setpos2).header,out_datasets(setpos2).data,message_string]=RLW_ttest(datasets(setpos).header,datasets(setpos).data,ref_header,ref_data,'test_type',configuration.parameters.test_type,'tails',configuration.parameters.tails,'alpha',configuration.parameters.alpha,'permutation',configuration.parameters.permutation,'num_permutations',configuration.parameters.num_permutations,'cluster_statistic',configuration.parameters.cluster_statistic,'cluster_threshold',configuration.parameters.cluster_threshold);
+                [out_datasets(setpos2).header,out_datasets(setpos2).data,message_string,cluster_distribution]=RLW_ttest(datasets(setpos).header,datasets(setpos).data,ref_header,ref_data,'test_type',configuration.parameters.test_type,'tails',configuration.parameters.tails,'alpha',configuration.parameters.alpha,'permutation',configuration.parameters.permutation,'num_permutations',configuration.parameters.num_permutations,'cluster_statistic',configuration.parameters.cluster_statistic,'cluster_threshold',configuration.parameters.cluster_threshold);
                 %message_string
                 if isempty(update_pointers);
                 else
@@ -105,6 +105,8 @@ switch operation
                         end;
                     end;
                 end;
+                %add cluster_distribution to configuration
+                configuration.parameters.cluster_distribution=cluster_distribution;
                 %add configuration to history
                 if isempty(out_datasets(setpos2).header.history);
                     out_datasets(setpos2).header.history(1).configuration=configuration;
