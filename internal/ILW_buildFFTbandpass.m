@@ -25,8 +25,10 @@ v=ones(header.datasize(6),1);
 vectorsize=length(v);
 
 %locate locutoff and hicutoff
-dx1=fix(((locutoff-header.xstart)/header.xstep)+1);
-dx2=fix(((hicutoff-header.xstart)/header.xstep)+1);
+dx1=round(((locutoff-header.xstart)/header.xstep));
+dx2=round(((hicutoff-header.xstart)/header.xstep));
+
+
 
 %remove low frequencies if locutoff>0
 if locutoff>0;
