@@ -36,8 +36,8 @@ end;
 
 %gui_info
 gui_info.function_name='LW_FFT_notch_filter';
-gui_info.name='FFT notch filter (with harmonics)';
-gui_info.description='FFT notch filter (with harmonics)';
+gui_info.name='FFT multi-notch filter';
+gui_info.description='FFT multi-notch filter';
 gui_info.parent='frequency_filters_menu';
 gui_info.scriptable='yes';                      %function can be used in scripts?
 gui_info.configuration_mode='direct';           %configuration GUI run in 'direct' 'script' 'history' mode?
@@ -63,10 +63,10 @@ switch operation
         out_configuration=configuration;
         out_configuration.gui_info=gui_info;
         %freq,freq_width,num_harmonics
-        out_configuration.parameters.notch_frequency=50;
+        out_configuration.parameters.notch_frequency=[8 16 24];
         out_configuration.parameters.notch_width=2;
         out_configuration.parameters.notch_slope_width=2;
-        out_configuration.parameters.num_harmonics=2        
+        out_configuration.parameters.invert_filter=1;        
         %datasets
         out_datasets=datasets;
         
@@ -79,7 +79,7 @@ switch operation
         %datasets
         for setpos=1:length(datasets);
             %process
-            [out_datasets(setpos).header,out_datasets(setpos).data,message_string]=RLW_FFT_notch_filter(datasets(setpos).header,datasets(setpos).data,'notch_frequency',configuration.parameters.notch_frequency,'notch_width',configuration.parameters.notch_width,'notch_slope_width',configuration.parameters.notch_slope_width,'num_harmonics',configuration.parameters.num_harmonics);
+            [out_datasets(setpos).header,out_datasets(setpos).data,message_string]=RLW_FFT_notch_filter(datasets(setpos).header,datasets(setpos).data,'notch_frequency',configuration.parameters.notch_frequency,'notch_width',configuration.parameters.notch_width,'notch_slope_width',configuration.parameters.notch_slope_width,'invert_filter',configuration.parameters.invert_filter);
             %message_string
             if isempty(update_pointers);
             else

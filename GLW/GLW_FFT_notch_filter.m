@@ -92,8 +92,8 @@ set(handles.notch_frequency_edit,'String',num2str(configuration.parameters.notch
 set(handles.notch_width_edit,'String',num2str(configuration.parameters.notch_width));
 %notch_slope_width_edit
 set(handles.notch_slope_width_edit,'String',num2str(configuration.parameters.notch_slope_width));
-%num_harmonics
-set(handles.num_harmonics_edit,'String',num2str(configuration.parameters.num_harmonics));
+%inverse_notch_chk
+set(handles.invert_filter_chk,'Value',configuration.parameters.invert_filter);
 %!!!
 %END
 %!!!
@@ -180,8 +180,8 @@ configuration.parameters.notch_frequency=str2num(get(handles.notch_frequency_edi
 configuration.parameters.notch_width=str2num(get(handles.notch_width_edit,'String'));
 %notch_slope_width
 configuration.parameters.notch_slope_width=str2num(get(handles.notch_slope_width_edit,'String'));
-%num_harmonics
-configuration.parameters.num_harmonics=str2num(get(handles.num_harmonics_edit,'String'));
+%invert_filter
+configuration.parameters.invert_filter=get(handles.invert_filter_chk,'Value');
 %!!!
 %END
 %!!!
@@ -306,3 +306,12 @@ function num_harmonics_edit_Callback(hObject, eventdata, handles)
 % hObject    handle to num_harmonics_edit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in invert_filter_chk.
+function invert_filter_chk_Callback(hObject, eventdata, handles)
+% hObject    handle to invert_filter_chk (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of invert_filter_chk

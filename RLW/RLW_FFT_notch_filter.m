@@ -4,10 +4,10 @@ function [out_header,out_data,message_string]=RLW_FFT_notch_filter(header,data,v
 %FFT notch filter
 %
 %varargin
-%'notch_frequency' (50)
+%'notch_frequency' ([8 16])
 %'notch_width' (2)
 %'notch_slope_width' (2)
-%'num_harmonics' (2)
+%'invert_filter' (1)
 %
 % Author : 
 % Andre Mouraux
@@ -20,10 +20,10 @@ function [out_header,out_data,message_string]=RLW_FFT_notch_filter(header,data,v
 % See http://nocions.webnode.com/letswave for additional information
 %
 
-notch_frequency=50;
+notch_frequency=[8 16];
 notch_width=2;
 notch_slope_width=2;
-num_harmonics=2;
+invert_filter=1;
 
 %parse varagin
 if isempty(varargin);
@@ -46,37 +46,43 @@ else
     else
         notch_slope_width=varargin{a+1};
     end;
-    %num_harmonics
-    a=find(strcmpi(varargin,'num_harmonics'));
+    %invert_filter
+    a=find(strcmpi(varargin,invert_filter'));
     if isempty(a);
     else
-        num_harmonics=varargin{a+1};
+        invert_filter=varargin{a+1};
     end;
 end;
 
 %init message_string
 message_string={};
-message_string{1}='FFT notch filter';
+message_string{1}='FFT multinotch filter';
 
 %FFT
 message_string{end+1}='Computing Forward FFT';
 [FFT_header,FFT_data,message_string2,time_header]=RLW_FFT(header,data,'output','complex','half_spectrum',0,'normalize',0);
 message_string=[message_string message_string2];
 
-%notch filter vector
-vector=ILW_buildFFTbandpass(FFT_header,notch_frequency-(notch_width/2),notch_frequency+(notch_width/2),notch_slope_width,notch_slope_width);
+%notch filter vector (1st frequency)
+vector=ILW_buildFFTbandpass(FFT_header,notch_frequency(1)-(notch_width/2),notch_frequency(1)+(notch_width/2),notch_slope_width,notch_slope_width);
 vector=(vector-1)*-1;
 
-%check if more than one harmonics
-if num_harmonics>1;
-    message_string{end+1}=['Adding ' num2str(num_harmonics) ' harmonic frequencies'];
-    for harmonic_pos=2:num_harmonics;
-        locutoff=(harmonic_pos*notch_frequency)-(notch_width/2);
-        hicutoff=(harmonic_pos*notch_frequency)+(notch_width/2);
-        vector=vector.*((ILW_buildFFTbandpass(FFT_header,locutoff,hicutoff,notch_slope_width,notch_slope_width)-1)*-1);
+%loop through notch_frequencies if more than one frequency
+if length(notch_frequency)>1;
+    for i=2:length(notch_frequency);
+    %notch filter vector
+    vector2=ILW_buildFFTbandpass(FFT_header,notch_frequency(i)-(notch_width/2),notch_frequency(i)+(notch_width/2),notch_slope_width,notch_slope_width);
+    vector2=(vector2-1)*-1;
+    %multiply vectors
+    vector=vector.*vector2;
     end;
 end;
-
+    
+%invert?
+if invert_filter==1;
+    vector=(vector-1)*-1;
+end;
+    
 message_string{end+1}='Filtering FFT product';
 
 %filter
