@@ -92,6 +92,15 @@ set(handles.chunk_onset_edit,'String',num2str(configuration.parameters.chunk_ons
 set(handles.chunk_duration_edit,'String',num2str(configuration.parameters.chunk_duration));
 %chunk_interval_edit
 set(handles.chunk_interval_edit,'String',num2str(configuration.parameters.chunk_interval));
+%num_chunks
+set(handles.num_chunks_edit,'String',num2str(configuration.parameters.num_chunks));
+if configuration.parameters.num_chunks==0;
+    set(handles.max_num_chunks_chk,'Value',1);
+    set(handles.num_chunks_edit,'Enable','off');
+else
+    set(handles.max_num_chunks_chk,'Value',0);
+    set(handles.num_chunks_edit,'Enable','on');
+end;
 %!!!
 %END
 %!!!
@@ -178,6 +187,12 @@ configuration.parameters.chunk_onset=str2num(get(handles.chunk_onset_edit,'Strin
 configuration.parameters.chunk_duration=str2num(get(handles.chunk_duration_edit,'String'));
 %chunk_interval_edit
 configuration.parameters.chunk_interval=str2num(get(handles.chunk_interval_edit,'String'));
+%num_chunks
+if get(handles.max_num_chunks_chk,'Value')==1;
+    configuration.parameters.num_chunks=0;
+else
+    configuration.parameters.num_chunks=str2num(get(handles.num_chunks_edit,'String'));
+end;
 %!!!
 %END
 %!!!
@@ -283,3 +298,35 @@ function chunk_interval_edit_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+
+function num_chunks_edit_Callback(hObject, eventdata, handles)
+% hObject    handle to num_chunks_edit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of num_chunks_edit as text
+%        str2double(get(hObject,'String')) returns contents of num_chunks_edit as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function num_chunks_edit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to num_chunks_edit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in max_num_chunks_chk.
+function max_num_chunks_chk_Callback(hObject, eventdata, handles)
+% hObject    handle to max_num_chunks_chk (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+if get(handles.max_num_chunks_chk,'Value')==1;
+    set(handles.num_chunks_edit,'Enable','off');
+else
+    set(handles.num_chunks_edit,'Enable','on');
+end;

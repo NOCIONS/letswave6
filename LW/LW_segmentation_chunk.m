@@ -66,6 +66,7 @@ switch operation
         out_configuration.parameters.chunk_onset=0;          
         out_configuration.parameters.chunk_duration=1;
         out_configuration.parameters.chunk_interval=1;
+        out_configuration.parameters.num_chunks=0;
         %datasets
         out_datasets=datasets;
         
@@ -79,7 +80,7 @@ switch operation
         %datasets
         for setpos=1:length(datasets);
             %process
-            [out_datasets(setpos).header,out_datasets(setpos).data,message_string]=RLW_segmentation_chunk(datasets(setpos).header,datasets(setpos).data,'chunk_onset',configuration.parameters.chunk_onset,'chunk_duration',configuration.parameters.chunk_duration,'chunk_interval',configuration.parameters.chunk_interval);
+            [out_datasets(setpos).header,out_datasets(setpos).data,message_string]=RLW_segmentation_chunk(datasets(setpos).header,datasets(setpos).data,'chunk_onset',configuration.parameters.chunk_onset,'chunk_duration',configuration.parameters.chunk_duration,'chunk_interval',configuration.parameters.chunk_interval,'num_chunks',configuration.parameters.num_chunks);
             %message_string
             if isempty(update_pointers);
             else

@@ -8,6 +8,7 @@ function [out_header,out_data,message_string]=RLW_segmentation_chunk(header,data
 %'chunk_onset' (0)          
 %'chunk_duration' (1)
 %'chunk_interval' (1)
+%'num_chunks' (0)
 %
 % Author : 
 % Andre Mouraux
@@ -23,6 +24,7 @@ function [out_header,out_data,message_string]=RLW_segmentation_chunk(header,data
 chunk_onset=0;
 chunk_duration=1;
 chunk_interval=1;
+num_chunks=0;
 
 %parse varagin
 if isempty(varargin);
@@ -45,6 +47,13 @@ else
     else
         chunk_interval=varargin{a+1};
     end;
+    %num_chunks
+    a=find(strcmpi(varargin,'num_chunks'));
+    if isempty(a);
+    else
+        num_chunks=varargin{a+1};
+    end;
+
 end;
 
 %init message_string
@@ -80,7 +89,9 @@ while within_limits==1;
 end;
 
 %num_chunks
-num_chunks=length(chunks_dxstart);
+if num_chunks==0;
+    num_chunks=length(chunks_dxstart);
+end;
 message_string{end+1}=['Number of chunks per epoch : ' num2str(num_chunks)];
 
 %prepare out_header
@@ -105,7 +116,7 @@ end;
 
 for epoch_pos=1:size(data,1);
     %loop through chunks
-    for chunk_pos=1:length(chunks_dxstart);
+    for chunk_pos=1:num_chunks;
         out_data(k,:,:,:,:,:)=data(epoch_pos,:,:,:,:,chunks_dxstart(chunk_pos):chunks_dxstart(chunk_pos)+(chunk_size_dx-1));
         %and also fix all the events
         %x1,x2 : begin and end chunk latency
