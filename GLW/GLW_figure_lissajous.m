@@ -432,6 +432,8 @@ for i=1:num_rows*num_cols;
     set(ax,'Color',get(handles.linecolor_axes,'Color'));
     %XLim
     if get(handles.xlim_chk,'Value')==1;
+        xlim1=str2num(get(handles.xlim1_edit,'String'));
+        xlim2=str2num(get(handles.xlim2_edit,'String'));
         set(ax,'XLim',[xlim1 xlim2]);
     end;
     xlim=get(ax,'XLim');
