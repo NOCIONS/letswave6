@@ -1191,8 +1191,10 @@ function peakdir_popup_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 if get(handles.peakdir_popup,'Value')==3;
     set(handles.interval2_x_edit,'Visible','off');
+    set(handles.interval2_y_edit,'Visible','off');
 else
     set(handles.interval2_x_edit,'Visible','on');
+    set(handles.interval2_y_edit,'Visible','on');
 end;
 
 

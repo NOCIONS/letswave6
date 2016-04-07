@@ -2084,7 +2084,7 @@ CGLW_my_view_OpeningFcn;
         set(h,'MenuBar','none');
         set(h,'DockControls','off');
         pos=get(h,'position');
-        uitable(h,'position',[1,40,pos(3),pos(4)-40],'Data',table_data,'ColumnName',col_headers,'Units','normalized','Position', [0 0 1 1]);
+        uitable(h,'position',[1,40,pos(3),pos(4)-40],'Data',table_data,'ColumnName',col_headers,'Units','normalized','Position', [0 0.1 1 0.9]);
         btn=uicontrol('style','pushbutton','position',[1,1,pos(3),39],...
             'string','send the table to workspace');
         set(btn,'callback',@(src,eventdata)assignin('base','lw_table',table_data));
