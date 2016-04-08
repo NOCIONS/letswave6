@@ -90,7 +90,7 @@ end;
 refresh_workspace_variables(handles);
 %store epoch data
 header=datasets(1).header;
-if isfield(header,'epoch_data');
+if isfield(header,'epochdata');
     set(handles.epochdata_listbox,'Userdata',header.epochdata);
 else
     for i=1:header.datasize(1);
