@@ -119,14 +119,14 @@ for chanpos=1:header1.datasize(2);
                     for dx=1:header1.datasize(6);
                         tpleft=squeeze(data1(:,chanpos,indexpos,dz,dy,dx));
                         tpright=squeeze(data2(:,chanpos,indexpos,dz,dy,dx));
-                        [actual_tres_pvalue(dy,dx),H,STATS]=signtest(tpleft,tpright,'alpha',alpha,'tail',tails);
+                        [actual_tres_pvalue(dy,dx),H,STATS]=ranksum(tpleft,tpright,'alpha',alpha,'tail',tails);
                         actual_tres_Zvalue(dy,dx)=STATS.zval;
                     end;
                 case 'signed_test'
                     for dx=1:header1.datasize(6);
                         tpleft=squeeze(data1(:,chanpos,indexpos,dz,dy,dx));
                         tpright=squeeze(data2(:,chanpos,indexpos,dz,dy,dx));
-                        [actual_tres_pvalue(dy,dx),H,STATS]=ranktest(tpleft,tpright,'alpha',alpha,'tail',tails);
+                        [actual_tres_pvalue(dy,dx),H,STATS]=signtest(tpleft,tpright,'alpha',alpha,'tail',tails);
                         actual_tres_Zvalue(dy,dx)=STATS.zval;
                     end;
             end;
