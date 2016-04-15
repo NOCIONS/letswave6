@@ -213,7 +213,7 @@ y_size=str2num(get(handles.y_size_edit,'String'));
 %x_start
 y_start=str2num(get(handles.y_start_edit,'String'));
 %x_end
-y_end=x_start+((y_size-1)*header.ystep);
+y_end=y_start+((y_size-1)*header.ystep);
 %update
 set(handles.y_end_edit,'String',num2str(y_end));
 
@@ -225,7 +225,7 @@ z_size=str2num(get(handles.z_size_edit,'String'));
 %x_start
 z_start=str2num(get(handles.z_start_edit,'String'));
 %x_end
-z_end=x_start+((z_size-1)*header.zstep);
+z_end=z_start+((z_size-1)*header.zstep);
 %update
 set(handles.z_end_edit,'String',num2str(z_end));
 
@@ -533,6 +533,7 @@ function x_crop_chk_Callback(hObject, eventdata, handles)
 % hObject    handle to x_crop_chk (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+update_panels(handles);
 
 
 % --- Executes on button press in y_crop_chk.
@@ -540,6 +541,7 @@ function y_crop_chk_Callback(hObject, eventdata, handles)
 % hObject    handle to y_crop_chk (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+update_panels(handles);
 
 
 % --- Executes on button press in z_crop_chk.
@@ -547,3 +549,4 @@ function z_crop_chk_Callback(hObject, eventdata, handles)
 % hObject    handle to z_crop_chk (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+update_panels(handles);
