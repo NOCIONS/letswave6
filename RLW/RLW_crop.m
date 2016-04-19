@@ -116,8 +116,8 @@ if y_crop==1;
     message_string{end+1}='Crop Y dimension';
     dystart=round(((y_start-header.ystart)/header.ystep))+1;
     dyend=(dystart+y_size)-1;
-    header.datasize(5)=y_size;
-    header.ystart=y_start;
+    out_header.datasize(5)=y_size;
+    out_header.ystart=y_start;
 else
     dystart=1;
     dyend=header.datasize(5);
@@ -126,8 +126,8 @@ if z_crop==1;
     message_string{end+1}='Crop Z dimension';
     dzstart=round(((z_start-header.zstart)/header.zstep))+1;
     dzend=(dzstart+z_size)-1;
-    header.datasize(4)=z_size;
-    header.zstart=z_start;
+    out_header.datasize(4)=z_size;
+    out_header.zstart=z_start;
 else
     dzstart=1;
     dzend=header.datasize(4);
