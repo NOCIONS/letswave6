@@ -1099,7 +1099,6 @@ function all_epochs_chk_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hint: get(hObject,'Value') returns toggle state of all_epochs_chk
 
 
 % --- Executes on button press in all_channels_chk.
@@ -1108,4 +1107,218 @@ function all_channels_chk_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hint: get(hObject,'Value') returns toggle state of all_channels_chk
+
+
+% --- Executes on button press in scalpmap_btn.
+function scalpmap_btn_Callback(hObject, eventdata, handles)
+% hObject    handle to scalpmap_btn (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% hObject    handle to bargraph_btn (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+%datasets
+datasets=get(handles.dataset_listbox,'Userdata');
+%selected_datasets
+selected_datasets=datasets(get(handles.dataset_listbox,'Value'));
+%selected_epochs
+selected_epochs=get(handles.epoch_listbox,'Value');
+%indexpos
+indexpos=get(handles.index_popup,'Value');
+%linepos
+linepos=1;
+%top_percent
+%top_percent
+top_percent=str2num(get(handles.top_percent_edit,'String'));
+%crop
+xcrop=get(handles.xdim_chk,'Value');
+ycrop=get(handles.ydim_chk,'Value');
+zcrop=get(handles.zdim_chk,'Value');
+%x1,x2,y1,y2,z1,z2
+x1=str2num(get(handles.x1_edit,'String'));
+x2=str2num(get(handles.x2_edit,'String'));
+y1=str2num(get(handles.y1_edit,'String'));
+y2=str2num(get(handles.y2_edit,'String'));
+z1=str2num(get(handles.z1_edit,'String'));
+z2=str2num(get(handles.z2_edit,'String'));
+%loop through selected datasets
+for datasetpos=1:length(selected_datasets);
+    header=selected_datasets(datasetpos).header;
+    data=selected_datasets(datasetpos).data;
+    %dx1,dx2,dy1,dy2,dz1,dz2
+    if xcrop==1;
+        dx1=round((x1-header.xstart)/header.xstep)+1;
+        dx2=round((x2-header.xstart)/header.xstep)+1;
+    else
+        dx1=1;
+        dx2=header.datasize(6);
+    end;
+    if ycrop==1;
+        dy1=round((y1-header.ystart)/header.ystep)+1;
+        dy2=round((y2-header.ystart)/header.ystep)+1;
+    else
+        dy1=1;
+        dy2=header.datasize(5);
+    end;
+    if zcrop==1;
+        dz1=round((z1-header.zstart)/header.zstep)+1;
+        dz2=round((z2-header.zstart)/header.zstep)+1;
+    else
+        dz1=1;
+        dz2=header.datasize(4);
+    end;
+    %check limits
+    if dx1<1;
+        dx1=1;
+    end;
+    if dy1<1;
+        dy1=1;
+    end;
+    if dz1<1;
+        dz1=1;
+    end;
+    if dx2>header.datasize(6);
+        dx2=header.datasize(6);
+    end;
+    if dy2>header.datasize(5);
+        dy2=header.datasize(5);
+    end;
+    if dz2>header.datasize(4);
+        dz2=header.datasize(4);
+    end;
+    %selected_epochs2 (keep only epochs present in the current dataset)
+    if get(handles.all_epochs_chk,'Value')==0;
+        selected_epochs2=selected_epochs;
+        selected_epochs2(find(selected_epochs2>header.datasize(1)))=[];
+    else
+        selected_epochs2=1:header.datasize(1);
+    end;
+    %loop through selected epochs
+    for epochpos=1:length(selected_epochs2);
+        %tp_data
+        tp_data=data(selected_epochs2(epochpos),:,indexpos,dz1:dz2,dy1:dy2,dx1:dx2);
+        tp_data=tp_data(:);
+            %tp_data_idx
+            tp_data_idx=zeros(length(tp_data),3);
+            idx=1;
+            for dz=dz1:dz2;
+                for dy=dy1:dy2;
+                    for dx=dx1:dx2;
+                        tp_data_idx(idx,1)=((dx-1)*header.xstep)+header.xstart;
+                        tp_data_idx(idx,2)=((dy-1)*header.ystep)+header.ystart;
+                        tp_data_idx(idx,3)=((dz-1)*header.zstep)+header.zstart;
+                        idx=idx+1;
+                    end;
+                end;
+            end;
+            %graph_data
+            switch graph_type;
+                case 'mean'
+                    table_data(datasetpos,epochpos,chanpos)=mean(tp_data);
+                case 'std'
+                    table_data(datasetpos,epochpos,chanpos)=std(tp_data);
+                case 'median'
+                    table_data(datasetpos,epochpos,chanpos)=median(tp_data);
+                case 'perc25'
+                    table_data(datasetpos,epochpos,chanpos)=prctile(tp_data,25);
+                case 'perc75'
+                    table_data(datasetpos,epochpos,chanpos)=prctile(tp_data,75);
+                case 'min'
+                    [a,b]=min(tp_data);
+                    table_data(datasetpos,epochpos,chanpos)=a;
+                case 'min_X'
+                    [a,b]=min(tp_data);
+                    table_data(datasetpos,epochpos,chanpos)=tp_data_idx(b,1);
+                case 'min_Y'
+                    [a,b]=min(tp_data);
+                    table_data(datasetpos,epochpos,chanpos)=tp_data_idx(b,2);
+                case 'min_Z'
+                    [a,b]=min(tp_data);
+                    table_data(datasetpos,epochpos,chanpos)=tp_data_idx(b,3);
+                case 'max'
+                    [a,b]=max(tp_data);
+                    table_data(datasetpos,epochpos,chanpos)=a;
+                case 'max_X'
+                    [a,b]=max(tp_data);
+                    table_data(datasetpos,epochpos,chanpos)=tp_data_idx(b,1);
+                case 'max_Y'
+                    [a,b]=max(tp_data);
+                    table_data(datasetpos,epochpos,chanpos)=tp_data_idx(b,2);
+                case 'max_Z'
+                    [a,b]=max(tp_data);
+                    table_data(datasetpos,epochpos,chanpos)=tp_data_idx(b,3);
+                case 'top%'
+                    [tp_data_sort,idx]=sort(tp_data);
+                    table_data(datasetpos,epochpos,chanpos)=mean(tp_data_sort(length(tp_data)-round(length(tp_data)/top_percent):length(tp_data)));
+                case 'top%_X'
+                    [tp_data_sort,idx]=sort(tp_data);
+                    tp_data_sort_idx=tp_data_idx(idx,:);
+                    mean_tp_data_sort_idx=mean(tp_data_sort_idx(length(tp_data)-round(length(tp_data)/top_percent):length(tp_data),:),1);
+                    table_data(datasetpos,epochpos,chanpos)=mean_tp_data_sort_idx(1);
+                case 'top%_Y'
+                    [tp_data_sort,idx]=sort(tp_data);
+                    tp_data_sort_idx=tp_data_idx(idx,:);
+                    mean_tp_data_sort_idx=mean(tp_data_sort_idx(length(tp_data)-round(length(tp_data)/top_percent):length(tp_data),:),1);
+                    table_data(datasetpos,epochpos,chanpos)=mean_tp_data_sort_idx(2);
+                case 'top%_Z'
+                    [tp_data_sort,idx]=sort(tp_data);
+                    tp_data_sort_idx=tp_data_idx(idx,:);
+                    mean_tp_data_sort_idx=mean(tp_data_sort_idx(length(tp_data)-round(length(tp_data)/top_percent):length(tp_data),:),1);
+                    table_data(datasetpos,epochpos,chanpos)=mean_tp_data_sort_idx(3);
+                case 'bottom%'
+                    [tp_data_sort,idx]=sort(tp_data);
+                    tp_data_sort=flip(tp_data_sort);
+                    table_data(datasetpos,epochpos,chanpos)=mean(tp_data_sort(length(tp_data)-round(length(tp_data)/top_percent):length(tp_data)));
+                case 'bottom%_X'
+                    [tp_data_sort,idx]=sort(tp_data);
+                    tp_data_sort=flip(tp_data_sort);
+                    tp_data_sort_idx=tp_data_idx(idx,:);
+                    tp_data_sort_idx=flip(tp_data_sort_idx,1);
+                    mean_tp_data_sort_idx=mean(tp_data_sort_idx(length(tp_data)-round(length(tp_data)/top_percent):length(tp_data),:),1);
+                    table_data(datasetpos,epochpos,chanpos)=mean_tp_data_sort_idx(1);
+                case 'bottom%_Y'
+                    [tp_data_sort,idx]=sort(tp_data);
+                    tp_data_sort=flip(tp_data_sort);
+                    tp_data_sort_idx=tp_data_idx(idx,:);
+                    tp_data_sort_idx=flip(tp_data_sort_idx,1);
+                    mean_tp_data_sort_idx=mean(tp_data_sort_idx(length(tp_data)-round(length(tp_data)/top_percent):length(tp_data),:),1);
+                    table_data(datasetpos,epochpos,chanpos)=mean_tp_data_sort_idx(2);
+                case 'bottom%_Z'
+                    [tp_data_sort,idx]=sort(tp_data);
+                    tp_data_sort=flip(tp_data_sort);
+                    tp_data_sort_idx=tp_data_idx(idx,:);
+                    tp_data_sort_idx=flip(tp_data_sort_idx,1);
+                    mean_tp_data_sort_idx=mean(tp_data_sort_idx(length(tp_data)-round(length(tp_data)/top_percent):length(tp_data),:),1);
+                    table_data(datasetpos,epochpos,chanpos)=mean_tp_data_sort_idx(3);
+            end;
+        end;
+    end;
+end;
+h=figure;
+if get(handles.average_epochs_chk,'Value')==0;
+    for epochpos=1:size(table_data,2);
+        ax=subplot(size(table_data,2),1,epochpos);
+        tp=squeeze(table_data(:,epochpos,:));
+        bar(ax,tp');
+        title(ax,table_epoch_labels{epochpos});
+        legend(ax,table_dataset_labels);
+        set(ax,'Xticklabel',table_channel_labels);
+    end;
+else
+    table_data_mean=mean(table_data,2);
+    table_data_std=std(table_data,0,2);
+    ax=subplot(1,1,1);
+    tp=squeeze(table_data_mean);
+    tpe=squeeze(table_data_std);
+    %bar(ax,tp');
+    barwitherr(tpe',tp');
+    legend(ax,table_dataset_labels);
+    set(ax,'Xticklabel',table_channel_labels);
+end;
+
+
+% --- Executes on button press in headplot_btn.
+function headplot_btn_Callback(hObject, eventdata, handles)
+% hObject    handle to headplot_btn (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
