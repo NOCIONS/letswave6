@@ -63,6 +63,7 @@ switch operation
         out_configuration=configuration;
         out_configuration.gui_info=gui_info;
         out_configuration.parameters.channel_idx=[];
+        out_configuration.parameters.channel_lbl={};
         %datasets
         out_datasets=datasets;
         
@@ -75,7 +76,7 @@ switch operation
         %datasets
         for setpos=1:length(datasets);
             %process
-            [out_datasets(setpos).header,out_datasets(setpos).data,message_string]=RLW_arrange_channels(datasets(setpos).header,datasets(setpos).data,configuration.parameters.channel_idx);
+            [out_datasets(setpos).header,out_datasets(setpos).data,message_string]=RLW_arrange_channels(datasets(setpos).header,datasets(setpos).data,configuration.parameters.channel_lbl);
             %message_string
             if isempty(update_pointers);
             else
