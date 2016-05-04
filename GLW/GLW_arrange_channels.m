@@ -197,8 +197,8 @@ end;
 %!!!!!!!!!!!!!!!!!!!!
 %UPDATE CONFIGURATION
 %!!!!!!!!!!!!!!!!!!!!
-channel_idx=get(handles.listbox2,'Userdata');
-configuration.parameters.channel_idx=channel_idx;
+channel_lbl=get(handles.listbox2,'String');
+configuration.parameters.channel_lbl=channel_lbl;
 %!!!
 %END
 %!!!
