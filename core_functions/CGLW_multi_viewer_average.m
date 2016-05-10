@@ -238,6 +238,11 @@ for row_pos=1:num_rows;
                 tpdata_sd(1,:)=squeeze(prctile(tpdata_y(:,row_pos,wavepos,:),75,1));
                 tpdata_sd(2,:)=squeeze(prctile(tpdata_y(:,row_pos,wavepos,:),25,1));
                 h(wavepos)=plot(squeeze(tpdata_x(1,row_pos,1,:)),tpdata_mean,'Color',linecolors(wavepos,:));
+                %shadedErrorBar (see help and code) adds/substracts 
+                %errBar data from y,therefore it is necessary to compensate
+                %for this:
+                tpdata_sd(1,:) = tpdata_sd(1,:)-tpdata_mean';
+                tpdata_sd(2,:) = -tpdata_sd(2,:)+tpdata_mean';
                 shadedErrorBar(tpdata_x(1,row_pos,1,:),tpdata_mean,tpdata_sd,{'color',squeeze(linecolors(wavepos,:))},1);
         end;
     end;
