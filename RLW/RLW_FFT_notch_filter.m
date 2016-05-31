@@ -47,7 +47,7 @@ else
         notch_slope_width=varargin{a+1};
     end;
     %invert_filter
-    a=find(strcmpi(varargin,invert_filter'));
+    a=find(strcmpi(varargin,'invert_filter'));
     if isempty(a);
     else
         invert_filter=varargin{a+1};
