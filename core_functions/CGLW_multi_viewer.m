@@ -1366,7 +1366,7 @@ CGLW_my_view_OpeningFcn;
 
 %% fig_topo_popup
     function fig_topo_popup(obj,~)
-        if strcmp(get(obj,'SelectionType'),'open')
+        if strcmp(get(gcf,'SelectionType'),'open')
             fig_temp=figure();
             [xq,yq] = meshgrid(linspace(-0.5,0.5,267),linspace(-0.5,0.5,267));
             delta = (xq(2)-xq(1))/2;
@@ -1599,7 +1599,7 @@ CGLW_my_view_OpeningFcn;
 
 %% fig_headplot_popup
     function fig_headplot_popup(~,~)
-        if strcmp(get(obj,'SelectionType'),'open')
+        if strcmp(get(gcf,'SelectionType'),'open')
             fig_temp=figure();
             ax_num=length(userdata.selected_datasets)*length(userdata.selected_epochs);
             row_num=length(userdata.selected_datasets);
