@@ -1,4 +1,4 @@
-function [out_out_header,out_data,message_string]=RLW_import_LW4MAT(filename);
+function [out_header,out_data,message_string]=RLW_import_LW4MAT(filename);
 %RLW_import_LW4MAT
 %
 %Import LW4 MAT data
@@ -16,7 +16,7 @@ function [out_out_header,out_data,message_string]=RLW_import_LW4MAT(filename);
 %
 
 message_string={};
-out_out_header=[];
+out_header=[];
 out_data=[];
 
 message_string{1}=['Loading : ' filename];
@@ -31,7 +31,7 @@ eval(['dat=tp.' n]);
 %set out_header
 message_string{end+1}='Importing out_header';
 out_header.filetype='time_amplitude';
-out_header.name=filename;
+out_header.name=n;
 out_header.tags={};
 out_header.history=[];
 out_header.datasize=[dat.NumEpochs dat.NumChannels 1 1 dat.YSize dat.XSize];
@@ -50,7 +50,11 @@ chanloc.topo_enabled=0;
 chanloc.SEEG_enabled=0;
 %set chanlocs
 for chanpos=1:length(dat.Channels);
-    chanloc.labels=dat.Channels(chanpos).label;
+    if isfield(dat.Channels(chanpos),'label');
+        chanloc.labels=dat.Channels(chanpos).label;
+    else
+        chanloc.labels=['C' num2str(chanpos)];
+    end;
     out_header.chanlocs(chanpos)=chanloc;
 end;
 
@@ -75,4 +79,6 @@ else
         end;
     end;
 end;
+i=1;
+
 
