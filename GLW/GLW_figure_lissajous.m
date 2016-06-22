@@ -1831,5 +1831,3 @@ col_headers{4}='lag at max correlation';
 uitable(h2,'Data',table_data,'ColumnName',col_headers,'Units','normalized','Position', [0 0 1 1]);
     
     
-
-

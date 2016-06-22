@@ -58,7 +58,15 @@ guidata(hObject, handles);
 % UIWAIT makes letswave_GUI_options wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 %load configuration > config
-load letswave_config.mat
+if ispc==1;
+    load letswave_config_pc.mat
+end;
+if ismac==1;
+    load letswave_config_mac.mat
+end;
+if and(isunix==1,ismac==0);
+    load letswave_config_unix.mat
+end;
 set(handles.save_btn,'Userdata',letswave_config);
 %font list
 t=listfonts;
@@ -136,7 +144,16 @@ st=get(handles.FontUnits_popup,'String');
 letswave_config.FontUnits=st{get(handles.FontUnits_popup,'Value')};
 letswave_config.proportional=get(handles.proportional_chk,'Value');
 letswave_config.size=str2num(get(handles.size_edit,'String'));
-a=which('letswave_config.mat');
+if ispc==1;
+    a=which('letswave_config_pc.mat');
+end;
+if ismac==1;
+    a=which('letswave_config_mac.mat');
+end;
+if and(isunix==1,ismac==0);
+    a=which('letswave_config_unix.mat');
+end;
+
 save(a,'letswave_config');
 
 

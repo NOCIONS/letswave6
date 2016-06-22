@@ -698,5 +698,3 @@ function draw_legend_chk_Callback(hObject, eventdata, handles)
 % hObject    handle to draw_legend_chk (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
-

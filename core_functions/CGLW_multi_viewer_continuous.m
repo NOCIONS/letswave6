@@ -48,7 +48,16 @@ h=findobj(handles.figure1,'-property','FontSize');
 %figure
 figure(handles.figure1);
 %set_GUI_parameters
-load letswave_config.mat
+%platform-specific
+if ispc==1;
+    load letswave_config_pc.mat
+end;
+if ismac==1;
+    load letswave_config_mac.mat
+end;
+if and(isunix==1,ismac==0);
+    load letswave_config_unix.mat
+end;
 %find objects with property FontSize
 h=findobj(handles.figure1,'-property','FontSize');
 %set fonts
