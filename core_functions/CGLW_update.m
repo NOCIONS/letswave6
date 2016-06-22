@@ -113,6 +113,7 @@ for filepos=1:length(filenames);
         end;
     catch
         disp(['Could not update : ' filenames2{filepos}]);
+        disp(MESSAGEID);
     end;
 end;
 rmdir([p filesep 'letswave6-master'],'s');
