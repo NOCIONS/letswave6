@@ -124,7 +124,7 @@ if dataset.header.datasize(3)==1;
 else
     set(handles.index_text,'Enable','on');
     set(handles.index_popup,'Enable','on');
-    if isfield(dataset.header.index_labels);
+    if isfield(dataset.header,'index_labels');
         st=dataset.header.index_labels;
     else
         st={};
