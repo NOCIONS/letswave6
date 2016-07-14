@@ -305,12 +305,15 @@ if segment_data==1;
     %adjust header.xstart
     out_header.xstart=x_start;
 end;
-        
+
 %average?
 if average_epochs==1;
     message_string{end+1}='Averaging epochs';
     %change number of epochs to 1
     out_header.datasize(1)=1;
+    %prepare data,out_data
+    data=out_data;
+    out_data=zeros(out_header.datasize);
     %PLV?
     if strcmpi(postprocess,'phase');
         %PLV
@@ -319,11 +322,13 @@ if average_epochs==1;
         %compute PLV
         x=sum(sin(out_data),1);
         y=sum(cos(out_data),1);
-        out_data=sqrt(x.^2+y.^2);
-        out_data=out_data/header.datasize(1);
+        out_data2=sqrt(x.^2+y.^2);
+        out_data2=out_data2/header.datasize(1);
+        
+        
     else
         %standard average
-        out_data=mean(out_data,1);
+        out_data(:,:,:,:,:,:)=mean(data,1);
     end;
     %adjust events
     if isfield(out_header,'events');
