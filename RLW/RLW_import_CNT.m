@@ -107,6 +107,7 @@ end;
 
 %split blocks into separate datafiles?
 if split_blocks==1;
+    [p,n,e]=fileparts(out_header.name);
     data_src=out_data;
     header_src=out_header;
     %adapted from Gan Huang
@@ -140,7 +141,7 @@ if split_blocks==1;
             end;
         end;
         out_datasets(k1).header=header_split;
-        out_datasets(k1).header.name=['SEG' num2str(k1) out_datasets(k1).header.name]
+        out_datasets(k1).header.name=['SEG' num2str(k1) '_' n e]
         out_datasets(k1).data=data_split;
     end;
 else
