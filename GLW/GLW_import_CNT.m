@@ -173,7 +173,7 @@ end;
 %!!!!!!!!!!!!!!!!!!!!
 %configuration.parameters.filenames={};
 configuration.parameters.filenames=get(handles.filenames_listbox,'Userdata');
-configuration.parameteres.split_blocks=get(handles.split_blocks_chk,'Value');
+configuration.parameters.split_blocks=get(handles.split_blocks_chk,'Value');
 %!!!
 %END
 %!!!
