@@ -99,7 +99,7 @@ end;
 %hanning smoothing?
 if smooth==1;
     if smooth_width>1;
-        message_string{end1}='Hanning smoothing will be applied across trials.';
+        message_string{end+1}='Hanning smoothing will be applied across trials.';
         hanningwidth=smooth_width;
         %hanning function
         tp=hanning(hanningwidth);
