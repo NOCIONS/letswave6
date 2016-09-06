@@ -185,7 +185,7 @@ configuration.parameters.x_start=str2num(get(handles.x_start_edit,'String'));
 %configuration.parameters.x_end=1;
 configuration.parameters.x_end=str2num(get(handles.x_end_edit,'String'));
 %configuration.parameters.smooth=1;
-configuration.parameters.smooth=get(handles.num_lines_edit,'Value');
+configuration.parameters.smooth=get(handles.smooth_chk,'Value');
 %configuration.parameters.smooth_width=5;
 configuration.parameters.smooth_width=str2num(get(handles.smooth_width_edit,'String'));
 %!!!
