@@ -122,7 +122,7 @@ out_header.datasize(1)=1;
 if num_lines==header.datasize(1)
     %the number of epochs corresponds to the number of lines
     message_string{end+1}='Number of epochs equals number of lines. No resampling is needed.';
-    message_string{end+A}=['Number of lines : ' num2str(configuration.parameters.num_lines)];
+    message_string{end+1}=['Number of lines : ' num2str(num_lines)];
     out_header.ystart=1;
     out_header.ystep=1;
     out_header.datasize(5)=header.datasize(1);
