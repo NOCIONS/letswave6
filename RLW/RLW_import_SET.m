@@ -72,8 +72,14 @@ else
         if isnumeric(event.code);
             event.code=num2str(event.code);
         end;
-        event.latency=(trg(eventpos).sample*out_header.xstep)+out_header.xstart;
-        event.epoch=1;
+        if(out_header.datasize(1)==1) %if it is continous data or just a single epoch
+            event.latency=(trg(eventpos).sample*out_header.xstep)+out_header.xstart;
+            event.epoch=1;
+        else %if it is an epoched dataset
+            event.epoch = floor(trg(eventpos).sample/out_header.datasize(6))+1;
+            event.latency=((trg(eventpos).sample*out_header.xstep)+out_header.xstart)-...
+                            (event.epoch-1)*out_header.xstep*out_header.datasize(6);
+        end
         out_header.events(eventpos)=event;
     end;
 end;
