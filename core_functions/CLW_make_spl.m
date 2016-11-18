@@ -42,7 +42,8 @@ x = spherePOS(:,1);
 y = spherePOS(:,2);
 z = spherePOS(:,3);
 
-[~,I]=sort(dist([Xe Ye Ze],spherePOS'),2);
+
+[~,I]=sort(get_dist([Xe Ye Ze],spherePOS'),2);
 center=[0,0,-100];
 for k=1:enum
     M=mean(POS(I(k,1:20),:))-center;
@@ -53,10 +54,27 @@ gx = fastcalcgx(x,y,z,Xe,Ye,Ze);
 header.spl.GG=gx*pinv([(G + 0.1);ones(1,length(indices))]);
 header.spl.indices=indices;
 header.spl.newElect=newElect;
-
 end
 
-
+function z = get_dist(w,p)
+S = size(w,1);
+Q = size(p,2);
+z = zeros(S,Q);
+if (Q<S)
+    p = p';
+    copies = zeros(1,S);
+    for q=1:Q
+        z(:,q) = sum((w-p(q+copies,:)).^2,2);
+    end
+else
+    w = w';
+    copies = zeros(1,Q);
+    for i=1:S
+        z(i,:) = sum((w(:,i+copies)-p).^2,1);
+    end
+end
+z = sqrt(z);
+end
 
 function [out] = calcgx(in)
 out = zeros(size(in));
