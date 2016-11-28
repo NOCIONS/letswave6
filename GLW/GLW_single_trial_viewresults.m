@@ -254,7 +254,7 @@ peak_amplitudes=peak_estimates(selected_peak).amplitudes;
 table_data=cell(length(peak_latencies),2);
 for i=1:length(peak_latencies);
     table_data{i,1}=peak_latencies(i);
-    table_data{i,2}=peak_amplitudes(2);
+    table_data{i,2}=peak_amplitudes(i);
 end;
 set(handles.uitable_peaks,'Data',table_data);
 
