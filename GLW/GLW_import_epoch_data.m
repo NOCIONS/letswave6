@@ -91,6 +91,11 @@ refresh_workspace_variables(handles);
 %store epoch data
 header=datasets(1).header;
 if isfield(header,'epochdata');
+    if isempty(header.epochdata)
+        for i=1:header.datasize(1);
+            header.epochdata(i).data=[];
+        end
+    end
     set(handles.epochdata_listbox,'Userdata',header.epochdata);
 else
     for i=1:header.datasize(1);
@@ -367,9 +372,6 @@ function epochdata_listbox_Callback(hObject, eventdata, handles)
 
 
 
-
-
-
 % --- Executes during object creation, after setting all properties.
 function epochdata_listbox_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to epochdata_listbox (see GCBO)
@@ -445,7 +447,7 @@ end;
 %update epochdata
 for i=1:length(epochdata);
     epochdata(i).data=setfield(epochdata(i).data,field_name,[]);
-end;
+end
 %update epochdata
 set(handles.epochdata_listbox,'Userdata',epochdata);
 refresh_epochdata_listbox(handles);
