@@ -86,7 +86,7 @@ set(handles.channel_popup,'String',st);
 set(handles.channel_popup,'Value',1);
 st={};
 if isfield(header,'index_labels');
-    st=index_labels;
+    st=header.index_labels;
 else
     for i=1:header.datasize(3);
         st{i}=num2str(i);
