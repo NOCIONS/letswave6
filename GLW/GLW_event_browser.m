@@ -375,8 +375,8 @@ header.events(a)=[];
 %add events in table_data
 for i=1:size(table_data,1);
     event.code=table_data{i,1};
-    event.latency=str2num(table_data{i,3});
     event.epoch=fix(str2num(table_data{i,2}));
+    event.latency=str2num(table_data{i,3});
     header.events(end+1)=event;
 end;
 %datasets
@@ -469,10 +469,10 @@ disp('Column 3 = latency');
 tp=evalin('base',varname);
 %convert matrix to events structure
 events=[];
-for i=1:length(tp);
-     events(i).code=tp{i,1};
-     events(i).epoch=tp{i,2};
-     events(i).latency=tp{i,3};
+for i=1:size(tp,1);
+    events(i).code=tp{i,1};
+    events(i).epoch=tp{i,2};
+    events(i).latency=tp{i,3};
 end;
 datasets(1).header.events=events;
 set(handles.event_listbox,'Userdata',datasets);
