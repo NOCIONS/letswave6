@@ -77,9 +77,12 @@ if length(merge_idx)>1;
         tp.Y=[];
         tp.Z=[];
         tp.SEEG_enabled=[];
-        for i=1:length(out_header.chanlocs);
-            tp2=out_header.chanlocs(i);
+        chanlocs=out_header.chanlocs;
+        out_header.chanlocs=[];
+        for i=1:length(chanlocs);
+            tp2=chanlocs(i);
             tp3=tp;
+            tp3.labels=tp2.labels;
             if isfield(tp2,'topo_enabled');
                 tp3.topo_enabled=tp2.topo_enabled;
             end;
@@ -113,11 +116,18 @@ if length(merge_idx)>1;
             if isfield(tp2,'SEEG_enabled');
                 tp3.SEEG_enabled=tp2.SEEG_enabled;
             end;
-            out_header.chanlocs(i)=tp3;
+            if i==1
+                out_header.chanlocs=tp3;
+            else
+                out_header.chanlocs(i)=tp3;
+            end;
         end;
-        for i=1:length(header.chanlocs);
-            tp2=header.chanlocs(i);
+        chanlocs=header.chanlocs;
+        header.chanlocs=[];
+        for i=1:length(chanlocs);
+            tp2=chanlocs(i);
             tp3=tp;
+            tp3.labels=tp2.labels;
             if isfield(tp2,'topo_enabled');
                 tp3.topo_enabled=tp2.topo_enabled;
             end;
@@ -151,7 +161,11 @@ if length(merge_idx)>1;
             if isfield(tp2,'SEEG_enabled');
                 tp3.SEEG_enabled=tp2.SEEG_enabled;
             end;
-            header.chanlocs(i)=tp3;
+            if i==1
+                header.chanlocs=tp3;
+            else
+                header.chanlocs(i)=tp3;
+            end;
         end;
 
         out_header.chanlocs=[out_header.chanlocs header.chanlocs];
