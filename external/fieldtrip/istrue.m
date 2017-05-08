@@ -3,9 +3,9 @@ function y = istrue(x)
 % ISTRUE ensures that a true/false input argument like "yes", "true"
 % or "on" is converted into a boolean
 
-% Copyright (C) 2009, Robert Oostenveld
+% Copyright (C) 2009-2012, Robert Oostenveld
 %
-% This file is part of FieldTrip, see http://www.ru.nl/neuroimaging/fieldtrip
+% This file is part of FieldTrip, see http://www.fieldtriptoolbox.org
 % for the documentation and details.
 %
 %    FieldTrip is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ function y = istrue(x)
 %    You should have received a copy of the GNU General Public License
 %    along with FieldTrip. If not, see <http://www.gnu.org/licenses/>.
 %
-% $Id: istrue.m 3697 2011-06-15 10:02:55Z roboos $
+% $Id$
 
 true_list  = {'yes' 'true' 'on' 'y' };
 false_list = {'no' 'false' 'off' 'n' 'none'};

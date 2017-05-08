@@ -2,6 +2,9 @@ function varargout = filetype_check_uri(filename, ftyp)
 
 % FILETYPE_CHECK_URI
 %
+% Use as
+%    status = filetype_check_uri(filename, type)
+%
 % Supported URIs are
 %   buffer://<host>:<port>
 %   fifo://<filename>
@@ -12,6 +15,8 @@ function varargout = filetype_check_uri(filename, ftyp)
 %   shm://<filename>
 %   tcp://<host>:<port>
 %   udp://<host>:<port>
+%   ftp://<user>@<host>/path
+%   sftp://<user>@<host>/path
 %
 % The URI schemes supproted by these function are not the official schemes.
 % See the documentation included inside this function for more details.
@@ -21,7 +26,7 @@ function varargout = filetype_check_uri(filename, ftyp)
 
 % Copyright (C) 2007, Robert Oostenveld
 %
-% This file is part of FieldTrip, see http://www.ru.nl/neuroimaging/fieldtrip
+% This file is part of FieldTrip, see http://www.fieldtriptoolbox.org
 % for the documentation and details.
 %
 %    FieldTrip is free software: you can redistribute it and/or modify
@@ -37,7 +42,7 @@ function varargout = filetype_check_uri(filename, ftyp)
 %    You should have received a copy of the GNU General Public License
 %    along with FieldTrip. If not, see <http://www.gnu.org/licenses/>.
 %
-% $Id: filetype_check_uri.m 4624 2011-10-29 10:10:49Z roboos $
+% $Id$
 
 % these are for remembering the type on subsequent calls with the same input arguments
 persistent previous_argin previous_argout
@@ -88,8 +93,13 @@ else
       % buffer://<host>:<port>
       tok = tokenize(filename(10:end), ':');
       varargout{1} = tok{1};
-      varargout{2} = str2num(tok{2});
-
+      if numel(tok)>1
+        varargout{2} = str2num(tok{2});
+      else
+        % use the default value
+        varargout{2} = 1972;
+      end
+      
     case 'tcp'
       % tcp://<host>:<port>
       tok = tokenize(filename(7:end), ':');
@@ -150,6 +160,23 @@ else
         varargout{2} = opt;
       end
 
+    case 'ftp'
+      % the schema for FTP looks like ftp://[username@]hostname[:port]/filename[?options]
+      % FIXME it is not really obvious how to deal with a relative or absolute pathspec
+      tok0 = tokenize(filename(7:end), '/');
+      tok1 = tokenize(tok0{1}, '@');
+      varargout{1} = tok1{1};
+      varargout{2} = tok1{2};
+      varargout{3} = filename((7+1+length(tok0{1})):end);
+      
+    case 'sftp'
+      % the schema for SFTP looks like sftp://[username@]hostname[:port]/filename[?options]
+      % FIXME it is not really obvious how to deal with a relative or absolute pathspec
+      tok0 = tokenize(filename(8:end), '/');
+      tok1 = tokenize(tok0{1}, '@');
+      varargout{1} = tok1{1};
+      varargout{2} = tok1{2};
+      varargout{3} = filename((8+1+length(tok0{1})):end);
 
     otherwise
       error('unsupported scheme in URI')

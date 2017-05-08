@@ -25,7 +25,7 @@ function [proj] = elproj(pos, method)
 
 % Copyright (C) 2000-2008, Robert Oostenveld
 %
-% This file is part of FieldTrip, see http://www.ru.nl/neuroimaging/fieldtrip
+% This file is part of FieldTrip, see http://www.fieldtriptoolbox.org
 % for the documentation and details.
 %
 %    FieldTrip is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ function [proj] = elproj(pos, method)
 %    You should have received a copy of the GNU General Public License
 %    along with FieldTrip. If not, see <http://www.gnu.org/licenses/>.
 %
-% $Id: elproj.m 4624 2011-10-29 10:10:49Z roboos $
+% $Id$
 
 x = pos(:,1);
 y = pos(:,2);

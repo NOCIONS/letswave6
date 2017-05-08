@@ -1,4 +1,4 @@
-function dat = read_biosemi_bdf(filename, hdr, begsample, endsample, chanindx);
+function dat = read_biosemi_bdf(filename, hdr, begsample, endsample, chanindx)
 
 % READ_BIOSEMI_BDF reads specified samples from a BDF continous datafile
 % It neglects all trial boundaries as if the data was acquired in
@@ -27,9 +27,9 @@ function dat = read_biosemi_bdf(filename, hdr, begsample, endsample, chanindx);
 %    chanindx        index of channels to read (optional, default is all)
 % This returns a Nchans X Nsamples data matrix
 
-% Copyright (C) 2006, Robert Oostenveld
+% Copyright (C) 2006-2017, Robert Oostenveld
 %
-% This file is part of FieldTrip, see http://www.ru.nl/neuroimaging/fieldtrip
+% This file is part of FieldTrip, see http://www.fieldtriptoolbox.org
 % for the documentation and details.
 %
 %    FieldTrip is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ function dat = read_biosemi_bdf(filename, hdr, begsample, endsample, chanindx);
 %    You should have received a copy of the GNU General Public License
 %    along with FieldTrip. If not, see <http://www.gnu.org/licenses/>.
 %
-% $Id: read_biosemi_bdf.m 5035 2011-12-14 10:47:49Z roboos $
+% $Id$
 
 if nargin==1
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -153,10 +153,21 @@ if nargin==1
   tmp = find(EDF.Cal < 0);
   EDF.Cal(tmp) = ones(size(tmp));
   EDF.Off(tmp) = zeros(size(tmp));
+  
+  % the following adresses https://github.com/fieldtrip/fieldtrip/pull/395
+  tmp = find(strcmpi(cellstr(EDF.Label), 'STATUS'));
+  if EDF.Cal(tmp)~=1
+    timeout = 60*15; % do not show it for the next 15 minutes 
+    ft_warning('FieldTrip:BDFCalibration', 'calibration for status channel appears incorrect, setting it to 1', timeout);
+    EDF.Cal(tmp) = 1;
+  end
+  if EDF.Off(tmp)~=0
+    timeout = 60*15; % do not show it for the next 15 minutes 
+    ft_warning('FieldTrip:BDFOffset', 'offset for status channel appears incorrect, setting it to 0', timeout);
+    EDF.Off(tmp) = 0;
+  end
 
   EDF.Calib=[EDF.Off';(diag(EDF.Cal))];
-  %EDF.Calib=sparse(diag([1; EDF.Cal]));
-  %EDF.Calib(1,2:EDF.NS+1)=EDF.Off';
 
   EDF.SampleRate = EDF.SPR / EDF.Dur;
 
@@ -190,7 +201,10 @@ if nargin==1
   end;
 
   EDF.AS.spb = sum(EDF.SPR);    % Samples per Block
-
+  
+  % close the file
+  fclose(EDF.FILE.FID);
+  
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   % convert the header to Fieldtrip-style
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -251,14 +265,11 @@ else
   endsample = endsample - (begepoch-1)*epochlength;  % correct for the number of bytes that were skipped
   dat = dat(:, begsample:endsample);
 
-  % Calibrate the data
-  calib = diag(EDF.Cal(chanindx));
-  if length(chanindx)>1
-    % using a sparse matrix speeds up the multiplication
-    dat = sparse(calib) * dat;
-  else
-    % in case of one channel the sparse multiplication would result in a sparse array
-    dat = calib * dat;
+  % convert from digital to physical values and apply the offset
+  calib  = EDF.Cal(chanindx);
+  offset = EDF.Off(chanindx);
+  for i=1:numel(calib)
+    dat(i,:) = calib(i)*dat(i,:) + offset(i);
   end
 end
 

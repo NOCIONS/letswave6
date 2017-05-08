@@ -117,7 +117,7 @@ fclose(fid);
 event = [];
 
 if ~isempty(trigger)
-  for E=1:size(trigger,2)
+  for E=1:length(trigger)
     event(E).type    = 'MARKER';
     event(E).sample  = trigger(1,E)+1;
     event(E).value   = trigger(2,E);

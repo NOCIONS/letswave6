@@ -26,7 +26,7 @@ function event = ft_filter_event(event, varargin)
 
 % Copyright (C) 2007-2010 Robert Oostenveld
 %
-% This file is part of FieldTrip, see http://www.ru.nl/neuroimaging/fieldtrip
+% This file is part of FieldTrip, see http://www.fieldtriptoolbox.org
 % for the documentation and details.
 %
 %    FieldTrip is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ function event = ft_filter_event(event, varargin)
 %    You should have received a copy of the GNU General Public License
 %    along with FieldTrip. If not, see <http://www.gnu.org/licenses/>.
 %
-% $Id: ft_filter_event.m 3641 2011-06-07 12:47:23Z roboos $
+% $Id$
 
 % get the optional input arguments
 type         = ft_getopt(varargin, 'type');
@@ -96,7 +96,8 @@ end
 sel = true(length(event),1);
 for i=1:length(event)
   % test whether they match with the selected arrays
-  if testvalue,         sel(i) = sel(i) && any(event(i).value == value);          end
+  if testvalue && isnumeric(value),         sel(i) = sel(i) && any(event(i).value == value);               end
+  if testvalue && ischar(value),             sel(i) = sel(i) && any(strcmp(event(i).value,value));          end
   if testsample,        sel(i) = sel(i) && any(event(i).sample == sample);        end
   if testtimestamp,     sel(i) = sel(i) && any(event(i).timestamp == timestamp);  end
   if testoffset,        sel(i) = sel(i) && any(event(i).offset == offset);        end

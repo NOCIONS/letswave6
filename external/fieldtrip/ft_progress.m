@@ -1,10 +1,9 @@
 function ft_progress(varargin)
 
-% FT_PROGRESS shows a graphical or non-graphical progress indication similar
-% to the standard Matlab WAITBAR function, but with the extra option of
-% printing it in the command window as a plain text string or as a rotating
-% dial. Alternatively, you can also specify it not to give feedback on the
-% progress.
+% FT_PROGRESS shows a graphical or non-graphical progress indication similar to the
+% standard WAITBAR function, but with the extra option of printing it in the command
+% window as a plain text string or as a rotating dial. Alternatively, you can also
+% specify it not to give feedback on the progress.
 %
 % Prior to the for-loop, you should call either
 %   ft_progress('init', 'none',    'Please wait...')
@@ -13,8 +12,6 @@ function ft_progress(varargin)
 %   ft_progress('init', 'dial',    'Please wait...')      % rotating dial
 %   ft_progress('init', 'textbar', 'Please wait...')      % ascii progress bar
 %   ft_progress('init', 'text',    'Please wait...')
-%   ft_progress('init', 'textcr',  'Please wait...')      % force cariage return
-%   ft_progress('init', 'textnl',  'Please wait...')      % force newline
 %
 % In each iteration of the for-loop, you should call either
 %   ft_progress(x)                                       % only show percentage
@@ -33,7 +30,7 @@ function ft_progress(varargin)
 
 % Copyright (C) 2004-2008, Robert Oostenveld
 %
-% This file is part of FieldTrip, see http://www.ru.nl/neuroimaging/fieldtrip
+% This file is part of FieldTrip, see http://www.fieldtriptoolbox.org
 % for the documentation and details.
 %
 %    FieldTrip is free software: you can redistribute it and/or modify
@@ -49,7 +46,9 @@ function ft_progress(varargin)
 %    You should have received a copy of the GNU General Public License
 %    along with FieldTrip. If not, see <http://www.gnu.org/licenses/>.
 %
-% $Id: ft_progress.m 4624 2011-10-29 10:10:49Z roboos $
+% $Id$
+
+global ft_default
 
 persistent p        % the previous value of the progress
 persistent c        % counter for the number of updates that is done
@@ -59,15 +58,36 @@ persistent t        % type of feedback, string with none, gui, text, textcr, tex
 persistent h        % the handle of the dialog (in case of type=gui)
 persistent a        % the angle in degrees, for dial or textbar
 persistent s        % the string containing the title
+persistent strlen   % the length of the previously printed string, used to remove it by \b
+persistent tprev    % the time of previous invocation, used to restrict number of updates
+
+persistent lastArgin % the last varargin, this is used when ft_progress('close') is called
+                     % but the previous invocation was not processed (due
+                     % to the restriction in the number of updates to once
+                     % every 100ms)
+persistent closing
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if nargin>1 && ischar(varargin{1}) && strcmp(varargin{1}, 'init')
-  a = 0;
-  p = 0;
-  h = 0;
-  c = 0;
+  % reset these to the defaults
+  a  = 0;
+  h  = 0;
+  p  = 0;
+  t  = 'none';
+  s  = '';
+  t0 = [];
+  p0 = [];
+  strlen = 0;
+  tprev = tic();
+  lastArgin = [];
+  closing = 0;
+  ft_default.progress.noerase = 0;
+  
   % determine the type of feedback
   t = varargin{2};
+  if strcmp(t,'textcr') || strcmp(t,'textnl')
+    t = 'text';
+  end
   % determine the title of the dialog
   if nargin>2
     s = varargin{3};
@@ -82,7 +102,7 @@ if nargin>1 && ischar(varargin{1}) && strcmp(varargin{1}, 'init')
     else
       h = waitbar(0, 'Please wait');
     end
-  case {'text', 'textnl', 'textcr'}
+  case {'text', 'textnl', 'textcr', 'dial'}
     if ~isempty(s)
       % print the title to the screen and go to the next line
       fprintf('%s\n', s)
@@ -91,11 +111,17 @@ if nargin>1 && ischar(varargin{1}) && strcmp(varargin{1}, 'init')
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 elseif nargin==1 && ischar(varargin{1}) && strcmp(varargin{1}, 'close')
+  
+  if ~isempty(lastArgin)
+    closing = 1;
+    ft_progress(lastArgin{:});
+  end
+  
   switch t
   case 'gui'
     % close the waitbar dialog
     close(h);
-  case {'textcr', 'dial', 'textbar'}
+  case {'text', 'etf', 'dial', 'textbar'}
     % finish by going to the next line
     fprintf('\n');
   end
@@ -107,10 +133,31 @@ elseif nargin==1 && ischar(varargin{1}) && strcmp(varargin{1}, 'close')
   s  = '';
   t0 = [];
   p0 = [];
-
+  strlen = 0;
+  tprev = [];
+  lastArgin = [];
+  closing = 0;
+  ft_default.progress.noerase = 0;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 else
+  
+  if isfield(ft_default, 'progress') &&...
+      isfield(ft_default.progress, 'noerase') &&...
+      ft_default.progress.noerase
+    strlen = 0;
+    ft_default.progress.noerase = 0;
+  end
+  
+  % make sure we don't update more than once every 100ms, significant
+  % performance hit otherwise in certain conditions
+  if ~isempty(tprev) && toc(tprev) < 0.1 && ~closing
+    lastArgin = varargin;
+    return;
+  end
+  tprev = tic();
+  lastArgin = [];
+  
   if strcmp(t, 'dial')
     % display should always be updated for the dial
     % continue;
@@ -122,7 +169,7 @@ else
     return;
   elseif (varargin{1}-p)<0.01 && strcmp(t, 'etf')
     % display should not be updated it the difference is less than one percent
-    return;
+    % return;
   end
 
   % count the number of updates, for debugging
@@ -144,22 +191,32 @@ else
     end
     elapsed = etime(clock, t0);
     if nargin>1 && ~isempty(varargin{2})
+      
+      varargin{2} = [repmat(sprintf('\b'),[1 strlen]) varargin{2}];
+      
       % include the specified string
-      fprintf(varargin{2:end});
-      fprintf(' - estimated time to finish is %d seconds\n', round(elapsed*(1-p)/(p-p0)));
+      strlentmp = fprintf(varargin{2:end});
+      strlentmp = strlentmp + fprintf(' - estimated time to finish is %d seconds', round(elapsed*(1-p)/(p-p0)));
+      
+      % record actual string length that was printed (subtracting all the
+      % \b's)
+      strlen = strlentmp - strlen;
     else
       % only print the estimated time to finish
-      fprintf(' - estimated time to finish is %d seconds\n', round(elapsed*(1-p)/(p-p0)));
+      strlentmp = fprintf([repmat(sprintf('\b'),[1 strlen]) ' - estimated time to finish is %d seconds'], round(elapsed*(1-p)/(p-p0)));
+      strlen = strlentmp - strlen;
     end
 
   case 'dial'
     dial = '|/-\|/-\';
     if ~isempty(s)
       % print the title and draw a new hand of the rotating dial
-      fprintf('\r%s %s', s, dial(1+a/45));
+      strlentmp = fprintf([repmat(sprintf('\b'),[1 strlen]) '%s %s'], s, dial(1+a/45));
+      strlen = strlentmp - strlen;
     else
       % draw a new hand of the rotating dial
-      fprintf('\r%s', dial(1+a/45));
+      strlentmp = fprintf([repmat(sprintf('\b'),[1 strlen]) '%s'], dial(1+a/45));
+      srtlen = strlentmp - strlen;
     end
     % increment the angle with 45 degrees
     a = a + 45;
@@ -191,43 +248,63 @@ else
 
   case 'text'
     if nargin>1
-      % print the string as it is
-      fprintf(varargin{2:end});
-    else
-      fprintf('%6.2f %%\n', 100*varargin{1});
-    end
-
-  case 'textnl'
-    if nargin>1
-      % ensure that the string ends with a newline
-      if length(varargin{2})>1 && all(varargin{2}((end-1):end) == '\r')
-        varargin{2}((end-1):end) = '\n';
-      elseif length(varargin{2})>1 && ~all(varargin{2}((end-1):end) == '\n')
-        varargin{2}((end+1):(end+2)) = '\n';
-      elseif length(varargin{2})<2
-        varargin{2}((end+1):(end+2)) = '\n';
+      
+      % ensure the string does not end with a newline or carriage return
+      % either would break compatibility with a -nodesktop matlab
+      % environment
+      if length(varargin{2})>1 && (all(varargin{2}((end-1):end) == '\r')...
+          || all(varargin{2}((end-1):end) == '\n'))
+        varargin{2} = varargin{2}(1:end-2);
       end
-      fprintf(varargin{2:end});
-    else
-      fprintf('%6.2f %%\n', 100*varargin{1});
-    end
-
-  case 'textcr'
-    if nargin>1
-      % ensure that the string ends with a cariage return
-      if length(varargin{2})>1 && all(varargin{2}((end-1):end) == '\n')
-        varargin{2}((end-1):end) = '\r';
-      elseif length(varargin{2})>1 && ~all(varargin{2}((end-1):end) == '\r')
-        varargin{2}((end+1):(end+2)) = '\r';
-      elseif length(varargin{2})<2
-        varargin{2}((end+1):(end+2)) = '\r';
+      
+      varargin{2} = [repmat(sprintf('\b'),[1 strlen]) varargin{2}];
+      if usejava('desktop')
+        % a newline is appropriate when using the desktop environment
+        varargin{2} = [varargin{2} '\n'];
       end
-      fprintf(varargin{2:end});
+      
+      strlentmp = fprintf(varargin{2:end});
+      strlen = strlentmp - strlen;
     else
-      fprintf('%6.2f %%\r', 100*varargin{1});
+      strlentmp = fprintf([repmat(sprintf('\b'),[1 strlen]) '%6.2f %%'], 100*varargin{1});
+      strlen = strlentmp - strlen;
     end
 
-  end % case gui, dial, text, textnl, textcr
+% the following options are unused in FieldTrip (as of April 17 2012), and seem
+% semantically incompatible with the implementation of the \b-ing, so I
+% think removal is appropriate.
+%
+%   case 'textnl'
+%     if nargin>1
+%       % ensure that the string ends with a newline
+%       if length(varargin{2})>1 && all(varargin{2}((end-1):end) == '\r')
+%         varargin{2}((end-1):end) = '\n';
+%       elseif length(varargin{2})>1 && ~all(varargin{2}((end-1):end) == '\n')
+%         varargin{2}((end+1):(end+2)) = '\n';
+%       elseif length(varargin{2})<2
+%         varargin{2}((end+1):(end+2)) = '\n';
+%       end
+%       fprintf(varargin{2:end});
+%     else
+%       fprintf('%6.2f %%\n', 100*varargin{1});
+%     end
+% 
+%   case 'textcr'
+%     if nargin>1
+%       % ensure that the string ends with a cariage return
+%       if length(varargin{2})>1 && all(varargin{2}((end-1):end) == '\n')
+%         varargin{2}((end-1):end) = '\r';
+%       elseif length(varargin{2})>1 && ~all(varargin{2}((end-1):end) == '\r')
+%         varargin{2}((end+1):(end+2)) = '\r';
+%       elseif length(varargin{2})<2
+%         varargin{2}((end+1):(end+2)) = '\r';
+%       end
+%       fprintf(varargin{2:end});
+%     else
+%       fprintf('%6.2f %%\r', 100*varargin{1});
+%     end
+
+  end % case gui, dial, text
 end % updating the displayed value
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

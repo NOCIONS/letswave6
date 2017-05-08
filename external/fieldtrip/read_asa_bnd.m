@@ -1,11 +1,11 @@
-function bnd = read_asa_bnd(fn);
+function bnd = read_asa_bnd(fn)
 
 % READ_ASA_BND reads an ASA boundary triangulation file
 % converting the units of the vertices to mm
 
 % Copyright (C) 2002, Robert Oostenveld
 %
-% This file is part of FieldTrip, see http://www.ru.nl/neuroimaging/fieldtrip
+% This file is part of FieldTrip, see http://www.fieldtriptoolbox.org
 % for the documentation and details.
 %
 %    FieldTrip is free software: you can redistribute it and/or modify
@@ -21,10 +21,10 @@ function bnd = read_asa_bnd(fn);
 %    You should have received a copy of the GNU General Public License
 %    along with FieldTrip. If not, see <http://www.gnu.org/licenses/>.
 %
-% $Id: read_asa_bnd.m 2209 2010-11-27 10:25:04Z roboos $
+% $Id$
 
 Npnt = read_asa(fn, 'NumberPositions=', '%d');
-Ndhk = read_asa(fn, 'NumberPolygons=', '%d');
+Ntri = read_asa(fn, 'NumberPolygons=', '%d');
 Unit = read_asa(fn, 'UnitPosition', '%s');
 
 pnt = read_asa(fn, 'Positions', '%f');
@@ -36,12 +36,12 @@ if any(size(pnt)~=[Npnt,3])
   fclose(fid);
 end
 
-dhk = read_asa(fn, 'Polygons', '%f');
-if any(size(dhk)~=[Ndhk,3])
-  dhk_file = read_asa(fn, 'Polygons', '%s');
+tri = read_asa(fn, 'Polygons', '%f');
+if any(size(tri)~=[Ntri,3])
+  tri_file = read_asa(fn, 'Polygons', '%s');
   [path, name, ext] = fileparts(fn);
-  fid = fopen(fullfile(path, dhk_file), 'rb', 'ieee-le');
-  dhk = fread(fid, [3,Ndhk], 'int32')';
+  fid = fopen(fullfile(path, tri_file), 'rb', 'ieee-le');
+  tri = fread(fid, [3,Ntri], 'int32')';
   fclose(fid);
 end
 
@@ -56,6 +56,6 @@ else
 end
 
 bnd.pnt = pnt;
-bnd.tri = dhk + 1;      % 1-offset instead of 0-offset
+bnd.tri = tri + 1;      % 1-offset instead of 0-offset
 % bnd.tri = fliplr(bnd.tri);    % invert order of triangle vertices
 

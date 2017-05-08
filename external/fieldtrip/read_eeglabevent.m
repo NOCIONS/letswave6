@@ -48,24 +48,12 @@ end
 event    = [];                % these will be the output in FieldTrip format
 oldevent = hdr.orig.event;    % these are in EEGLAB format
 
-missingFieldFlag=false;
-
-if ~isfield(oldevent,'code') && ~isfield(oldevent,'value')
-    disp('Warning: No ''value'' field in the events structure.');
-    missingFieldFlag=true;
+if ~isempty(oldevent)
+    nameList=fieldnames(oldevent);
+else
+    nameList=[];
 end;
-    
-if ~isfield(oldevent,'type')
-    disp('Warning: No ''type'' field in the events structure.');
-    missingFieldFlag=true;
-end;
-
-if missingFieldFlag
-    disp('EEGlab data files should have both a ''value'' field');
-    disp('to denote the generic type of event, as in ''trigger'', and a ''type'' field');
-    disp('to denote the nature of this generic event, as in the condition of the experiment.');
-    disp('Note also that this is the reverse of the FieldTrip convention.');    
-end;
+nameList=setdiff(nameList,{'type','value','sample','offset','duration','latency'});
 
 for index = 1:length(oldevent)
 
@@ -98,12 +86,17 @@ for index = 1:length(oldevent)
     duration = 0;
   end;
 
-  % add the current event in fieldtrip format
+  % add the current event in FieldTrip format
   event(index).type     = type;     % this is usually a string, e.g. 'trigger' or 'trial'
   event(index).value    = value;    % in case of a trigger, this is the value
   event(index).sample   = sample;   % this is the sample in the datafile at which the event happens
   event(index).offset   = offset;   % some events should be represented with a shifted time-axix, e.g. a trial with a baseline period
   event(index).duration = duration; % some events have a duration, such as a trial
+
+  %add custom fields
+  for iField=1:length(nameList)
+      eval(['event(index).' nameList{iField} '=oldevent(index).' nameList{iField} ';']);
+  end;
 
 end;
 
@@ -112,7 +105,11 @@ if hdr.nTrials>1
   for i=1:hdr.nTrials
     event(end+1).type     = 'trial';
     event(end  ).sample   = (i-1)*hdr.nSamples + 1;
-    event(end  ).value    = [];
+    if isfield(oldevent,'setname') && (length(oldevent) == hdr.nTrials)
+        event(end  ).value    = oldevent(i).setname; %accommodate Widmann's pop_grandaverage function
+    else
+        event(end  ).value    = [];
+    end;
     event(end  ).offset   = -hdr.nSamplesPre;
     event(end  ).duration =  hdr.nSamples;
   end
