@@ -198,8 +198,10 @@ for channelpos=1:num_channels
                         [result_p,result_T]=anovan(tpdata,factors,'varnames',factors_label,'random',subject_pos,'model','full','display','off');
                         T=cell2mat(result_T(fact_idx,6:7));
                         tpp_pvalue(:,dx)=T(:,1);
-                        tpp_fvalue(:,dx)=T(:,2);
+                        outdataset_Fvalue.data(1,channelpos,:,dz,dy,dx)=T(:,2);
                     end;
+                    for indexpos=1:size(ttp,1);
+                        outdataset_pvalue.data(1,channelpos,indexpos,dz,dy,:)=tpp_pvalue
                 case 2
                     parfor dx=1:num_dx
                         tpdata=[];
@@ -209,8 +211,8 @@ for channelpos=1:num_channels
                         tpdata=tpdata';
                         [result_p,result_T]=anovan(tpdata,factors,'varnames',factors_label,'model','full','display','off');
                         T=cell2mat(result_T(2:end-2,6));
-                        tpp_pvalue(:,dx)=result_p;
-                        tpp_fvalue(:,dx)=T;
+                        outdataset_pvalue.data(1,channelpos,:,dz,dy,dx)=result_p;
+                        outdataset_Fvalue.data(1,channelpos,:,dz,dy,dx)=T;
                     end;
                 case 3
                     parfor dx=1:num_dx
@@ -221,8 +223,8 @@ for channelpos=1:num_channels
                         tpdata=tpdata';
                         [result_p,result_T]=anovan(tpdata,factors,'varnames',factors_label,'nested',nesting,'random',subject_pos,'model','full','display','off');
                         T=cell2mat(result_T(fact_idx,6:7));
-                        tpp_pvalue(:,dx)=T(:,1);
-                        tpp_fvalue(:,dx)=T(:,2);
+                        outdataset_pvalue.data(1,channelpos,:,dz,dy,dx)=T(:,1);
+                        outdataset_Fvalue.data(1,channelpos,:,dz,dy,dx)=T(:,2);
                     end;
                 case 4
                     parfor dx=1:num_dx
@@ -232,13 +234,9 @@ for channelpos=1:num_channels
                         end;
                         tpdata=tpdata';
                         [result_p,result_T]=anova1(tpdata,factors,'off');
-                        tpp_pvalue(:,dx)=result_p;
-                        tpp_fvalue(:,dx)=result_T{2,5};
+                        outdataset_pvalue.data(1,channelpos,1,dz,dy,dx)=result_p;
+                        outdataset_Fvalue.data(1,channelpos,1,dz,dy,dx)=result_T{2,5};;
                     end;
-            end;
-            for indexpos=1:size(tpp_pvalue,1);
-                outdataset_pvalue.data(1,channelpos,indexpos,dz,dy,:)=tpp_pvalue;
-                outdataset_Fvalue.data(1,channelpos,indexpos,dz,dy,:)=tpp_fvalue;
             end;
         end;
     end;
