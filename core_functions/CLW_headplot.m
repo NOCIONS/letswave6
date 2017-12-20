@@ -32,9 +32,15 @@ for locpos=1:length(locs);
 end
 chan_used=find([header.chanlocs.topo_enabled]==1, 1);
 if isempty(chan_used)
-    header=RLW_edit_electrodes(header,userdata.chanlocs);
+    header=RLW_edit_electrodes(header,chanlocs);
 end
 load('headmodel.mat');
+%fix vector
+for i=1:length(header.chanlocs);
+    tp(i)=header.chanlocs(i).topo_enabled;
+end;
+vector=vector(find(tp==1));
+
 if isfield(header,'spl');
 else
     header=CLW_make_spl(header);
