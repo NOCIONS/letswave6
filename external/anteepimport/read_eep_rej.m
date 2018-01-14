@@ -1,24 +1,22 @@
-function [eeg] = read_eep_cnt(fn);
+function [rej] = read_eep_rej(fn);
 
-% READ_EEP_CNT reads continuous EEG data from an EEProbe *.cnt file
-% and returns a structure containing the header and data information.
+% READ_EEP_REJ reads rejection marks from an EEProbe *.rej file
 %
-% eeg = read_eep_cnt(filename, sample1, sample2)
+% This function returns a Nx2 matrix with the begin and end latency
+% of N rejection marks. The latency is in miliseconds.
 %
-% where sample1 and sample2 are the begin and end sample of the data
-% to be read.
+% rej = read_eep_rej(filename)
 %
-% eeg.label    ... labels of EEG channels
-% eeg.rate     ... sampling rate
-% eeg.npnt     ... number of sample in data segment
-% eeg.nchan    ... number of channels
-% eeg.nsample  
-% eeg.time     ... array [1 x npnt] of time points (ms)
-% eeg.data     ... array [nchan x npnt] containing eeg data (uV) 
+% An EEProbe rejection file is formatted like
+%   0.0000-0.3640
+%   2.4373-3.5471
+%   ... 
+% where rejection begin and end are given in seconds. This function 
+% converts the latency in miliseconds.
 %
 % Author: Robert Oostenveld, Aalborg University, Denmark, 11 March 2003
 %
-% See also READ_EEP_TRG, READ_EEP_REJ, READ_EEP_AVR
+% See also READ_EEP_CNT, READ_EEP_TRG, READ_EEP_AVR
 %
 
 % Copyright (C) 2002, Robert Oostenveld
@@ -39,15 +37,9 @@ function [eeg] = read_eep_cnt(fn);
 % along with this program; if not, write to the Free Software
 % Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-% $Log: read_eep_cnt.m,v $
-% Revision 1.2  2005/06/08 08:16:37  mvelde
-% converted files to unix format
-%
-% Revision 1.1  2004/11/19 14:55:38  jwiskerke
-% Added files for use with matlab
-%
-% Revision 1.1  2004/11/19 14:39:29  jwiskerke
-% Initial input into cvs. These files should work.
+% $Log: not supported by cvs2svn $
+% Revision 1.1  2004/11/26 13:17:02  jwiskerke
+% Added m-files without binary code in maple distribution.
 %
 % Revision 1.2  2003/10/24 13:34:41  Maarten-Jan Hoeve
 % Added GNU Licence and updated revision history
@@ -57,8 +49,23 @@ function [eeg] = read_eep_cnt(fn);
 %
 % Revision 1.1.1.1  2003/03/11 15:24:51  roberto
 % updated help and copyrights
-%
-% ANT Software BV, The Netherlands, www.ant-software.nl / info@ant-software.nl
+% ANT Software BV, The Netherlands, www.ant-neuro.com / info@ant-neuro.com
 %
 
-error('could not locate mex file');
+rej = [];
+
+fid = fopen(fn, 'rb');
+if fid<0
+   return 
+end
+while ~feof(fid)
+  tmp = fscanf(fid, '%f-%f', 2);
+  if ~isempty(tmp)
+    rej = [rej; tmp'];
+  end
+end
+
+% convert to ms
+rej = 1000*rej;
+
+fclose(fid);  

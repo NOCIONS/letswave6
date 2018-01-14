@@ -33,10 +33,7 @@ function [eeg,t] = read_eep_trial(filename, triggernumber, interval);
 % along with this program; if not, write to the Free Software
 % Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-% $Log: read_eep_trial.m,v $
-% Revision 1.2  2005/06/08 08:16:37  mvelde
-% converted files to unix format
-%
+% $Log: not supported by cvs2svn $
 % Revision 1.1  2004/11/26 13:17:02  jwiskerke
 % Added m-files without binary code in maple distribution.
 %
@@ -46,7 +43,7 @@ function [eeg,t] = read_eep_trial(filename, triggernumber, interval);
 % Revision 1.1.2  2003/10/17 09:55:20  mvelde
 % updated: consistent copyrights, arguments/data labels, fixed some typos
 %
-% ANT Software BV, The Netherlands, www.ant-software.nl / info@ant-software.nl
+% ANT Software BV, The Netherlands, www.ant-neuro.com / info@ant-neuro.com
 %
 
 % read short piece of data to get sampling rate, channels etc

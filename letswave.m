@@ -22,7 +22,7 @@ addpath([p filesep 'internal']);
 addpath([p filesep 'external']);
 addpath([p filesep 'external' filesep 'fieldtrip']);
 addpath([p filesep 'external' filesep 'eeglab']);
-addpath([p filesep 'external' filesep 'anteepimport1.09']);
+addpath([p filesep 'external' filesep 'anteepimport']);
 addpath([p filesep 'external' filesep 'singletrial toolbox']);
 addpath([p filesep 'external' filesep 'CSD toolbox']);
 addpath([p filesep 'external' filesep 'pica']);

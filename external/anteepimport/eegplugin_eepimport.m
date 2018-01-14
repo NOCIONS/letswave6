@@ -16,19 +16,18 @@
 %
 % Notes:
 %   This plugins consist of the following Matlab files:
-%   pop_loadeep.m           pop_loadeep_avg.m
+%   pop_loadeep_v4.m        pop_loadeep_avg.m
 %   loadeep.m               loadeep_avg.m
-%   read_eep_cnt.m          read_eep_avr.m
-%   read_eep_cnt.mexglx     read_eep_avr.mexglx
-%   read_eep_cnt.dll        read_eep_avr.dll
+%   eepv4_read              eepv4_read_info
+%   read_eep_avr.m
+%   read_eep_avr.mexglx
+%   read_eep_avr.dll
 %
 % Authors:
 % Maarten-Jan Hoeve, ANT, The Netherlands / www.ant-software.nl, 3 October 2003
 % Maarten van de Velde, ANT, The Netherlands / www.ant-neuro.com, 21 July 2005
 %
-% See also: eeglab(), pop_loadeep(), loadeep(), read_eep_cnt(), pop_loadeep_avg(), loadeep_avg(), read_eep_avr()
-
-%123456789012345678901234567890123456789012345678901234567890123456789012
+% See also: eeglab(), pop_loadeep_v4(), loadeep(), eepv4_read(), eepv4_read_info(), pop_loadeep_avg(), loadeep_avg(), read_eep_avr()
 
 % Copyright (C) 2005 ANT Software, The Netherlands, eeprobe@ant-neuro.com / info@ant-neuro.com
 %
@@ -76,7 +75,7 @@
 
 function vers = eegplugin_eepimport(fig, trystrs, catchstrs)
 
-    vers = 'eepimport1.06';
+    vers = 'eepimport1.13';
 
     if nargin < 3
         error('eegplugin_eepimport requires 3 arguments');
@@ -84,7 +83,7 @@ function vers = eegplugin_eepimport(fig, trystrs, catchstrs)
 
     % add folder to path
     % ------------------
-    if ~exist('pop_loadeep')
+    if ~exist('pop_loadeep_v4')
         p = which('eegplugin_eepimport.m');
         p = p(1:findstr(p,'eegplugin_eepimport.m')-1);
         addpath( p );
@@ -96,7 +95,7 @@ function vers = eegplugin_eepimport(fig, trystrs, catchstrs)
 
     % menu callbacks
     % --------------
-    comcnt = [ trystrs.no_check '[EEG LASTCOM] = pop_loadeep;' catchstrs.new_non_empty ];
+    comcnt = [ trystrs.no_check '[EEG LASTCOM] = pop_loadeep_v4;' catchstrs.new_non_empty ];
     comavr = [ trystrs.no_check '[EEG LASTCOM] = pop_loadeep_avg;' catchstrs.new_non_empty ];
 
 

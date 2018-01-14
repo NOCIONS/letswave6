@@ -1,22 +1,31 @@
-function [rej] = read_eep_rej(fn);
+function [dat] = read_eep_avr(fn);
 
-% READ_EEP_REJ reads rejection marks from an EEProbe *.rej file
+% READ_EEP_AVR reads averaged EEG data from an EEProbe *.avr file
+% and returns a structure containing the header and data information.
 %
-% This function returns a Nx2 matrix with the begin and end latency
-% of N rejection marks. The latency is in miliseconds.
+% eeg = read_eep_avr(filename)
 %
-% rej = read_eep_rej(filename)
+% eeg.label     ... array of labels (1 x nchan)
+% eeg.rate      ... sample rate (Hz)
+% eeg.npnt      ... number of data points
+% eeg.nchan     ... number of channels
+% eeg.nsweeps   ... number of trials averaged
+% eeg.xmin      ... 
+% eeg.xmax      ... 
+% eeg.time      ... array of time (1 x npnt)
+% eeg.data      ... data array (nchan x npnt)
+% eeg.variance  ... variance (nchan x npnt)
+% eeg.condlab   ... string with condition label
+% eeg.condcol   ... string with color code for condition
+% eeg.psi       ... pre-stimulus interval
+% eeg.trialc    ... total number of trial in original data
+% eeg.rejtrialc ... number of rejected trials
 %
-% An EEProbe rejection file is formatted like
-%   0.0000-0.3640
-%   2.4373-3.5471
-%   ... 
-% where rejection begin and end are given in seconds. This function 
-% converts the latency in miliseconds.
+% Use plot(eeg.time,eeg.data) to plot the traces at all channels
 %
 % Author: Robert Oostenveld, Aalborg University, Denmark, 11 March 2003
 %
-% See also READ_EEP_CNT, READ_EEP_TRG, READ_EEP_AVR
+% See also READ_EEP_CNT, READ_EEP_TRG, READ_EEP_REJ
 %
 
 % Copyright (C) 2002, Robert Oostenveld
@@ -37,12 +46,9 @@ function [rej] = read_eep_rej(fn);
 % along with this program; if not, write to the Free Software
 % Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-% $Log: read_eep_rej.m,v $
-% Revision 1.2  2005/06/08 08:16:37  mvelde
-% converted files to unix format
-%
-% Revision 1.1  2004/11/26 13:17:02  jwiskerke
-% Added m-files without binary code in maple distribution.
+% $Log: not supported by cvs2svn $
+% Revision 1.1  2004/11/19 14:55:38  jwiskerke
+% Added files for use with matlab
 %
 % Revision 1.2  2003/10/24 13:34:41  Maarten-Jan Hoeve
 % Added GNU Licence and updated revision history
@@ -52,23 +58,8 @@ function [rej] = read_eep_rej(fn);
 %
 % Revision 1.1.1.1  2003/03/11 15:24:51  roberto
 % updated help and copyrights
-% ANT Software BV, The Netherlands, www.ant-software.nl / info@ant-software.nl
+%
+% ANT Software BV, The Netherlands, www.ant-neuro.com / info@ant-neuro.com
 %
 
-rej = [];
-
-fid = fopen(fn, 'rb');
-if fid<0
-   return 
-end
-while ~feof(fid)
-  tmp = fscanf(fid, '%f-%f', 2);
-  if ~isempty(tmp)
-    rej = [rej; tmp'];
-  end
-end
-
-% convert to ms
-rej = 1000*rej;
-
-fclose(fid);  
+error('could not locate mex file');

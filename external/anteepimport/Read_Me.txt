@@ -1,4 +1,25 @@
   ========================================
+  Februari 2017
+  MATLAB / EEGLAB import / plugin for ANT continuous data, trigger files and averages
+  Version 1.13
+  ========================================
+
+  This update adds support for .seg files.
+
+  ========================================
+  Februari 2017
+  MATLAB / EEGLAB import / plugin for ANT continuous data, trigger files and averages
+  Version 1.12
+  ========================================
+
+  Update adds support for .evt file format. At the same time the dialog for
+  pop_loadeep no longer asks for confirmation to load .trg files. This is done
+  automatically. When a .cnt file is read, the importer checks for an accompanying
+  .evt file. If found, its contents are loaded. If not, it will try the same for an
+  accompanying .trg file. If that also fails, the embedded triggers in the .cnt are
+  tried.
+  
+  ========================================
   September 2010
   MATLAB / EEGLAB import / plugin for ANT continuous data, trigger files and averages
   Version 1.07
