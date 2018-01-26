@@ -63,16 +63,22 @@ function [sens] = ft_read_sens(filename, varargin)
 % optionally get the data from the URL and make a temporary local copy
 filename = fetch_url(filename);
 
-% test whether the file exists
-if ~exist(filename, 'file')
-  error('file ''%s'' does not exist', filename);
-end
-
 % get the options
 fileformat     = ft_getopt(varargin, 'fileformat', ft_filetype(filename));
 senstype       = ft_getopt(varargin, 'senstype');         % can be eeg or meg, default is automatic when []
 coordsys       = ft_getopt(varargin, 'coordsys', 'head'); % this is used for ctf and neuromag_mne, it can be head or dewar
 coilaccuracy   = ft_getopt(varargin, 'coilaccuracy');     % empty, or a number between 0 to 2
+
+realtime = any(strcmp(fileformat, {'fcdc_buffer', 'ctf_shm', 'fcdc_mysql'}));
+
+if realtime
+  % skip the rest of the initial checks to increase the speed for realtime operation
+else
+  % test whether the file exists
+  if ~exist(filename, 'file')
+    ft_error('file ''%s'' does not exist', filename);
+  end
+end
 
 switch fileformat
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -85,7 +91,7 @@ switch fileformat
     sens = read_brainvision_pos(filename);
     
   case 'besa_elp'
-    error('unknown fileformat for electrodes or gradiometers');
+    ft_error('unknown fileformat for electrodes or gradiometers');
     % the code below does not yet work
     fid = fopen(filename);
     % the ascii file contains: type, label, angle, angle
@@ -102,7 +108,7 @@ switch fileformat
   case 'besa_pos'
     tmp = importdata(filename);
     if ~isnumeric(tmp)
-      error('unexpected file format for fileformat=besa_pos')
+      ft_error('unexpected file format for fileformat=besa_pos')
     end
     [nchan,nrow] = size(tmp);
     if nrow==3
@@ -115,18 +121,18 @@ switch fileformat
       sens.ori = [ori; ori];
       sens.tra = [eye(nchan) -eye(nchan)];
     else
-      error('unexpected file format for fileformat=besa_pos')
+      ft_error('unexpected file format for fileformat=besa_pos')
     end
     [p, f, x] = fileparts(filename);
     elpfile = fullfile(p, [f '.elp']);
     elafile = fullfile(p, [f '.ela']);
     if exist(elpfile, 'file')
-      warning('reading channel labels from %s', elpfile);
+      ft_warning('reading channel labels from %s', elpfile);
       % read the channel names from the accompanying ELP file
       lbl = importdata(elpfile);
       sens.label = strrep(lbl.textdata(:,2) ,'''', '');
     elseif exist(elafile, 'file')
-      warning('reading channel labels from %s', elafile);
+      ft_warning('reading channel labels from %s', elafile);
       % read the channel names from the accompanying ELA file
       lbl = importdata(elafile);
       lbl = strrep(lbl, 'MEG ', ''); % remove the channel type
@@ -134,7 +140,7 @@ switch fileformat
       sens.label = lbl;
     else
       % the file does not have channel labels in it
-      warning('creating fake channel names for besa_pos');
+      ft_warning('creating fake channel names for besa_pos');
       for i=1:nchan
         sens.label{i} = sprintf('%03d', i);
       end
@@ -168,7 +174,7 @@ switch fileformat
     if isfield(hdr, 'elec') && isfield(hdr, 'grad')
       if isempty(senstype)
         % set the default
-        warning('both electrode and gradiometer information is present, returning the electrode information by default');
+        ft_warning('both electrode and gradiometer information is present, returning the electrode information by default');
         senstype = 'eeg';
       end
       switch lower(senstype)
@@ -177,14 +183,37 @@ switch fileformat
         case 'meg'
           sens = hdr.grad;
         otherwise
-          error('incorrect specification of senstype');
+          ft_error('incorrect specification of senstype');
       end
     elseif isfield(hdr, 'grad')
       sens = hdr.grad;
     elseif isfield(hdr, 'elec')
       sens = hdr.elec;
     else
-      error('neither electrode nor gradiometer information is present');
+      ft_error('neither electrode nor gradiometer information is present');
+    end
+    
+  case 'fcdc_buffer'
+    % the online header should have a binary blob with the sensor information
+    hdr = ft_read_header(filename, 'headerformat', fileformat);
+    if isfield(hdr, 'orig') && isfield(hdr.orig, 'neuromag_header')
+      hdr = decode_fif(hdr.orig.neuromag_header);
+    end
+    if isfield(hdr, 'orig') && isfield(hdr.orig, 'ctf_res4')
+      hdr = decode_res4(hdr.orig.ctf_res4);
+    end
+    if isempty(senstype)
+      % set the default
+      ft_warning('both electrode and gradiometer information is present, returning the electrode information by default');
+      senstype = 'eeg';
+    end
+    switch lower(senstype)
+      case 'eeg'
+        sens = hdr.elec;
+      case 'meg'
+        sens = hdr.grad;
+      otherwise
+        ft_error('incorrect specification of senstype');
     end
     
   case 'neuromag_mne_grad'
@@ -207,14 +236,14 @@ switch fileformat
     elseif isfield(hdr, 'elec')
       sens = hdr.elec;
     else
-      error('no electrodes or gradiometers found in the file')
+      ft_error('no electrodes or gradiometers found in the file')
     end
     
   case 'polhemus_fil'
     % these are created at the FIL in London with a polhemus tracker
     [sens.fid.pnt, sens.pnt, sens.fid.label] = read_polhemus_fil(filename, 0);
     % the file does not have channel labels in it
-    warning('no channel names in polhemus file, using numbers instead');
+    ft_warning('no channel names in polhemus file, using numbers instead');
     for i=1:size(sens.pnt, 1)
       sens.label{i} = sprintf('%03d', i);
     end
@@ -314,7 +343,7 @@ switch fileformat
         y(i,1) = str2double(ytemp{i}(8:end-1));
         z(i,1) = str2double(ztemp{i}(8:end-3));
         lbl{i,1} = labtemp{i}(14:end-1);
-      end;
+      end
       
       % Create and fill sens structure
       sens = [];
@@ -335,11 +364,11 @@ switch fileformat
           sens.elecpos(i,2) = str2double(tmp(i).Marker.ColVec3D.data1);
           sens.elecpos(i,3) = str2double(tmp(i).Marker.ColVec3D.data2);
           sens.label{i} = tmp(i).Marker.description;
-        end;
-      end;
+        end
+      end
       
       sens.chanpos = sens.elecpos;
-    end;
+    end
     
   case 'easycap_txt'
     % Read the file and store all contents in cells of strings
@@ -354,7 +383,7 @@ switch fileformat
       theta = cellfun(@str2double, tmp{2}(2:end));
       phi   = cellfun(@str2double, tmp{3}(2:end));
       radians = @(x) pi*x/180;
-      warning('assuming a head radius of 85 mm');
+      ft_warning('assuming a head radius of 85 mm');
       x = 85*cos(radians(phi)).*sin(radians(theta));
       y = 85*sin(radians(theta)).*sin(radians(phi));
       z = 85*cos(radians(theta));
@@ -371,8 +400,58 @@ switch fileformat
       sens.chanpos = [x y z];
     end
     
+  case 'neuromag_iso'
+    ft_hastoolbox('mne', 1);
+    FIFF = fiff_define_constants();
+    [fid, tree, dir] = fiff_open(filename);
+    isotrak = fiff_dir_tree_find(tree, FIFF.FIFFB_ISOTRAK);
+    sel = find([isotrak.dir.kind]==FIFF.FIFF_DIG_POINT);
+    sens = [];
+    sens.elecpos = nan(numel(sel),3);
+    sens.chanpos = nan(numel(sel),3);
+    coordsys     = nan(numel(sel),1);
+    for i=sel
+      tag = fiff_read_tag(fid,isotrak.dir(i).pos);
+      sens.elecpos(i,:) = tag.data.r;
+      sens.chanpos(i,:) = tag.data.r;
+      coordsys(i)       = tag.data.coord_frame;
+    end
+    fclose(fid);
+    
+    if all(coordsys==FIFF.FIFFV_COORD_DEVICE)
+      sens.coordsys = 'device';
+    elseif all(coordsys==FIFF.FIFFV_COORD_ISOTRAK)
+      sens.coordsys = 'isotrak';
+    elseif all(coordsys==FIFF.FIFFV_COORD_HPI)
+      sens.coordsys = 'hpi';
+    elseif all(coordsys==FIFF.FIFFV_COORD_HEAD)
+      sens.coordsys = 'head';
+    else
+      sens.coordsys = 'unknown';
+    end
+    
+    ft_warning('creating fake channel names for neuromag_iso');
+    for i=1:size(sens.chanpos,1)
+      sens.label{i} = sprintf('%d', i);
+    end
+    
+  case 'neuromag_cal'
+    dat = cell(1,14);
+    [dat{:}] = textread(filename, '%s%f%f%f%f%f%f%f%f%f%f%f%f%f');
+    label = dat{1};
+    x = dat{2};
+    y = dat{3};
+    z = dat{4};
+    rot = cat(2, dat{5:13});
+    cal = dat{14}; % ??
+    % construct the sensor structucture
+    % it seems that the channel positions are expressed in dewar cordinates
+    % it would be possible to use coil_def.dat to construct the coil positions
+    sens.label = label;
+    sens.chanpos = [x y z];
+    
   otherwise
-    error('unknown fileformat for electrodes or gradiometers');
+    ft_error('unknown fileformat for electrodes or gradiometers');
 end % switch fileformat
 
 % ensure that the sensor description is up-to-date
