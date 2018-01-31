@@ -76,3 +76,5 @@ out_data=zeros(round(out_header.datasize));
 for k=1:length(recording.signalTypes)
     eval(['out_data(1,k,1,1,:)=squeeze(recording.signal.',recording.signalTypes{k},'.data);']);
 end
+
+out_header.datasize=size(out_data);
