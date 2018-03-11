@@ -177,16 +177,13 @@ if permutation==1;
                     r=rand(length(tp),1);
                     [a,b]=sort(r);
                     tp=tp(b);
-                    epochpos1=find(tp==1);
-                    epochpos2=find(tp==2);
+                    
                 end;
                 tres=[];
                 %ttest (output is tres with p values and T values tres_pvalue / tres_Tvalue)
                 for dy=1:size(data1,5);
-                    for epochpos=1:length(epochpos1);
+                    for epochpos=1:num_epochs;
                         t1(epochpos,:)=squeeze(merged_data(epochpos1(epochpos),chanpos,1,dz,dy,:));
-                    end;
-                    for epochpos=1:length(epochpos2);
                         t2(epochpos,:)=squeeze(merged_data(epochpos2(epochpos),chanpos,1,dz,dy,:));
                     end;
                     if strcmpi(test_type,'paired');

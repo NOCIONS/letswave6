@@ -165,29 +165,25 @@ if permutation==1;
             for dz=1:size(data1,4);
                 %permutation
                 if strcmpi(test_type,'paired');
-                    num_epochs=max(merged_cat(:,1));
-                    for i=1:num_epochs;
+                    for i=1:max(merged_cat(:,1));
                         r=rand(2,1);
                         [a,b]=sort(r);
-                        epochpos1(i)=i+((b(1)-1)*num_epochs);
-                        epochpos2(i)=i+((b(2)-1)*num_epochs);
+                        epochpos1=i+(b-1)*
+                        
                     end;
-                else
-                    tp=merged_cat(:,2);
-                    r=rand(length(tp),1);
+                    
+                
+                for epochpos=1:length(merged_cat(1).cat);
+                    r=rand(2,1);
                     [a,b]=sort(r);
-                    tp=tp(b);
-                    epochpos1=find(tp==1);
-                    epochpos2=find(tp==2);
+                    rnd_cat(epochpos,:)=b;
                 end;
                 tres=[];
                 %ttest (output is tres with p values and T values tres_pvalue / tres_Tvalue)
                 for dy=1:size(data1,5);
-                    for epochpos=1:length(epochpos1);
-                        t1(epochpos,:)=squeeze(merged_data(epochpos1(epochpos),chanpos,1,dz,dy,:));
-                    end;
-                    for epochpos=1:length(epochpos2);
-                        t2(epochpos,:)=squeeze(merged_data(epochpos2(epochpos),chanpos,1,dz,dy,:));
+                    for epochpos=1:size(merged_data,1);
+                        t1(epochpos,:)=squeeze(merged_data(epochpos,chanpos,rnd_cat(epochpos,1),dz,dy,:));
+                        t2(epochpos,:)=squeeze(merged_data(epochpos,chanpos,rnd_cat(epochpos,2),dz,dy,:));
                     end;
                     if strcmpi(test_type,'paired');
                         %[H,P,CI,STATS]

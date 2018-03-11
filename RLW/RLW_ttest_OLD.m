@@ -148,12 +148,13 @@ if permutation==1;
     message_string{end+1}=['Performing cluster-based thresholding. This may take a while!'];
 
     %merge
-    merged_data=cat(1,data1(:,:,1,:,:,:),data2(:,:,1,:,:,:));
-    merged_cat=zeros(size(merged_data,1),2);
-    merged_cat(1:size(data1,1),1)=1:size(data1,1);
-    merged_cat(1:size(data1,1),2)=1;
-    merged_cat(size(data1,1)+1:end,1)=1:size(data2,1);
-    merged_cat(size(data1,1)+1:end,2)=2;
+    tp=size(data1);
+    tp(3)=2;
+    merged_data=zeros(tp);
+    merged_data(:,:,1,:,:,:)=data1(:,:,1,:,:,:);
+    merged_data(:,:,2,:,:,:)=data2(:,:,1,:,:,:);
+    merged_cat(:,1)=zeros(size(merged_data,1),1)+1;
+    merged_cat(:,2)=zeros(size(merged_data,1),1)+2;
     
     %loop
     blobsizes=[];
@@ -164,30 +165,17 @@ if permutation==1;
             %loop through dz
             for dz=1:size(data1,4);
                 %permutation
-                if strcmpi(test_type,'paired');
-                    num_epochs=max(merged_cat(:,1));
-                    for i=1:num_epochs;
-                        r=rand(2,1);
-                        [a,b]=sort(r);
-                        epochpos1(i)=i+((b(1)-1)*num_epochs);
-                        epochpos2(i)=i+((b(2)-1)*num_epochs);
-                    end;
-                else
-                    tp=merged_cat(:,2);
-                    r=rand(length(tp),1);
+                for epochpos=1:size(merged_cat,1);
+                    r=rand(size(merged_cat,2),1);
                     [a,b]=sort(r);
-                    tp=tp(b);
-                    epochpos1=find(tp==1);
-                    epochpos2=find(tp==2);
+                    rnd_cat(epochpos,:)=b;
                 end;
                 tres=[];
                 %ttest (output is tres with p values and T values tres_pvalue / tres_Tvalue)
                 for dy=1:size(data1,5);
-                    for epochpos=1:length(epochpos1);
-                        t1(epochpos,:)=squeeze(merged_data(epochpos1(epochpos),chanpos,1,dz,dy,:));
-                    end;
-                    for epochpos=1:length(epochpos2);
-                        t2(epochpos,:)=squeeze(merged_data(epochpos2(epochpos),chanpos,1,dz,dy,:));
+                    for epochpos=1:size(merged_data,1);
+                        t1(epochpos,:)=squeeze(merged_data(epochpos,chanpos,rnd_cat(epochpos,1),dz,dy,:));
+                        t2(epochpos,:)=squeeze(merged_data(epochpos,chanpos,rnd_cat(epochpos,2),dz,dy,:));
                     end;
                     if strcmpi(test_type,'paired');
                         %[H,P,CI,STATS]
