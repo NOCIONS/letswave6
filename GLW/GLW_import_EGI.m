@@ -286,4 +286,14 @@ function concatenate_btn_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hint: get(hObject,'Value') returns toggle state of concatenate_btn
+
+
+% --- Executes on button press in select_folder_btn.
+function select_folder_btn_Callback(hObject, eventdata, handles)
+% hObject    handle to select_folder_btn (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+st={};
+st{1}=uigetdir;
+set(handles.filenames_listbox,'String',st);
+set(handles.filenames_listbox,'Userdata',st);
