@@ -64,6 +64,7 @@ switch operation
         out_configuration.gui_info=gui_info;
         out_configuration.parameters.filenames={};
         out_configuration.parameters.concatenate=0;
+        out_configuration.parameters.implementation=1;
         %datasets
         out_datasets=datasets;
         
@@ -84,7 +85,7 @@ switch operation
             filename=inputfiles{filepos};
             if isempty(update_pointers) else update_pointers.function(update_pointers.handles,['Loading : ' filename],1,0); end;
             %process
-            [out_datasets(filepos).header out_datasets(filepos).data message_string]=RLW_import_EGI(filename,'concatenate',configuration.parameters.concatenate);
+            [out_datasets(filepos).header out_datasets(filepos).data message_string]=RLW_import_EGI(filename,'concatenate',configuration.parameters.concatenate,'implementation',configuration.parameters.implementation);
             %message_string
             if isempty(update_pointers);
             else

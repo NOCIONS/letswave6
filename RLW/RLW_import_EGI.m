@@ -19,6 +19,8 @@ function [out_header,out_data,message_string]=RLW_import_EGI(filename,varargin);
 %
 
 concatenate=0;
+implementation=1;
+
 %parse varagin
 if isempty(varargin);
 else
@@ -28,6 +30,12 @@ else
     else
         concatenate=varargin{a+1};
     end;
+    %implementation
+    a=find(strcmpi(varargin,'implementation'));
+    if isempty(a);
+    else
+        implementation=varargin{a+1};
+    end;
 end;
 
 
@@ -36,14 +44,31 @@ out_header=[];
 out_data=[];
 
 message_string{1}=['Loading : ' filename];
+message_string{2}=['Implementation : ' num2str(implementation)];
 
 %load the BDF file
-%load data
-dat=ft_read_data(filename);
 %load header
-hdr=ft_read_header(filename);
-%load events
-trg=ft_read_event(filename);
+switch implementation
+    case 1      
+        %use the default egi_mff_v1 implementation
+        hdr=ft_read_header(filename);
+        %load data
+        dat=ft_read_data(filename);
+        %load events
+        trg=ft_read_event(filename);
+    case 2
+        %add path
+        [p,n,e]=fileparts(which('letswave'));
+        p=[p filesep 'external' filesep 'egi_mff' filesep 'java' filesep 'MFF-1.2.jar'];
+        javaaddpath(p);
+        %use the alternative egi_mff_v2 implementation
+        hdr=ft_read_header(filename,'headerformat','egi_mff_v2');
+        %load data
+        dat=ft_read_data(filename,'headerformat','egi_mff_v2','dataformat','egi_mff_v2');
+        %load events
+        trg=ft_read_event(filename,'eventformat','egi_mff_v2');
+end;
+
 
 %set header
 message_string{end+1}='Creating header';

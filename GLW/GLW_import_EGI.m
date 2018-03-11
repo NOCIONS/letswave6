@@ -89,6 +89,12 @@ end;
 %configuration.parameters.filenames={};
 set(handles.filenames_listbox,'String',configuration.parameters.filenames);
 set(handles.concatenate_btn,'Value',configuration.parameters.concatenate);
+if configuration.parameters.implementation==1;
+    set(handles.implementation_chk,'Value',0);
+else
+    set(handles.implementation_chk,'Value',1);
+end;
+
 %!!!
 %END
 %!!!
@@ -174,6 +180,11 @@ end;
 %configuration.parameters.filenames={};
 configuration.parameters.filenames=get(handles.filenames_listbox,'Userdata');
 configuration.parameters.concatenate=get(handles.concatenate_btn,'Value');
+if get(handles.implementation_chk,'Value')==0;
+    configuration.parameters.implementation=1;
+else
+    configuration.parameters.implementation=2;
+end;
 %!!!
 %END
 %!!!
@@ -297,3 +308,12 @@ st={};
 st{1}=uigetdir;
 set(handles.filenames_listbox,'String',st);
 set(handles.filenames_listbox,'Userdata',st);
+
+
+% --- Executes on button press in implementation_chk.
+function implementation_chk_Callback(hObject, eventdata, handles)
+% hObject    handle to implementation_chk (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of implementation_chk
