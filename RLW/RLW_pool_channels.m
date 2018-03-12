@@ -116,6 +116,6 @@ out_header.chanlocs(out_header.datasize(2)).labels=mixed_channel_label;
 out_header.chanlocs(out_header.datasize(2)).topo_enabled=0;
 out_header.chanlocs(out_header.datasize(2)).SEEG_enabled=0;
 if keep_original_channels==0;
-    out_header.chanlocs=out_header.chanlocs(end);
+    out_header.chanlocs=out_header.chanlocs(1);
 end;
 

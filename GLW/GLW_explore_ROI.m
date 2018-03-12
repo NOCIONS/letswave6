@@ -305,7 +305,7 @@ y2=str2num(get(handles.y2_edit,'String'));
 z1=str2num(get(handles.z1_edit,'String'));
 z2=str2num(get(handles.z2_edit,'String'));
 %colheaders
-colheaders={'dataset','epoch','channel','index','mean','std','median','perc25','perc75','min','min_X','min_Y','min_Z','max','max_X','max_Y','max_Z','top%','top%_X','top%_Y','top%_Z','bottom%','bottom%_X','bottom%_Y','bottom%_Z'};
+colheaders={'dataset','epoch','channel','index','mean','std','median','perc25','perc75','AUC','min','min_X','min_Y','min_Z','max','max_X','max_Y','max_Z','top%','top%_X','top%_Y','top%_Z','bottom%','bottom%_X','bottom%_Y','bottom%_Z'};
 %loop through selected datasets
 for datasetpos=1:length(selected_datasets);
     header=selected_datasets(datasetpos).header;
@@ -415,47 +415,49 @@ for datasetpos=1:length(selected_datasets);
             table_data{linepos,8}=prctile(tp_data,25);
             %'perc75'
             table_data{linepos,9}=prctile(tp_data,75);
+            %'AUC'
+            table_data{linepos,10}=sum(abs(tp_data));
             %'min'
             [a,b]=min(tp_data);
-            table_data{linepos,10}=a;
+            table_data{linepos,11}=a;
             %'min_X'
-            table_data{linepos,11}=tp_data_idx(b,1);
+            table_data{linepos,12}=tp_data_idx(b,1);
             %'min_Y'
-            table_data{linepos,12}=tp_data_idx(b,2);
+            table_data{linepos,13}=tp_data_idx(b,2);
             %'min_Z'
-            table_data{linepos,13}=tp_data_idx(b,3);
+            table_data{linepos,14}=tp_data_idx(b,3);
             %'max'
             [a,b]=max(tp_data);
-            table_data{linepos,14}=a;
+            table_data{linepos,15}=a;
             %'max_X'
             [a,b]=max(tp_data);
-            table_data{linepos,15}=tp_data_idx(b,1);
+            table_data{linepos,16}=tp_data_idx(b,1);
             %'max_Y'
-            table_data{linepos,16}=tp_data_idx(b,2);
+            table_data{linepos,17}=tp_data_idx(b,2);
             %'max_Z'
-            table_data{linepos,17}=tp_data_idx(b,3);
+            table_data{linepos,18}=tp_data_idx(b,3);
             %'top%'
             [tp_data_sort,idx]=sort(tp_data);
-            table_data{linepos,18}=mean(tp_data_sort(length(tp_data)-round(length(tp_data)/top_percent):length(tp_data)));
+            table_data{linepos,19}=mean(tp_data_sort(length(tp_data)-round(length(tp_data)/top_percent):length(tp_data)));
             tp_data_sort_idx=tp_data_idx(idx,:);
             mean_tp_data_sort_idx=mean(tp_data_sort_idx(length(tp_data)-round(length(tp_data)/top_percent):length(tp_data),:),1);
             %'top%_X'
-            table_data{linepos,19}=mean_tp_data_sort_idx(1);
+            table_data{linepos,20}=mean_tp_data_sort_idx(1);
             %'top%_Y'
-            table_data{linepos,20}=mean_tp_data_sort_idx(2);
+            table_data{linepos,21}=mean_tp_data_sort_idx(2);
             %'top%_Z'
-            table_data{linepos,21}=mean_tp_data_sort_idx(3);
+            table_data{linepos,22}=mean_tp_data_sort_idx(3);
             %'bottom%'
             tp_data_sort=flipdim(tp_data_sort,1);
             tp_data_sort_idx=flipdim(tp_data_sort_idx,1);
-            table_data{linepos,22}=mean(tp_data_sort(length(tp_data)-round(length(tp_data)/top_percent):length(tp_data)));
+            table_data{linepos,23}=mean(tp_data_sort(length(tp_data)-round(length(tp_data)/top_percent):length(tp_data)));
             mean_tp_data_sort_idx=mean(tp_data_sort_idx(length(tp_data)-round(length(tp_data)/top_percent):length(tp_data),:),1);
             %'bottom%_X'
-            table_data{linepos,23}=mean_tp_data_sort_idx(1);
+            table_data{linepos,24}=mean_tp_data_sort_idx(1);
             %'bottom%_Y'
-            table_data{linepos,24}=mean_tp_data_sort_idx(2);
+            table_data{linepos,25}=mean_tp_data_sort_idx(2);
             %'bottom%_Z'
-            table_data{linepos,25}=mean_tp_data_sort_idx(3);
+            table_data{linepos,26}=mean_tp_data_sort_idx(3);
             %inc linepos
             linepos=linepos+1;
             end;
