@@ -65,12 +65,20 @@ else
     header.events=[];
 end;
 
-%save header
-save([p filesep n '.lw6'],'-MAT','header');
-%save data
-data=single(data);
-save([p filesep n '.mat'],'-MAT','-v7.3','data');
-%filename
+if isempty(p);
+    %save header
+    save([n '.lw6'],'-MAT','header');
+    %save data
+    data=single(data);
+    save([n '.mat'],'-MAT','-v7.3','data');
+else
+    %save header
+    save([p filesep n '.lw6'],'-MAT','header');
+    %save data
+    data=single(data);
+    save([p filesep n '.mat'],'-MAT','-v7.3','data');
+    %filename
+end;
 filename=n;
 
 
