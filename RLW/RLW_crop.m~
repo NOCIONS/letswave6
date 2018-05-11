@@ -145,7 +145,7 @@ end;
 if dxend>size(data,6);
     dxend=size(data,6);
 end;
-out_data(:,:,:,1:dzend-dzstart+1,1:dyend-dystart+1,1:dxend-dxstart+1)=data(:,:,:,dzstart:dzend,dystart:dyend,dxstart:dxend);
+out_data(:,:,:,1:=data(:,:,:,dzstart:dzend,dystart:dyend,dxstart:dxend);
 
 
 
