@@ -1,4 +1,4 @@
-function [dat] = ft_read_data(filename, varargin)
+function [dat] = ft_read_data_EDFMAX(filename, varargin)
 
 % FT_READ_DATA reads electrophysiological data from a variety of EEG, MEG and LFP
 % files and represents it in a common data-independent format. The supported formats
@@ -74,7 +74,7 @@ if iscell(filename)
   if isempty(hdr) || ~isfield(hdr, 'orig') || ~iscell(hdr.orig)
     for i=1:numel(filename)
       % read the individual file headers
-      hdr{i}  = ft_read_header(filename{i}, varargin{:});
+      hdr{i}  = ft_read_header_EDFMAX(filename{i}, varargin{:});
     end
   else
     % use the individual file headers that were read previously
@@ -97,7 +97,7 @@ if iscell(filename)
       varargin = ft_setopt(varargin, 'header', hdr{i});
       varargin = ft_setopt(varargin, 'begsample', max(thisbegsample,1));
       varargin = ft_setopt(varargin, 'endsample', min(thisendsample,nsmp(i)));
-      dat{i} = ft_read_data(filename{i}, varargin{:});
+      dat{i} = ft_read_data_EDFMAX(filename{i}, varargin{:});
     else
       dat{i} = [];
     end
@@ -197,7 +197,7 @@ end
 
 % read the header if it is not provided
 if isempty(hdr)
-  hdr = ft_read_header(filename, 'headerformat', headerformat, 'chanindx', chanindx, 'checkmaxfilter', checkmaxfilter);
+  hdr = ft_read_header_EDFMAX(filename, 'headerformat', headerformat, 'chanindx', chanindx, 'checkmaxfilter', checkmaxfilter);
   if isempty(chanindx)
     chanindx = 1:hdr.nChans;
   end
@@ -698,7 +698,7 @@ switch dataformat
   case 'edf'
     % this reader is largely similar to the one for bdf
     % it uses a mex file for reading the 16 bit data
-    dat = read_edf(filename, hdr, begsample, endsample, chanindx);
+    dat = read_edf_max(filename, hdr, begsample, endsample, chanindx);
     
   case 'eep_avr'
     % check that the required low-level toolbos ix available
@@ -1239,7 +1239,7 @@ switch dataformat
     cfg.trlunit='samples'; %ft_trialfun_general gives us samples, not timestamps
     
     cfg.datafile=filename;
-    cfg.hdr = ft_read_header(cfg.datafile);
+    cfg.hdr = ft_read_header_EDFMAX(cfg.datafile);
     ft_warning('off','FieldTrip:ft_read_event:unsupported_event_format')
     cfg = ft_definetrial(cfg);
     ft_warning('on','FieldTrip:ft_read_event:unsupported_event_format')

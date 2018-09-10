@@ -28,6 +28,12 @@ else
     else
         concatenate=varargin{a+1};
     end;
+    %concatenate
+    a=find(strcmpi(varargin,'samplingrate'));
+    if isempty(a);
+    else
+        samplingrate=varargin{a+1};
+    end;
 end;
 
 
@@ -38,12 +44,21 @@ out_data=[];
 message_string{1}=['Loading : ' filename];
 
 %load the BDF file
-%load data
-dat=ft_read_data(filename);
-%load header
-hdr=ft_read_header(filename);
-%load events
-trg=ft_read_event(filename);
+if samplingrate==0;
+    %load data
+    dat=ft_read_data(filename);
+    %load header
+    hdr=ft_read_header(filename);
+    %load events
+    trg=ft_read_event(filename);
+else
+    %load data
+    dat=ft_read_data_EDFMAX(filename);
+    %load header
+    hdr=ft_read_header_EDFMAX(filename);
+    %load events
+    trg=ft_read_event_EDFMAX(filename);
+end;
 
 %set header
 message_string{end+1}='Creating header';
