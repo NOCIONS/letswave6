@@ -31,10 +31,12 @@ hdr=ft_read_header(filename);
 %load events
 trg=ft_read_event(filename);
 
+[p,n,e]=fileparts(filename);
+
 %set header
 message_string{end+1}='Creating header';
 out_header.filetype='time_amplitude';
-out_header.name=filename;
+out_header.name=n;
 out_header.tags='';
 out_header.history=[];
 out_header.datasize=[hdr.nTrials hdr.nChans 1 1 1 hdr.nSamples];
