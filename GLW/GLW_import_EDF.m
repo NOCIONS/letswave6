@@ -89,6 +89,7 @@ end;
 %configuration.parameters.filenames={};
 set(handles.filenames_listbox,'String',configuration.parameters.filenames);
 set(handles.concatenate_btn,'Value',configuration.parameters.concatenate);
+set(handles.samplingrate_chk','Value',configuration.parameters.samplingrate);
 %!!!
 %END
 %!!!
@@ -174,6 +175,7 @@ end;
 %configuration.parameters.filenames={};
 configuration.parameters.filenames=get(handles.filenames_listbox,'Userdata');
 configuration.parameters.concatenate=get(handles.concatenate_btn,'Value');
+configuration.parameters.samplingrate=get(handles.samplingrate_chk,'Value');
 %!!!
 %END
 %!!!
@@ -287,3 +289,12 @@ function concatenate_btn_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of concatenate_btn
+
+
+% --- Executes on button press in samplingrate_chk.
+function samplingrate_chk_Callback(hObject, eventdata, handles)
+% hObject    handle to samplingrate_chk (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of samplingrate_chk

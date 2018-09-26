@@ -3,6 +3,7 @@ function filename=CLW_save(path,header,data)
 filename=header.name;
 %save header and data files
 [p,n,e]=fileparts(filename);
+<<<<<<< HEAD
 %if strcmpi(e,'.lw6');
 %else
 %    n=filename;
@@ -12,6 +13,8 @@ filename=header.name;
 %    n=filename;
 %end;
 
+=======
+>>>>>>> 7f7ff0626f52311bdf700e817b76c39d3c992367
 %add path
 if isempty(path);
 else
