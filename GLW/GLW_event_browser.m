@@ -252,8 +252,9 @@ end;
 tp={};
 for i=1:length(events);
     tp{i,1}=events(i).code;
-    tp{i,2}=events(i).epoch;
     tp{i,3}=events(i).latency;
+    tp{i,2}=events(i).epoch;
+
 end;
 disp('Column 1 = code');
 disp('Column 2 = epoch');
@@ -375,8 +376,9 @@ header.events(a)=[];
 %add events in table_data
 for i=1:size(table_data,1);
     event.code=table_data{i,1};
-    event.epoch=fix(str2num(table_data{i,2}));
     event.latency=str2num(table_data{i,3});
+    event.epoch=fix(str2num(table_data{i,2}));
+
     header.events(end+1)=event;
 end;
 %datasets
@@ -471,8 +473,9 @@ tp=evalin('base',varname);
 events=[];
 for i=1:size(tp,1);
     events(i).code=tp{i,1};
-    events(i).epoch=tp{i,2};
     events(i).latency=tp{i,3};
+    events(i).epoch=tp{i,2};
+
 end;
 datasets(1).header.events=events;
 set(handles.event_listbox,'Userdata',datasets);
