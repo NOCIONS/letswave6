@@ -538,3 +538,52 @@ function dataset_listbox_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in MARA_btn.
+function MARA_btn_Callback(hObject, eventdata, handles)
+% hObject    handle to MARA_btn (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+%datasets
+datasets=get(handles.prefix_edit,'Userdata');
+%header
+header=datasets(1).header;
+%EEG.data
+EEG.data=[];
+for i=1:length(datasets);
+    tp=permute(squeeze(datasets(i).data(:,:,1,1,1,:)),[2 3 1]);
+    tp=reshape(tp,size(tp,1),size(tp,2)*size(tp,3));
+    if isempty(EEG.data);
+        EEG.data=tp;
+    else
+        EEG.data=[EEG.data tp];
+    end;
+end;
+%EEG.chanlocs
+EEG.chanlocs=header.chanlocs;
+%matrix
+matrix=get(handles.IC_topo_btn,'Userdata');
+%EEG.icawinv
+EEG.icawinv=matrix.ICA_mm;
+%EEG.icaweights
+EEG.icaweights=matrix.ICA_um;
+%EEG.icasphere
+EEG.icasphere=1;
+%EEG.srate
+EEG.srate=1/header.xstep;
+%EEG.nbchan
+EEG.nbchan=header.datasize(2);
+%[artcomps, info] = MARA(EEG);
+[artcomps, info] = MARA(EEG);
+%idx
+st=get(handles.IC_list_listbox,'String');
+idx=1:1:length(st);
+idx(artcomps)=[];
+set(handles.IC_list_listbox,'Value',artcomps);
+%display info
+aa=zeros(size(info.posterior_artefactprob));
+aa(artcomps)=1;
+pop_visualizeMARAfeatures(aa,info);
+%update_graph
+update_graphs(handles);
