@@ -27,7 +27,7 @@ function [out_header,out_data,message_string,cluster_distribution]=RLW_wilcoxon(
 % See http://nocions.webnode.com/letswave for additional information
 %
 
-test_type='signed_rank_test'
+test_type='signed_rank_test' ; 
 tails='both';   %'both', 'right', 'left'
 alpha=0.05;
 permutation=0;
@@ -42,7 +42,7 @@ else
     a=find(strcmpi(varargin,'test_type'));
     if isempty(a);
     else
-        test_type=varargin{a+1};
+        test_type=varargin{a+1} ; 
     end;
     %tails
     a=find(strcmpi(varargin,'tails'));
@@ -137,9 +137,9 @@ for chanpos=1:header1.datasize(2);
 end;
 
 %delete events
-if isfield(out_header,'events');
+if isfield(out_header,'events')
     out_header.events=[];
-end;
+end
 
 %set index_labels
 out_header.index_labels{1}='p-value';
@@ -148,12 +148,12 @@ out_header.index_labels{2}='Z';
 
 
 %delete epoch_data if present
-if isfield(out_header,'epochdata');
+if isfield(out_header,'epochdata')
     out_header=rmfield(out_header,'epochdata');
-end;
+end
 
 %cluster thresholding?
-if permutation==1;
+if permutation==1 
     
     message_string{end+1}=['Number of permutations : ' num2str(num_permutations)];
     message_string{end+1}=['Cluster threshold : ' num2str(cluster_threshold)];
@@ -168,35 +168,44 @@ if permutation==1;
     disp(['Performing cluster-based thresholding. This may take a while!']);
     
     %merge
-    tp=size(data1);
-    tp(3)=2;
-    merged_data=zeros(tp);
-    merged_data(:,:,1,:,:,:)=data1(:,:,1,:,:,:);
-    merged_data(:,:,2,:,:,:)=data2(:,:,1,:,:,:);
-    merged_cat(:,1)=zeros(size(merged_data,1),1)+1;
-    merged_cat(:,2)=zeros(size(merged_data,1),1)+2;
+    % Update: to handle 2-sample tests
+    merged_data=cat(1,data1(:,:,1,:,:,:),data2(:,:,1,:,:,:));
+    % new: merged data contains [ep1,ep2] epochs 
+    % old: merged_data contained data1 in idx1 & data2 in idx2
     
+    n_ep1 = size(data1,1) ; n_ep2 = size(data2,1) ;
+    
+    merged_cat=zeros(n_ep1 + n_ep2,1);
+    % for independent samples (rank_sum_test)
+    merged_cat(1:n_ep1) = 1 ; merged_cat(n_ep1+1:end) = 2 ;
+        
     %loop
-    blobsizes=[];
-    for iter=1:num_permutations;
+    for iter=1:num_permutations
         disp(['Permutation : ' num2str(iter)]);
         %loop through channels
-        for chanpos=1:size(data1,2);
+        for chanpos=1:size(data1,2)
             %loop through dz
-            for dz=1:size(data1,4);
+            for dz=1:size(data1,4)
                 %permutation
-                for epochpos=1:size(merged_cat,1);
-                    r=rand(size(merged_cat,2),1);
-                    [a,b]=sort(r);
-                    rnd_cat(epochpos,:)=b;
-                end;
+                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% NEW
+                if strcmpi(test_type,'rank_sum_test') % independent samples
+                    b = randperm(n_ep1+n_ep2) ;
+                    tp = merged_cat(b) ; % n_ep1 1's and n_ep2 2's
+                    epochpos1=find(tp==1) ;
+                    epochpos2=find(tp==2) ;
+                else % paired tests: signed_rank_test & signed_test
+                    for i = 1:n_ep1
+                        b = randperm(2) ;                        
+                        epochpos1(i) = i + ((b(1)-1)*num_epochs) ;
+                        epochpos2(i) = i + ((b(2)-1)*num_epochs) ;
+                    end
+                end                
+                
                 tres=[];
                 %wilcoxon (output is tres with p values and Z values tres_pvalue / tres_Zvalue)
-                for dy=1:size(data1,5);
-                    for epochpos=1:size(merged_data,1);
-                        t1(epochpos,:)=squeeze(merged_data(epochpos,chanpos,rnd_cat(epochpos,1),dz,dy,:));
-                        t2(epochpos,:)=squeeze(merged_data(epochpos,chanpos,rnd_cat(epochpos,2),dz,dy,:));
-                    end;
+                for dy=1:size(data1,5)
+                    t1 = squeeze(merged_data(epochpos1,chanpos,1,dz,dy,:)) ; 
+                    t2 = squeeze(merged_data(epochpos2,chanpos,1,dz,dy,:)) ; 
                     switch test_type
                         case 'signed_rank_test'
                             for dx=1:size(data1,6);
@@ -210,7 +219,7 @@ if permutation==1;
                             for dx=1:size(data1,6);
                                 tpleft=squeeze(t1(:,dx));
                                 tpright=squeeze(t2(:,dx));
-                                [p,H,STATS]=signtest(tpleft,tpright,'alpha',alpha,'tail',tails, 'method','approximate');
+                                [p,H,STATS]=ranksum(tpleft,tpright,'alpha',alpha,'tail',tails, 'method','approximate');
                                 tres_pvalue(dy,dx)=p*H;
                                 tres_Zvalue(dy,dx)=STATS.zval*H;
                             end;
@@ -218,7 +227,7 @@ if permutation==1;
                             for dx=1:size(data1,6);
                                 tpleft=squeeze(t1(:,dx));
                                 tpright=squeeze(t2(:,dx));
-                                [p,H,STATS]=ranktest(tpleft,tpright,'alpha',alpha,'tail',tails, 'method','approximate');
+                                [p,H,STATS]=signtest(tpleft,tpright,'alpha',alpha,'tail',tails, 'method','approximate');
                                 tres_pvalue(dy,dx)=p*H;
                                 tres_Zvalue(dy,dx)=STATS.zval*H;
                             end;
@@ -229,17 +238,19 @@ if permutation==1;
                 RLL=bwlabel(tres_Zvalue,4);
                 RLL_size=[];
                 blobpos=1;
-                for i=1:max(max(RLL));
+                for i=1:max(max(RLL))
                     ff=find(RLL==i);
-                    v=sum(sum(abs(RLL(ff))));
-                    if v>0;
+                    v = sum(sum(abs(tres_Zvalue(ff)))) ; 
+                    % WAS:
+                    % v=sum(sum(abs(RLL(ff))));
+                    if v>0
                         RLL_size(blobpos)=v;
                         blobpos=blobpos+1;
-                    end;
-                end;
-                if isempty(RLL_size);
+                    end
+                end
+                if isempty(RLL_size)
                     RLL_size=0;
-                end;
+                end
                 
                 %blob summary
                 blob_size(chanpos,dz).size(iter)=mean(abs(RLL_size));
@@ -263,6 +274,7 @@ if permutation==1;
         plot(tp_plot);
         drawnow;
     end;
+    permut_blob_size = blob_size ; 
     
     %display criticals
     for chanpos=1:size(criticals,1);
@@ -274,6 +286,9 @@ if permutation==1;
     %process actual data (outheader_pvalue/outheader_Fvalue)
     outdata_pvalue=out_data(1,:,1,:,:,:);
     outdata_Zvalue=out_data(1,:,2,:,:,:);
+    % NEW DM: cluster p-values --> idem in RLW_ttests
+    outdata_clusterpv=out_data(1,:,1,:,:,:);
+    
     tres=zeros(size(outdata_pvalue));
     tp=find(outdata_pvalue<alpha);
     tres(tp)=1;
@@ -290,6 +305,9 @@ if permutation==1;
             %loop through blobs
             toutput_Zvalues=zeros(size(tp_Zvalues));
             toutput_pvalues=ones(size(tp_pvalues));
+            
+            toutput_clusterpv=ones(size(tp_pvalues));
+            
             for i=1:max(max(tp2));
                 %sum Zvalues
                 idx=find(tp2==i);
@@ -300,25 +318,34 @@ if permutation==1;
                         message_string{end+1}='FOUND a significant cluster!';
                         toutput_Zvalues(idx)=tp_Zvalues(idx);
                         toutput_pvalues(idx)=tp_pvalues(idx);
+                        
+                        toutput_clusterpv(idx) = ...
+                            sum( abs(blob_size)<permut_blob_size(chanpos,dz).size )/num_permutations ; 
                     end;
                 end;
             end;
             outdata_Zvalue(2,chanpos,1,dz,:,:)=toutput_Zvalues;
             outdata_pvalue(2,chanpos,1,dz,:,:)=toutput_pvalues;
+            
+            outdata_clusterpv(1,chanpos,1,dz,:,:)=toutput_clusterpv;
         end;
     end;
 
     %update out_data
     out_data(1,:,3,:,:,:)=outdata_pvalue(2,:,:,:,:,:);
     out_data(1,:,4,:,:,:)=outdata_Zvalue(2,:,:,:,:,:);
+    
+    out_data(1,:,5,:,:,:)=outdata_clusterpv(1,:,:,:,:,:);
+    
     %adjust header.datasize
-    out_header.datasize(3)=4;
+    out_header.datasize(3)=5;
     %set index labels
     out_header.index_labels{3}='cluster p-value';
     out_header.index_labels{4}='cluster T-value';
+    
+    out_header.index_labels{5}='cluster-level p-value';
 
     %cluster_distribution
     cluster_distribution.mean_statistic=blob_size;
     cluster_distribution.max_statistic=blob_size_max;
 end;
-
