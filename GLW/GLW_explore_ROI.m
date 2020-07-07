@@ -305,7 +305,7 @@ y2=str2num(get(handles.y2_edit,'String'));
 z1=str2num(get(handles.z1_edit,'String'));
 z2=str2num(get(handles.z2_edit,'String'));
 %colheaders
-colheaders={'dataset','epoch','channel','index','mean','std','median','perc25','perc75','AUC','min','min_X','min_Y','min_Z','max','max_X','max_Y','max_Z','top%','top%_X','top%_Y','top%_Z','bottom%','bottom%_X','bottom%_Y','bottom%_Z'};
+colheaders={'dataset','epoch','channel','index','mean','std','median','perc25','perc75','AUC','min','min_X','min_Y','min_Z','max','max_X','max_Y','max_Z','top%','top%_X','top%_Y','top%_Z','bottom%','bottom%_X','bottom%_Y','bottom%_Z','CoG_X','CoG_Y','CoG_Z'};
 %loop through selected datasets
 for datasetpos=1:length(selected_datasets);
     header=selected_datasets(datasetpos).header;
@@ -458,6 +458,16 @@ for datasetpos=1:length(selected_datasets);
             table_data{linepos,25}=mean_tp_data_sort_idx(2);
             %'bottom%_Z'
             table_data{linepos,26}=mean_tp_data_sort_idx(3);
+            %'CoG'
+            CoG_X=(sum(tp_data.*tp_data_idx(:,1)))/sum(tp_data(:,1));
+            CoG_Y=(sum(tp_data.*tp_data_idx(:,2)))/sum(tp_data(:,1));
+            CoG_Z=(sum(tp_data.*tp_data_idx(:,3)))/sum(tp_data(:,1));
+            %CoG_X
+            table_data{linepos,27}=CoG_X;
+            %'CoG_Y'
+            table_data{linepos,28}=CoG_Y;
+            %'CoG_Z'
+            table_data{linepos,29}=CoG_Z;            
             %inc linepos
             linepos=linepos+1;
             end;

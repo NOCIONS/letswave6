@@ -51,8 +51,8 @@ else
     if isempty(a);
     else
         filter_order=varargin{a+1};
-    end;
-end;
+    end
+end
 
 %init message_string
 message_string={};
@@ -70,6 +70,7 @@ fnyquist=Fs/2;
 
 %filter order : filtOrder
 filtOrder=filter_order;
+bandpass_implem = 1 ; % implement the bandpass filter without doing a LP followed by a HP filter
 
 %b,a
 switch filter_type
@@ -88,14 +89,18 @@ switch filter_type
         end
         filtOrder=filtOrder/2;
         message_string{end+1}='Building bandpass filter.';
-        [bLow,aLow]=butter(filtOrder,high_cutoff/fnyquist,'low');
-        [bHigh,aHigh]=butter(filtOrder,low_cutoff/fnyquist,'high');
-        b=[bLow;bHigh];
-        a=[aLow;aHigh];
+        if bandpass_implem
+            [b,a] = butter(filtOrder,[low_cutoff,high_cutoff]./fnyquist,'bandpass') ; 
+        else        
+            [bLow,aLow]=butter(filtOrder,high_cutoff/fnyquist,'low');
+            [bHigh,aHigh]=butter(filtOrder,low_cutoff/fnyquist,'high');
+            b=[bLow;bHigh];
+            a=[aLow;aHigh];
+        end
     case 'notch'
         message_string{end+1}='Building notch filter.';
         [b,a]=butter(filtOrder,[low_cutoff/fnyquist high_cutoff/fnyquist],'stop');
-end;
+end
 
 %loop through all the data
 for epochpos=1:size(data,1);
@@ -109,15 +114,18 @@ for epochpos=1:size(data,1);
                         case 'highpass'
                             out_data(epochpos,chanpos,indexpos,dz,dy,:)=filtfilt(b,a,squeeze(data(epochpos,chanpos,indexpos,dz,dy,:)));
                         case 'bandpass'
-                            out_data(epochpos,chanpos,indexpos,dz,dy,:)=filtfilt(b(1,:),a(1,:),squeeze(data(epochpos,chanpos,indexpos,dz,dy,:)));
-                            out_data(epochpos,chanpos,indexpos,dz,dy,:)=filtfilt(b(2,:),a(2,:),squeeze(out_data(epochpos,chanpos,indexpos,dz,dy,:)));
+                            if bandpass_implem
+                                out_data(epochpos,chanpos,indexpos,dz,dy,:)=filtfilt(b,a,squeeze(data(epochpos,chanpos,indexpos,dz,dy,:)));
+                            else
+                                out_data(epochpos,chanpos,indexpos,dz,dy,:)=filtfilt(b(1,:),a(1,:),squeeze(data(epochpos,chanpos,indexpos,dz,dy,:)));
+                                out_data(epochpos,chanpos,indexpos,dz,dy,:)=filtfilt(b(2,:),a(2,:),squeeze(out_data(epochpos,chanpos,indexpos,dz,dy,:)));
+                            end
                         case 'notch'
                             out_data(epochpos,chanpos,indexpos,dz,dy,:)=filtfilt(b,a,squeeze(data(epochpos,chanpos,indexpos,dz,dy,:)));
-                    end;
-                end;
-            end;
-        end;
-    end;
-end;
-
+                    end
+                end
+            end
+        end
+    end
+end
 

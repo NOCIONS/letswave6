@@ -1,4 +1,4 @@
-function [out_configuration,out_datasets] = LW_exploire_ROI(operation,configuration,datasets,update_pointers)
+function [out_configuration,out_datasets] = LW_explore_ROI(operation,configuration,datasets,update_pointers)
 % LW_explore_ROI
 % 
 %
