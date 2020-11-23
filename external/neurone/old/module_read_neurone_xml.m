@@ -1,7 +1,7 @@
 function xmlStruct = module_read_neurone_xml(xmlfile)
 %MODULE_READ_NEURONE_XML   Read NeurOne XML-files into structures.
 %
-%  Version 1.1.3.11 (2019-10-02)
+%  Version 1.1.3.8 (2014-12-04)
 %  See version_history.txt for details.
 %
 %  Input  : A NeurOne XML file (e.g. Session.xml, Protocol.xml,
@@ -22,11 +22,8 @@ function xmlStruct = module_read_neurone_xml(xmlfile)
 %  ========================================================================
 %  COPYRIGHT NOTICE
 %  ========================================================================
-%  Copyright 2009 - 2015
-%  Andreas Henelius (andreas.henelius@ttl.fi)
+%  Copyright 2009, 2010 Andreas Henelius (andreas.henelius@ttl.fi)
 %  Finnish Institute of Occupational Health (http://www.ttl.fi/)
-%  and
-%  Mega Electronics Ltd (mega@megaemg.com, http://www.megaemg.com)
 %  ========================================================================
 %  This file is part of NeurOne Tools for Matlab.
 % 

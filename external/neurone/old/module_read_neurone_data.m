@@ -2,7 +2,7 @@ function data = module_read_neurone_data(binDataFiles, channelCount, ...
     samplingRate, memoryAvailable, varargin)
 %MODULE_READ_NEURONE_DATA   Read NeurOne binary data
 %
-%  Version 1.1.3.11 (2019-10-02)
+%  Version 1.1.3.8 (2014-12-04)
 %  See version_history.txt for details.
 %
 %  Read NeurOne binary data and display progress bar.
@@ -41,7 +41,7 @@ function data = module_read_neurone_data(binDataFiles, channelCount, ...
 %  ========================================================================
 %  COPYRIGHT NOTICE
 %  ========================================================================
-%  Copyright 2009 - 2015
+%  Copyright 2009 - 2014
 %  Andreas Henelius (andreas.henelius@ttl.fi)
 %  Finnish Institute of Occupational Health (http://www.ttl.fi/)
 %  and
@@ -167,7 +167,7 @@ else
     
     % adjust chunksize so that it's a multiple of channel count * 4
     % this way we preserve channel alignment
-    chunkSize = ceil(chunkSize/channelCount/4) * channelCount*4;
+    chunkSize = chunkSize + mod(chunkSize, (channelCount*4));
        
     % read each channel separately
     for c=1:numChans

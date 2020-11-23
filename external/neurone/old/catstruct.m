@@ -45,7 +45,7 @@ function A = catstruct(varargin)
 
 N = nargin ;
 
-narginchk(1,Inf) ;
+error(nargchk(1,Inf,N)) ;
 
 if ~isstruct(varargin{end}),
     if isequal(varargin{end},'sorted'),

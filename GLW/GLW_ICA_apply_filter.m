@@ -96,16 +96,19 @@ else
     %datasets(1)
     history=datasets(1).header.history;
     for j=1:length(history);
-        switch history(j).configuration.gui_info.function_name
-            case 'LW_ICA_compute';
-                ICA_um=history(j).configuration.parameters.ICA_um;
-                ICA_mm=history(j).configuration.parameters.ICA_mm;
-            case 'LW_ICA_assign_matrix'
-                ICA_um=history(j).configuration.parameters.ICA_um;
-                ICA_mm=history(j).configuration.parameters.ICA_mm;
-            case 'LW_ICA_compute_merged'
-                ICA_um=history(j).configuration.parameters.ICA_um;
-                ICA_mm=history(j).configuration.parameters.ICA_mm;
+        if isempty(history(j).configuration);
+        else
+            switch history(j).configuration.gui_info.function_name
+                case 'LW_ICA_compute';
+                    ICA_um=history(j).configuration.parameters.ICA_um;
+                    ICA_mm=history(j).configuration.parameters.ICA_mm;
+                case 'LW_ICA_assign_matrix'
+                    ICA_um=history(j).configuration.parameters.ICA_um;
+                    ICA_mm=history(j).configuration.parameters.ICA_mm;
+                case 'LW_ICA_compute_merged'
+                    ICA_um=history(j).configuration.parameters.ICA_um;
+                    ICA_mm=history(j).configuration.parameters.ICA_mm;
+            end;
         end;
     end;
     %datasets(>1)
@@ -113,16 +116,19 @@ else
         for i=1:length(datasets);
             history=datasets(i).header.history;
             for j=1:length(history);
-                switch history(j).configuration.gui_info.function_name
-                    case 'LW_ICA_compute';
-                        tp_um=history(j).configuration.parameters.ICA_um;
-                        tp_mm=history(j).configuration.parameters.ICA_mm;
-                    case 'LW_ICA_compute_merged';
-                        tp_um=history(j).configuration.parameters.ICA_um;
-                        tp_mm=history(j).configuration.parameters.ICA_mm;
-                    case 'LW_ICA_assign_matrix'
-                        tp_um=history(j).configuration.parameters.ICA_um;
-                        tp_mm=history(j).configuration.parameters.ICA_mm;
+                if isempty(history(j).configuration)
+                else
+                    switch history(j).configuration.gui_info.function_name
+                        case 'LW_ICA_compute';
+                            tp_um=history(j).configuration.parameters.ICA_um;
+                            tp_mm=history(j).configuration.parameters.ICA_mm;
+                        case 'LW_ICA_compute_merged';
+                            tp_um=history(j).configuration.parameters.ICA_um;
+                            tp_mm=history(j).configuration.parameters.ICA_mm;
+                        case 'LW_ICA_assign_matrix'
+                            tp_um=history(j).configuration.parameters.ICA_um;
+                            tp_mm=history(j).configuration.parameters.ICA_mm;
+                    end;
                 end;
             end;
             if size(tp_um)==size(ICA_um);

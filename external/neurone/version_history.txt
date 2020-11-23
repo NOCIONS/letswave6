@@ -1,0 +1,75 @@
+NeurOne Tools for Matlab
+Andreas Henelius & Mega Electronics
+Licensed under GPL
+
+Version 1.1.3.11 (2019-10-02)
+- Updated revision support
+- Matlab function nargchk is replaced to narginchk
+
+Version 1.1.3.10 (2015-11-10)
+Mega Electronics Ltd (mega@megaemg.com, http://www.megaemg.com)
+- New feature: Supported new event port "Software". The name of the software component that
+  generated the event is read from eventDescriptions.bin, if it's available.
+- New feature: Supported new event types MEP (from eMotion Biolink) and response writer events.
+- New feature: Supported main unit index and microsecond-precision time stamp. This differs from the
+  field markers.time, which is calculated on the basis of data indexes. The new field markers.timeStampMicro
+  can thus be more precise than markers.time.
+- Renamed event type and port "Unknown" to "N/A".
+- Event type and port are now separate fields markers.type and markers.port.
+
+Version 1.1.3.9 (2015-06-01)
+Mega Electronics Ltd (mega@megaemg.com, http://www.megaemg.com)
+- Bug fix: chunkSize was wrong when only subset of available inputs are read.
+
+Version 1.1.3.8 (2014-12-05)
+Mega Electronics Ltd (mega@megaemg.com, http://www.megaemg.com)
+- Added an example script, which read multiple measurement phases in one for-loop.
+- Improved logging.
+
+Version 1.1.3.7 (2014-11-20)
+Mega Electronics Ltd (mega@megaemg.com, http://www.megaemg.com)
+- Optimized binary file reading and enabled single input reading.
+- Added log messages.
+
+Version 1.1.3.6 (2014-07-04)
+Mega Electronics Ltd (mega@megaemg.com, http://www.megaemg.com)
+- Added support for events.bin revision 4.
+
+Version 1.1.3.5 (2012-11-30)
+Mega Electronics Ltd (mega@megaemg.com, http://www.megaemg.com)
+- New feature: The reader is now able to read measurements with Protocol.xml revision up to 4.
+- New feature: Version incompatibility now produces a warning instead of an error.
+- Removed unnecessary demo_textprogressbar.m.
+
+Version 1.1.3.4 (2012-06-18)
+Mega Electronics Ltd (mega@megaemg.com, http://www.megaemg.com)
+- New feature: The reader is now able to read measurements with events.bin revision up to 2.
+- Minor editing of comments in the m-code.
+
+Version 1.1.3.3 (2012-01-20)
+Mega Electronics Ltd (mega@megaemg.com, http://www.megaemg.com)
+- Minor editing of comments in the m-code.
+
+Version 1.1.3.2 (2012-01-04)
+Mega Electronics Ltd (mega@megaemg.com, http://www.megaemg.com)
+- Bug fix: Removed a debugging code block from module_read_neurone_data.m, which interfered with normal function.
+- Bug fix: Comment text is now read correctly.
+
+Version 1.1.3.1 (2011-12-22)
+Mega Electronics Ltd (mega@megaemg.com, http://www.megaemg.com)
+- Bug fix: Event type did not support types Stimulation, Video, Mute and Out.
+- Bug fix: When reading measurements that are split into multiple binary files, the progressbar shows correct values.
+- New feature: Handling of file revisions.
+
+Version 1.1.2.1 (2011-04-15)
+Mega Electronics Ltd (mega@megaemg.com, http://www.megaemg.com)
+- File structure identifier 'FIOH_BWRC' replaced by 'N/A' and edited the comment.
+- Changed recording.device.version to point to version of NeurOne software, rather than revision of the XML file.
+- Switched from deprecated Gain and Offset variables to use Range and RangeAsCalibrated.
+- Added some strrep() and genvarname() lines to handle variable values with Matlab-illegal characters.
+- Reordered optional input parameters to facilitate measurement phase selection.
+
+Version 1.0.3.1 (2010-12-16)
+Copyright 2009, 2010 Andreas Henelius (andreas.henelius@ttl.fi)
+Finnish Institute of Occupational Health (http://www.ttl.fi/)
+- First version.

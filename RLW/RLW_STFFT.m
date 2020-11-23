@@ -187,7 +187,7 @@ for channelpos=1:header.datasize(2);
                 case 'complex'
                     out_array(:,:)=spectrogram(squeeze(data(epochpos,channelpos,indexpos,dz,dy,:)),dx_hanning_width,noverlap,frequencies,1/header.xstep);
                 case 'amplitude'
-                    out_array(:,:)=abs(spectrogram(squeeze(data(epochpos,channelpos,indexpos,dz,dy,:)),dx_hanning_width,noverlap,frequencies,1/header.xstep));
+                    out_array(:,:)=(abs(spectrogram(squeeze(data(epochpos,channelpos,indexpos,dz,dy,:)),dx_hanning_width,noverlap,frequencies,1/header.xstep)));
                 case 'power'
                     out_array(:,:)=abs(spectrogram(squeeze(data(epochpos,channelpos,indexpos,dz,dy,:)),dx_hanning_width,noverlap,frequencies,1/header.xstep)).^2;
                 case 'angle'

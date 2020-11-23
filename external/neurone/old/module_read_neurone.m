@@ -1,7 +1,7 @@
 function recording = module_read_neurone(basePath, varargin)
 %MODULE_READ_NEURONE   Read data from a NeurOne file format.
 %
-%  Version 1.1.3.11 (2019-10-02)
+%  Version 1.1.3.8 (2014-12-04)
 %  See version_history.txt for details.
 %
 %  Input  : Path to directory containing NeurOne data files from one
@@ -36,7 +36,7 @@ function recording = module_read_neurone(basePath, varargin)
 %  ========================================================================
 %  COPYRIGHT NOTICE
 %  ========================================================================
-%  Copyright 2009 - 2015
+%  Copyright 2009 - 2013
 %  Andreas Henelius (andreas.henelius@ttl.fi)
 %  Finnish Institute of Occupational Health (http://www.ttl.fi/)
 %  and
@@ -92,7 +92,7 @@ recording = {};
 
 % Read Session from XML-file, to get number of files in session etc
 recording.Session =  module_read_neurone_xml([basePath SESSIONFILE]);
-if (str2double(recording.Session.TableInfo.Revision) > 2)
+if (str2double(recording.Session.TableInfo.Revision) > 1)
     warning(strcat('This reader does not support the revision of Session.xml (', ...
         num2str(recording.Session.TableInfo.Revision), ...
         '). Please contact mega@megaemg.com for an update.'))
@@ -297,7 +297,7 @@ recording.identifier = 'N/A';
             end
             
             if (channelInds(i) == 0)
-                error('Channel "%s" not found', chNames{i});
+                warning('Channel "%s" not found', chNames{i});
             end
         end
         
