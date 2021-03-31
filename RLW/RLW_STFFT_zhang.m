@@ -179,13 +179,31 @@ dt=t(2)-t(1); % time interval (uniform step)
 t_idx=t_idx_min:round((dt/1000)*Fs):t_idx_max;
 N_T=length(t_idx);
 out_header.datasize(6)=N_T;
-out_data=zeros(out_header.datasize);
+
+%MODIFIED 31/03/2021
+%out_data=zeros(out_header.datasize);
+if average_epochs==1
+    if strcmpi(postprocess,'amplitude') | strcmpi(postprocess,'power');
+        dtsize=out_header.datasize;
+        dtsize(1)=1;
+        out_data=zeros(dtsize);
+    else
+        out_data=zeros(out_header.datasize);
+    end;
+else
+    out_data=zeros(out_header.datasize);
+end;
+%END MODIFICATION
+
+
 %adjust out_header.xstart and .xstep
 out_header.xstart=t(1)/1000;
 out_header.xstep=(t(2)-t(1))/1000;
 
 %loop throuch channels
 for chanpos=1:header.datasize(2);
+    
+    disp(chanpos);
     
     %loop through index
     for indexpos=1:header.datasize(3);
@@ -203,11 +221,20 @@ for chanpos=1:header.datasize(2);
             S=permute(S,[3,1,2]);
             P=permute(P,[3,1,2]);
             
+            %MODIFIED 31/03/2021           
             switch postprocess
                 case 'amplitude'
-                    out_data(:,chanpos,indexpos,dz,:,:)=sqrt(P);
+                    if average_epochs==1;
+                        out_data(1,chanpos,indexpos,dz,:,:)=mean(sqrt(P),1);
+                    else
+                        out_data(:,chanpos,indexpos,dz,:,:)=sqrt(P);
+                    end;
                 case 'power'
-                    out_data(:,chanpos,indexpos,dz,:,:)=P;
+                    if average_epochs==1;
+                        out_data(1,chanpos,indexpos,dz,:,:)=mean(P,1);
+                    else
+                        out_data(:,chanpos,indexpos,dz,:,:)=P;
+                    end;
                 case 'phase'
                     out_data(:,chanpos,indexpos,dz,:,:)=angle(S);
                 case 'complex'
