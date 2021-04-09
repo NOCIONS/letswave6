@@ -648,20 +648,20 @@ else
     if table_data(selected).epoch_pos>0;
         set(handles.epoch_listbox,'Value',table_data(selected).epoch_pos);
         set(handles.epoch_listbox,'Enable','on');
-        set(handles.average_epochs_chk,'Value',0);
+        %set(handles.average_epochs_chk,'Value',0);
     else
         set(handles.epoch_listbox,'Value',1);
         set(handles.epoch_listbox,'Enable','off');
-        set(handles.average_epochs_chk,'Value',1);
+        %set(handles.average_epochs_chk,'Value',1);
     end;
     if table_data(selected).channel_pos>0;
         set(handles.channel_listbox,'Value',table_data(selected).channel_pos);
         set(handles.channel_listbox,'Enable','on');
-        set(handles.average_channels_chk,'Value',0);
+        %set(handles.average_channels_chk,'Value',0);
     else
         set(handles.channel_listbox,'Value',1);
         set(handles.channel_listbox,'Enable','off');
-        set(handles.average_channels_chk,'Value',1);
+        %set(handles.average_channels_chk,'Value',1);
     end;
     set(handles.index_popup,'Value',table_data(selected).index_pos);
 end;
@@ -910,7 +910,7 @@ function process_btn_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 %table_data
-table_data=get(handles.table_listbox,'UserData');
+user_data=get(handles.table_listbox,'UserData');
 %table_string
 table_string=get(handles.table_listbox,'String');
 table_string=strrep(table_string,'_',' ');
@@ -918,9 +918,9 @@ table_string=strrep(table_string,'_',' ');
 f2_chk=get(handles.freq2_chk,'Value');
 %datasets
 datasets=get(handles.dataset_popup,'UserData');
-disp(['Graph size : ' num2str(length(table_data))]);
+disp(['Graph size : ' num2str(length(user_data))]);
 %check that table_data is not empty
-if isempty(table_data);
+if isempty(user_data);
     return;
 end;
 %f1, f2 and num_harmonics
@@ -929,12 +929,12 @@ f2=str2num(get(handles.freq2_edit,'String'));
 num_harmonics=str2num(get(handles.num_harmonics_edit,'String'));
 %loop through table_data
 graph_data=[];
-for tpos=1:length(table_data);
+for tpos=1:length(user_data);
     %calculate the data to be displayed
     %loop through rows
     %each row will appear as an additional bar within each bar stack
     %header
-    header=datasets(table_data(tpos).dataset_pos).header;
+    header=datasets(user_data(tpos).dataset_pos).header;
     %calc af1,af2,af1f2
     [af1,af2,af1f2]=findfrequencies(f1,f2,num_harmonics,header);
     %tpx
@@ -1064,12 +1064,12 @@ for tpos=1:length(table_data);
         end;
     end;
     %epoch,channel,index positions
-    epoch_pos=table_data(tpos).epoch_pos;
-    channel_pos=table_data(tpos).channel_pos;
-    index_pos=table_data(tpos).index_pos;
+    epoch_pos=user_data(tpos).epoch_pos;
+    channel_pos=user_data(tpos).channel_pos;
+    index_pos=user_data(tpos).index_pos;
     %fetch data
     tpdata=[];
-    tpdata(:,:,:,:,:,:)=datasets(table_data(tpos).dataset_pos).data;
+    tpdata(:,:,:,:,:,:)=datasets(user_data(tpos).dataset_pos).data;
     %***F1***
     %colheaders
     colheaders={'dataset','epoch','channel'};
