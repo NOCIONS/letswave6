@@ -20,6 +20,11 @@ function [S, P] = sub_tfa_stft(x, xtimes, t, f, Fs, winsize, wintype, padvalue)
 %fprintf('\nShort-time Fourier Transform: ')
 
 %% Parameters
+
+if size(x,1)==1;
+    x=x';
+end;
+
 N_Trials = size(x,2);
 L = round(winsize/1000*Fs/2); % half of window size (points)
 h = L*2+1; %  window size (points)
