@@ -69,7 +69,7 @@ epoch_end=header.xstart+((header.datasize(1)-1)*header.xstep);
 
 %chunk_size_dx
 chunk_size=chunk_duration;
-chunk_size_dx=round(chunk_duration/header.xstep);
+chunk_size_dx=round(chunk_duration/header.xstep)+1;
 
 %chunk_onsets (chunk_dxstart)
 chunk_pos=1;
