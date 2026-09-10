@@ -103,7 +103,7 @@ for event_labels_pos=1:length(event_labels);
         message_string{end+1}=[event_code ' : event code found in dataset.'];
         message_string{end+1}=[num2str(length(event_idx)) ' corresponding events found in dataset.'];
         %dxsize
-        dxsize=round((x_duration)/header.xstep);
+        dxsize=round((x_duration)/header.xstep)+1;
         %adjust header
         %set datasize (number of epochs and xsize)
         out_header.datasize(1)=length(event_idx);
