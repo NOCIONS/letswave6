@@ -102,7 +102,7 @@ else
     message_string{end+1}=[num2str(length(event_idx)) ' corresponding events found in dataset.'];
     %adjust header
     %dxsize
-    dxsize=round(((cycle_total-cycle_skip)/cycle_frequency)/header.xstep);
+    dxsize=round(((cycle_total-cycle_skip)/cycle_frequency)/header.xstep)+1;
     %set datasize
     out_header.datasize(1)=length(event_idx);
     out_header.datasize(6)=dxsize;
