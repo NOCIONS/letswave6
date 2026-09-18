@@ -116,7 +116,7 @@ set(handles.x_start_edit,'String',num2str(configuration.parameters.x_start));
 x_duration=configuration.parameters.x_duration;
 set(handles.x_duration_edit,'String',num2str(x_duration));
 %x_size
-x_size=fix(x_duration/datasets(1).header.xstep);
+x_size=fix(x_duration/datasets(1).header.xstep)+1;
 set(handles.x_size_edit,'String',num2str(x_size));
 %!!!
 %END
@@ -321,7 +321,7 @@ x_duration=str2num(get(handles.x_duration_edit,'String'));
 %datasets
 datasets=get(handles.prefix_edit,'Userdata');
 %x_size
-x_size=fix(x_duration/datasets(1).header.xstep);
+x_size=fix(x_duration/datasets(1).header.xstep)+1;
 %update x__size_edit
 set(handles.x_size_edit,'String',num2str(x_size));
 
