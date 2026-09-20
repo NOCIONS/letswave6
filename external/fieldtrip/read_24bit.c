@@ -18,7 +18,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  *
- * $Id: read_24bit.c 5037 2011-12-14 11:01:21Z roboos $
+ * $Id$
  */
 
 /*
@@ -31,7 +31,7 @@
 #include <math.h>
 #include <sys/types.h>
 #include "mex.h"
-#include "matrix.h"
+#include <stdio.h>
 
 #if defined(_WIN32) || defined(_WIN64)
 #define int32_t INT32_T
@@ -114,7 +114,7 @@ mexFunction (int nlhs, mxArray * plhs[], int nrhs, const mxArray * prhs[])
     dat_p[count] = ((int32_t) ((b3 << 24) | (b2 << 16) | (b1 << 8)))/256;
   }
 
-  /* explicitely free the buffer memory and don't wait for the garbage collector */
+  /* explicitly free the buffer memory and don't wait for the garbage collector */
   mxFree(buf);
   
   /* assign the output parameters */
